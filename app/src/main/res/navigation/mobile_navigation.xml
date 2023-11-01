@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/head">
+
+    <fragment android:id="@+id/head"
+        android:name="com.trifonov.indoor_navigation.fragment.HeadFragment"
+        android:label="@string/head"
+        tools:layout="@layout/head_fragment"
+    >
+        <action
+            android:id="@+id/action_head_to_route"
+            app:destination="@id/route" />
+        <action
+            android:id="@+id/action_head_to_scan"
+            app:destination="@id/scan" />
+        <action
+            android:id="@+id/action_head_to_search"
+            app:destination="@id/search" />
+    </fragment>
+
+    <fragment android:id="@+id/route"
+        android:name="com.trifonov.indoor_navigation.fragment.RouteFragment"
+        android:label="@string/route"
+        tools:layout="@layout/route_fragment"/>
+
+<!--    <fragment android:id="@+id/scan" />-->
+
+    <fragment android:id="@+id/search"
+        android:name="com.trifonov.indoor_navigation.fragment.SearchFragment"
+        android:label="@string/search"
+        tools:layout="@layout/search_fragment"/>
+    <fragment android:id="@+id/scan"
+        android:name="com.trifonov.indoor_navigation.fragment.SelectedPointFragment"
+        android:label="@string/scan"
+        tools:layout="@layout/selected_point_fragment"/>
+</navigation>
