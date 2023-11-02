@@ -1,11 +1,13 @@
 package com.trifonov.indoor_navigation.fragment
 
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.OvershootInterpolator
-import android.widget.Button
+import android.widget.ImageView
+import androidx.annotation.MainThread
+import androidx.annotation.NonNull
+import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.trifonov.indoor_navigation.R
@@ -14,7 +16,10 @@ open class CustomFragment: Fragment() {
     private lateinit var mBottomSheet: View
     protected lateinit var mBottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var translateYAnimator: ObjectAnimator
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+    @MainThread
+    @SuppressLint("KotlinNullnessAnnotation")
+    override fun onViewCreated(@NonNull view: View, @Nullable savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBottomSheet = view.findViewById(R.id.bottom_sheet)
         mBottomSheet.animation = onCreateAnimation(500, true, 10)
@@ -40,7 +45,7 @@ open class CustomFragment: Fragment() {
             }
         }
         mBottomSheetBehavior.addBottomSheetCallback(bottomSheetCallback)
-        view.findViewById<Button>(R.id.btn).setOnClickListener{
+        view.findViewById<ImageView>(R.id.close_btn).setOnClickListener{
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
     }

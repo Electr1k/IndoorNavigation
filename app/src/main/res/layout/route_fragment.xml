@@ -4,36 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="100dp"
+    android:layout_marginTop="50dp"
     tools:context=".fragment.RouteFragment">
 
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/holo_purple"
-
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_bottom_sheet"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingTop="16dp"
-                android:text="Bottom sheet route"
-                android:textSize="16sp" />
-
-            <Button
-                android:id="@+id/btn"
+            <androidx.cardview.widget.CardView
+                android:layout_width="30dp"
+                android:layout_height="3dp"
+                android:layout_marginVertical="6dp"
+                app:cardBackgroundColor="@color/grey"
+                app:cardElevation="0dp"/>
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="Close" />
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginHorizontal="16dp"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/close_btn"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/close_icon"/>
+            </LinearLayout>
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
