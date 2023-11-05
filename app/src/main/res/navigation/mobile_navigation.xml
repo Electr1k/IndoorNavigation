@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_head_to_search"
             app:destination="@id/search" />
+        <action
+            android:id="@+id/action_head_to_location"
+            app:destination="@id/location" />
     </fragment>
 
     <fragment android:id="@+id/route"
@@ -36,4 +39,8 @@
         android:name="com.trifonov.indoor_navigation.fragment.SelectedPointFragment"
         android:label="@string/scan"
         tools:layout="@layout/selected_point_fragment"/>
+    <fragment android:id="@+id/location"
+        android:name="com.trifonov.indoor_navigation.fragment.LocationFragment"
+        android:label="@string/location"
+        tools:layout="@layout/location_fragment"/>
 </navigation>
