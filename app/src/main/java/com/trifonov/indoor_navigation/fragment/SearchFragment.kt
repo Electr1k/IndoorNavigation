@@ -8,10 +8,9 @@ import android.view.ViewGroup
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.trifonov.indoor_navigation.R
-import com.trifonov.indoor_navigation.adapter.AudienceAdapter
+import com.trifonov.indoor_navigation.adapter.AudienceSearchAdapter
 
 class SearchFragment: CustomFragment() {
     @Nullable
@@ -34,7 +33,6 @@ class SearchFragment: CustomFragment() {
         repeat(25) {
             list.add(it, "Г - $it")
         }
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = AudienceAdapter(list)
+        recyclerView.adapter = AudienceSearchAdapter(list)
     }
 }

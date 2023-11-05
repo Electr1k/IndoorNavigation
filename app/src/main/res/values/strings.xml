@@ -5,4 +5,8 @@
     <string name="route">Маршрут</string>
     <string name="location">Локация</string>
     <string name="scan">Сканер</string>
+    <string name="input_request">Введите запрос</string>
+    <string name="route_from">Откуда</string>
+    <string name="route_to">Куда</string>
+    <string name="result_search">Результаты поиска</string>
 </resources>

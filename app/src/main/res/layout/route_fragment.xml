@@ -7,35 +7,194 @@
     android:layout_marginTop="50dp"
     tools:context=".fragment.RouteFragment">
 
-
     <LinearLayout
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/rounded_bottom_sheet"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:background="@drawable/rounded_bottom_sheet"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
             <androidx.cardview.widget.CardView
-                android:layout_width="30dp"
-                android:layout_height="3dp"
-                android:layout_marginVertical="6dp"
-                app:cardBackgroundColor="@color/grey"
-                app:cardElevation="0dp"/>
+                    android:layout_width="30dp"
+                    android:layout_height="3dp"
+                    android:layout_marginVertical="6dp"
+                    app:cardBackgroundColor="@color/grey"
+                    app:cardElevation="0dp"/>
             <LinearLayout
+                android:layout_marginHorizontal="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="8dp"
-                android:layout_marginHorizontal="16dp"
-                android:gravity="end"
+                android:gravity="center_vertical|center_horizontal"
                 android:orientation="horizontal">
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/route"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="24sp"
+                    android:layout_gravity="center_vertical"/>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end|center_vertical"
+                    >
+                    <ImageView
+                        android:layout_marginTop="2dp"
+                        android:id="@+id/close_btn"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/close_icon"/>
+                </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/close_btn"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:src="@drawable/close_icon"/>
             </LinearLayout>
+            <LinearLayout
+                android:layout_marginHorizontal="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <!-- Поля откуда и куда -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/route_a"/>
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_marginStart="10dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:cardBackgroundColor="@android:color/transparent"
+                            app:cardElevation="0dp"
+                            app:cardCornerRadius="4dp"
+                            app:strokeWidth="1dp"
+                            app:strokeColor="@color/light_gray">
+                            <EditText
+                                android:id="@+id/route_from"
+                                android:layout_marginVertical="7dp"
+                                android:paddingHorizontal="15dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:hint="@string/route_from"
+                                android:textColorHint="@color/light_gray"
+                                android:textSize="17sp"
+                                android:inputType="text"
+                                android:autofillHints="no"
+                                android:textColor="@color/black"
+                                />
+                        </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="10dp"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+
+                        android:orientation="horizontal">
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/route_b"/>
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_marginStart="10dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:cardBackgroundColor="@android:color/transparent"
+                            app:cardElevation="0dp"
+                            app:cardCornerRadius="4dp"
+                            app:strokeWidth="1dp"
+                            app:strokeColor="@color/light_gray">
+                            <EditText
+                                android:id="@+id/route_to"
+                                android:layout_marginVertical="7dp"
+                                android:paddingHorizontal="15dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@android:color/transparent"
+                                android:hint="@string/route_to"
+                                android:textColorHint="@color/light_gray"
+                                android:textSize="17sp"
+                                android:inputType="text"
+                                android:autofillHints="no"
+                                android:textColor="@color/black"
+                                />
+                        </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
+                </LinearLayout>
+                <!--свап-->
+                <ImageView
+                    android:layout_marginStart="7dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/swap"/>
+            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/audience_types"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:layout_marginVertical="20dp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/dark_grey"
+                        android:text="@string/result_search"/>
+
+                    <TextView
+                        android:id="@+id/currentLocation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_marginHorizontal="16dp"
+                        android:text="Результаты поиска"
+                        android:textColor="@color/dark_grey"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/result_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
