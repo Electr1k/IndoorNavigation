@@ -37,7 +37,7 @@ open class CustomFragment: Fragment() {
             }
         }
         mBottomSheetBehavior.addBottomSheetCallback(bottomSheetCallback)
-        view.findViewById<ImageView>(R.id.close_btn).setOnClickListener{
+        view.findViewById<ImageView>(R.id.close_btn)?.setOnClickListener{
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
     }
