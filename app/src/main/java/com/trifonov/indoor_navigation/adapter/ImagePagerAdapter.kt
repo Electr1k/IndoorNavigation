@@ -27,7 +27,7 @@ class ImagePagerAdapter(
     }
 
     override fun getCount(): Int {
-        return images.size + 2
+        return images.size
     }
 
     override fun isViewFromObject(view: View, obj: Any): Boolean {
