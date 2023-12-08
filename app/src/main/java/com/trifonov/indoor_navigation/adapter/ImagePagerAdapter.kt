@@ -12,28 +12,29 @@ import java.util.Objects
 
 class ImagePagerAdapter(
     val context: Context,
-    val imageList: List<Int>
+    private val images: List<Int>
 ) : PagerAdapter() {
-    override fun getCount(): Int {
-        return imageList.size
-    }
 
-    override fun isViewFromObject(view: View, `object`: Any): Boolean {
-        return view === `object` as RelativeLayout
-    }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-
-        val mLayoutInflater =
-            context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val itemView: View = mLayoutInflater.inflate(R.layout.point_image_item, container, false)
-        val imageView: ImageView = itemView.findViewById(R.id.image_item)
-        imageView.setImageResource(imageList[position])
-        Objects.requireNonNull(container).addView(itemView)
-        return itemView
+        val inflater = LayoutInflater.from(context)
+        val view = inflater.inflate(R.layout.point_image_item, container, false)
+        val imageView = view.findViewById<ImageView>(R.id.image_item)
+        val imagePosition = position % images.size
+        imageView.setImageResource(images[imagePosition])
+        container.addView(view)
+        return view
     }
 
-    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-        container.removeView(`object` as RelativeLayout)
+    override fun getCount(): Int {
+        return images.size + 2
+    }
+
+    override fun isViewFromObject(view: View, obj: Any): Boolean {
+        return view == obj
+    }
+
+    override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
+        container.removeView(obj as View)
     }
 }
