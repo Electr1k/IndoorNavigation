@@ -147,6 +147,7 @@
                 </LinearLayout>
                 <!--свап-->
                 <ImageView
+                    android:id="@+id/swap_image"
                     android:layout_marginStart="7dp"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
@@ -158,6 +159,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="16dp"
+                android:nestedScrollingEnabled="false"
+
                 android:layout_marginVertical="20dp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
@@ -193,6 +196,7 @@
                     android:id="@+id/result_search"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:nestedScrollingEnabled="false"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

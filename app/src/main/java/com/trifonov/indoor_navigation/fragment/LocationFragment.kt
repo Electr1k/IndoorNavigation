@@ -9,6 +9,7 @@ import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.cardview.widget.CardView
+import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -21,6 +22,9 @@ import com.trifonov.indoor_navigation.common.LocationData
 class LocationFragment: CustomFragment() {
     private lateinit var currentLocation: String
     private lateinit var selectedLocation: String
+    private lateinit var locationRV: RecyclerView
+    private lateinit var acceptButton: CardView
+
     @Nullable
     @MainThread
     @SuppressLint("KotlinNullnessAnnotation")
@@ -37,26 +41,35 @@ class LocationFragment: CustomFragment() {
     @SuppressLint("KotlinNullnessAnnotation")
     override fun onViewCreated(@NonNull view: View, @Nullable savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val locationRV = view.findViewById<RecyclerView>(R.id.location_list)
+        locationRV = view.findViewById(R.id.location_list)
+        acceptButton = view.findViewById(R.id.accept_button)
 
         val list = listOf(
             "Туалет",
             "Аудитория",
             "Лекционный зал",
             "Кафе",
-            "Зона отдыха"
+            "Зона отдыха",
+
         )
+        mBottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {}
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                var width: Int = 0
+                acceptButton.doOnLayout {
+                    it.measuredWidth
+                    width = it.measuredHeight
+                }
+                acceptButton.translationY = width * (1 - slideOffset)
+            }
+        })
         val locationData = LocationData(requireContext())
         currentLocation = locationData.getCurrentLocation() ?: "Корпус Д"
         selectedLocation = currentLocation
-        view.findViewById<CardView>(R.id.accept_button).setOnClickListener{
+        acceptButton.setOnClickListener{
             locationData.setCurrentLocation(selectedLocation)
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
-        locationRV.adapter = LocationAdapter(
-            list, {
-            selectedLocation = it
-            },
-            currentLocation)
+        locationRV.adapter = LocationAdapter(list, {selectedLocation = it}, currentLocation)
     }
 }
