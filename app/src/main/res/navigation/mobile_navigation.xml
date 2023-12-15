@@ -3,7 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/head">
+    app:startDestination="@+id/splash_screen">
+
+    <fragment android:id="@+id/splash_screen"
+        android:name="com.trifonov.indoor_navigation.SplashScreen"
+        android:label="@string/splash_screen"
+        tools:layout="@layout/splash_screen_fragment">
+        <action
+            android:id="@+id/action_splash_to_head"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/mobile_navigation"
+            app:destination="@+id/head"/>
+    </fragment>
 
     <fragment android:id="@+id/head"
         android:name="com.trifonov.indoor_navigation.fragment.HeadFragment"
@@ -29,16 +40,17 @@
         android:label="@string/route"
         tools:layout="@layout/route_fragment"/>
 
-<!--    <fragment android:id="@+id/scan" />-->
 
     <fragment android:id="@+id/search"
         android:name="com.trifonov.indoor_navigation.fragment.SearchFragment"
         android:label="@string/search"
         tools:layout="@layout/search_fragment"/>
+
     <fragment android:id="@+id/scan"
         android:name="com.trifonov.indoor_navigation.fragment.SelectedPointFragment"
         android:label="@string/scan"
         tools:layout="@layout/selected_point_fragment"/>
+
     <fragment android:id="@+id/location"
         android:name="com.trifonov.indoor_navigation.fragment.LocationFragment"
         android:label="@string/location"

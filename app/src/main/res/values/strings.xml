@@ -9,4 +9,5 @@
     <string name="route_from">Откуда</string>
     <string name="route_to">Куда</string>
     <string name="result_search">Результаты поиска</string>
+    <string name="splash_screen">Splash Screen</string>
 </resources>
