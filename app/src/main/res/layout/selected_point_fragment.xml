@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/selected_fragment"
     tools:context=".fragment.SelectedPointFragment">
 
 
@@ -45,6 +46,30 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="10dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/linearIndicator">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/camera_icon"
+                            android:contentDescription="@null"
+                            app:tint="@color/white" />
+                        <TextView
+                            android:id="@+id/countImages"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:translationY="-2dp"
+                            android:textStyle="bold"
+                            android:textSize="18sp" />
+                    </LinearLayout>
                     <LinearLayout
                         android:id="@+id/linearIndicator"
                         android:layout_width="match_parent"
@@ -58,6 +83,7 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
                 <LinearLayout
+                    android:id="@+id/main_content"
                     android:layout_width="match_parent"
                     android:orientation="vertical"
                     android:translationY="-20dp"
@@ -71,56 +97,137 @@
                         android:layout_marginHorizontal="16dp"
                         app:cardBackgroundColor="@color/grey"
                         app:cardElevation="0dp"/>
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="16dp">
-                            <TextView
-                                android:id="@+id/title"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:paddingEnd="25dp"
-                                android:text="Аудитория Г-337"
-                                android:textSize="28sp"
-                                android:gravity="start"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-                            <ImageView
-                                android:id="@+id/close_btn"
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:layout_gravity="end|center_vertical"
-                                android:src="@drawable/close_icon"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp">
                         <TextView
+                            android:id="@+id/title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="В этой аудитории вы можете поработать за компьюетрами."
-                            android:textSize="18sp"
-                            android:layout_marginVertical="10dp"
-                            android:layout_marginHorizontal="16dp"/>
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="До закрытия 1 час"
-                            android:textSize="18sp"
-                            android:textColor="@color/orange"
-                            android:layout_marginBottom="10dp"
-                            android:layout_marginHorizontal="16dp"/>
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Тут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста"
-                            android:textSize="18sp"
-                            android:layout_marginHorizontal="16dp"/>
+                            android:paddingEnd="25dp"
+                            android:text="Аудитория Г-337"
+                            android:textSize="28sp"
+                            android:gravity="start"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                        <ImageView
+                            android:id="@+id/close_btn"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_gravity="end|center_vertical"
+                            android:src="@drawable/close_icon"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="В этой аудитории вы можете поработать за компьюетрами."
+                        android:textSize="18sp"
+                        android:layout_marginVertical="10dp"
+                        android:layout_marginHorizontal="16dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="До закрытия 1 час"
+                        android:textSize="18sp"
+                        android:textColor="@color/orange"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginHorizontal="16dp"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Тут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста"
+                        android:textSize="18sp"
+                        android:layout_marginHorizontal="16dp"/>
                 </LinearLayout>
             </LinearLayout>
             </androidx.core.widget.NestedScrollView>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/navigateMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="10dp"
+        android:layout_gravity="bottom" >
+        <androidx.cardview.widget.CardView
+            android:id="@+id/route_from"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="bottom"
+            app:cardCornerRadius="8dp"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:focusable="true"
+            android:clickable="true"
+            android:layout_marginEnd="5dp"
+            app:cardBackgroundColor="@color/dark_blue">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/route_icon"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:layout_marginStart="5dp"
+                    android:paddingVertical="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:text="Отсюда"
+                    />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/route_to"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="5dp"
+            app:cardCornerRadius="8dp"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:focusable="true"
+            android:clickable="true"
+            app:cardBackgroundColor="@color/dark_blue">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/route_icon"
+                    android:contentDescription="@null" />
+
+                <TextView
+                    android:layout_marginStart="5dp"
+                    android:paddingVertical="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:text="Сюда"
+                    />
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

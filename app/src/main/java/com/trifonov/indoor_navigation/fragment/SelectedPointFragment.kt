@@ -8,10 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.cardview.widget.CardView
+import androidx.core.view.doOnLayout
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
@@ -26,6 +28,10 @@ class SelectedPointFragment: CustomFragment() {
     private lateinit var viewPager: ViewPager
     private lateinit var cardView: CardView
     private lateinit var linearIndicator: LinearLayout
+    private lateinit var countImages: TextView
+    private lateinit var linearMainContent: LinearLayout
+    private lateinit var navigateMenu: LinearLayout
+    private var heightNavigationMenu: Int = 0
 
     @Nullable
     @MainThread
@@ -41,10 +47,12 @@ class SelectedPointFragment: CustomFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        countImages = view.findViewById(R.id.countImages)
         cardView = view.findViewById(R.id.card)
         viewPager = view.findViewById(R.id.imagesPager)
         linearIndicator = view.findViewById(R.id.linearIndicator)
+        linearMainContent = view.findViewById(R.id.main_content)
+        navigateMenu = view.findViewById(R.id.navigateMenu)
 
         initBottomSheet(view)
 
@@ -75,13 +83,27 @@ class SelectedPointFragment: CustomFragment() {
                     else{
                         cardView.radius = 20f * density
                     }
+                    println("Current offset: $currentState $newState")
                 }
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
                     view.findViewById<LinearLayout>(R.id.linearLayout).translationY = max(-1 * 260 * density * (1 - slideOffset), -1 * 260 * density)
+                    println("Current offset: $slideOffset")
+                    navigateMenu.translationY = - heightNavigationMenu * (slideOffset - 1)
                 }
             }
         )
+
+        // Высчитываем высоту меню с кнопками выстроения маршрута и добовляем спейсер после текста,
+        // чтобы не загараживать его
+        navigateMenu.post {
+            val spacer = View(requireContext())
+            heightNavigationMenu = navigateMenu.height + 30
+            spacer.layoutParams = ViewGroup.LayoutParams(0, heightNavigationMenu)
+            linearMainContent.addView(spacer)
+            navigateMenu.translationY = heightNavigationMenu * 1f
+        }
     }
+
 
     /**
      * Настраивает работу ViewPager и индикатора
@@ -116,6 +138,9 @@ class SelectedPointFragment: CustomFragment() {
             R.drawable.pager_9,
             R.drawable.pager_10,
         )
+
+        countImages.text = imageList.size.toString()
+
         // Копируем первый и последний элемент в хвост и голову соответственно
         imageList.add(0, imageList.takeLast(1)[0])
         imageList.add(imageList.size, imageList[1])
@@ -174,8 +199,8 @@ class SelectedPointFragment: CustomFragment() {
         for(i in 0 until count){
             val linear = ImageView(requireContext())
             val layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
-            layoutParams.marginStart = 3
-            layoutParams.marginEnd = 3
+            layoutParams.marginStart = 7
+            layoutParams.marginEnd = 7
             linear.layoutParams = layoutParams
             linear.setImageResource(R.drawable.indicator_selector)
             linearIndicator.addView(linear)
