@@ -4,11 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/grey_main"
     tools:context=".MainActivity">
-    <View
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/dark_grey"/>
+        android:layout_height="match_parent">
+        <ovh.plrapps.mapview.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <ImageView
+            android:id="@+id/scale_plus"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/plus"
+            android:onClick="scalePlus"
+            android:layout_marginBottom="64dp"
+            android:contentDescription="@null"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/scale_minus"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/minus"
+            android:onClick="scaleMinus"
+            android:contentDescription="@null"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/scale_plus" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <fragment
         android:id="@+id/nav_host_fragment_activity_bottom_navigation"
         android:name="androidx.navigation.fragment.NavHostFragment"
