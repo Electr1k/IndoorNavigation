@@ -6,17 +6,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.cardview.widget.CardView
-import androidx.core.view.doOnLayout
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.ImagePagerAdapter
 import java.lang.Float.max
@@ -32,6 +31,7 @@ class SelectedPointFragment: CustomFragment() {
     private lateinit var linearMainContent: LinearLayout
     private lateinit var navigateMenu: LinearLayout
     private var heightNavigationMenu: Int = 0
+    private var progress = 0f
 
     @Nullable
     @MainThread
@@ -93,7 +93,7 @@ class SelectedPointFragment: CustomFragment() {
             }
         )
 
-        // Высчитываем высоту меню с кнопками выстроения маршрута и добовляем спейсер после текста,
+        // Высчитываем высоту меню с кнопками выстроения маршрута и добавляем спейсер после текста,
         // чтобы не загараживать его
         navigateMenu.post {
             val spacer = View(requireContext())
@@ -112,7 +112,7 @@ class SelectedPointFragment: CustomFragment() {
 
         /**
          * Для создания циклического ViewPager пришлось придумать неочевидную структру
-         * Размер списка, который подается в аодаптер, на 2 элемента больше исходного:
+         * Размер списка, который подается в адаптер, на 2 элемента больше исходного:
          * В голову списка копируем последний элемент, а в хвост первый
          * Указатель пейджера устанавливаем на 1 и когда пользователь перелистнет пейджер на 0 элемент
          * мы без анимации передвигаем указатель на N элемент списка (N - количество исходных фото или же n-2, где n - уже изменный список),
@@ -152,6 +152,37 @@ class SelectedPointFragment: CustomFragment() {
         viewPager.adapter = viewPagerAdapter
 
         viewPager.currentItem = 1 // Устанавливаем указатель на 0 элемент "исходного" списка
+
+        // Создаем отдельный поток,в котором будет изменять индикаторы и двигать пейджер
+        Thread{
+            var stopOnException = false
+            while(true && !stopOnException){
+                progress = 0f
+                while (progress != 100f){
+                    Thread.sleep(15) // 15* 100 = 1500 ms
+                    progress += 1f // 100 iteration
+                    println(progress)
+                    try {
+                        requireActivity().runOnUiThread {
+                            updateLinearIndicator(getIndexByPosition(viewPager.currentItem))
+                        }
+                    }
+                    catch (e: Exception){
+                        stopOnException = true
+                        break
+                    }
+                }
+                try {
+                    requireActivity().runOnUiThread {
+                    viewPager.setCurrentItem( viewPager.currentItem + 1,true)
+                    }
+                }
+                catch (e: Exception){
+                    stopOnException = true
+                    break
+                }
+            }
+        }.start()
 
         // Чтобы не обрывать анимацию перелистывания у пользователя,
         // когда подменяем первый или последний элемент
@@ -197,12 +228,15 @@ class SelectedPointFragment: CustomFragment() {
     private fun createLinearIndicator(count: Int){
 
         for(i in 0 until count){
-            val linear = ImageView(requireContext())
+            val linear = LinearProgressIndicator(requireContext())
             val layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
             layoutParams.marginStart = 7
             layoutParams.marginEnd = 7
             linear.layoutParams = layoutParams
-            linear.setImageResource(R.drawable.indicator_selector)
+            linear.trackColor = resources.getColor(R.color.grey)
+            linear.setIndicatorColor(resources.getColor(R.color.white))
+            linear.indicatorDirection = LinearProgressIndicator.INDICATOR_DIRECTION_START_TO_END
+            linear.setProgressCompat(if (i < viewPager.currentItem) 100 else{ if (i == viewPager.currentItem) progress.toInt() else 0}, true)
             linearIndicator.addView(linear)
         }
 
@@ -216,8 +250,27 @@ class SelectedPointFragment: CustomFragment() {
     private fun updateLinearIndicator(position: Int){
 
         for(i in 0 until linearIndicator.childCount){
-            val linear = linearIndicator.getChildAt(i)
-            linear.isSelected = i <= position
+            val linear: LinearProgressIndicator = linearIndicator.getChildAt(i) as LinearProgressIndicator
+            linear.setProgressCompat(if (i < position) 100 else{ if (i == position) progress.toInt() else 0}, true)
+        }
+    }
+
+    /**
+     * Вычисляет индекс индикатора/картинки от поизиции педжера
+     * @Param [position] position указатель пейджера
+     * @return индекс индикатора/картинки
+     */
+    private fun getIndexByPosition(position: Int): Int{
+        return when (position) {
+            0 -> {
+                viewPager.adapter!!.count - 2
+            }
+            viewPager.adapter!!.count - 1 -> {
+                0
+            }
+            else -> {
+                position - 1
+            }
         }
     }
 

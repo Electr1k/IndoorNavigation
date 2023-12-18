@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
@@ -26,6 +27,7 @@ open class CustomFragment: Fragment() {
         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         mBottomSheetBehavior.isHideable = true
         mBottomSheetBehavior.skipCollapsed = true
+        val slideUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
 
         val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -45,5 +47,8 @@ open class CustomFragment: Fragment() {
     override fun onStart() {
         super.onStart()
         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        val slideUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
+        mBottomSheet.startAnimation(slideUpAnimation)
+        mBottomSheet.visibility = View.VISIBLE
     }
 }
