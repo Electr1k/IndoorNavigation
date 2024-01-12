@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.SplashScreen">
+    tools:context=".fragment.DownloadFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <ImageView
+    <TextView
+        android:id="@+id/downloadText"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@null"
-        android:scaleType="fitXY"
-        android:src="@drawable/splash"
+        android:text="Загрузка"
+        android:textSize="30dp"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

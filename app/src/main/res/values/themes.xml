@@ -8,6 +8,11 @@
         <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
         <item name="android:windowTranslucentStatus">true</item>
     </style>
-
+    <style name="AppTheme.Picker" parent="Theme.AppCompat.Light.NoActionBar" >
+        <item name="android:textColorPrimary">@color/brand</item>
+        <item name="android:textSize">20sp</item>
+        <item name="colorControlNormal">@color/brand</item>
+        <item name="android:dividerHeight">6dp</item>
+    </style>
     <style name="Theme.IndoorNavigation" parent="Base.Theme.IndoorNavigation" />
 </resources>

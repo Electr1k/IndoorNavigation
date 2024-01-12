@@ -13,6 +13,8 @@ import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.cardview.widget.CardView
 import androidx.viewpager.widget.ViewPager
+import androidx.viewpager.widget.ViewPager.SCROLL_STATE_IDLE
+import androidx.viewpager.widget.ViewPager.SCROLL_STATE_SETTLING
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.progressindicator.LinearProgressIndicator
@@ -212,6 +214,7 @@ class SelectedPointFragment: CustomFragment() {
                 updateLinearIndicator(positionForIndicator)
             }
             override fun onPageScrollStateChanged(state: Int) {
+                if (state == SCROLL_STATE_SETTLING) progress = 0f
                 // Когда анимация закончена и если есть необходимость, то сдвигаем указатель
                 if (state == 0 && skipTo != null){
                     viewPager.setCurrentItem(skipTo!!, false)
