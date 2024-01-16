@@ -152,7 +152,6 @@ class FileHelper(
      * @Return количество уровней приближения
      */
     internal fun getLevelCount(fileName: String): Int {
-        println("getlevelCount")
         val directory = File("$unzipPath$locationName/$fileName")
         val files = directory.listFiles()
         return files?.size ?: 0
