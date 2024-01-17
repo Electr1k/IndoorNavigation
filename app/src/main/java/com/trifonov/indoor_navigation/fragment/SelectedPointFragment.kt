@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
@@ -74,7 +76,6 @@ class SelectedPointFragment: CustomFragment() {
         mBottomSheetBehavior.skipCollapsed = false
         mBottomSheetBehavior.peekHeight = peekHeight
         val density = requireContext().resources.displayMetrics.density
-
         mBottomSheetBehavior.addBottomSheetCallback(
             object : BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -93,6 +94,7 @@ class SelectedPointFragment: CustomFragment() {
                     navigateMenu.translationY = - heightNavigationMenu * (slideOffset - 1)
                 }
             }
+
         )
 
         // Высчитываем высоту меню с кнопками выстроения маршрута и добавляем спейсер после текста,
@@ -161,9 +163,8 @@ class SelectedPointFragment: CustomFragment() {
             while(true && !stopOnException){
                 progress = 0f
                 while (progress != 100f){
-                    Thread.sleep(15) // 15* 100 = 1500 ms
+                    Thread.sleep(40) // 40* 100 = 4000 ms
                     progress += 1f // 100 iteration
-                    println(progress)
                     try {
                         requireActivity().runOnUiThread {
                             updateLinearIndicator(getIndexByPosition(viewPager.currentItem))
@@ -176,7 +177,7 @@ class SelectedPointFragment: CustomFragment() {
                 }
                 try {
                     requireActivity().runOnUiThread {
-                    viewPager.setCurrentItem( viewPager.currentItem + 1,true)
+                        viewPager.setCurrentItem( viewPager.currentItem + 1,true)
                     }
                 }
                 catch (e: Exception){
@@ -235,6 +236,7 @@ class SelectedPointFragment: CustomFragment() {
             val layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)
             layoutParams.marginStart = 7
             layoutParams.marginEnd = 7
+            linear.trackCornerRadius = 50
             linear.layoutParams = layoutParams
             linear.trackColor = resources.getColor(R.color.grey)
             linear.setIndicatorColor(resources.getColor(R.color.white))
@@ -254,7 +256,7 @@ class SelectedPointFragment: CustomFragment() {
 
         for(i in 0 until linearIndicator.childCount){
             val linear: LinearProgressIndicator = linearIndicator.getChildAt(i) as LinearProgressIndicator
-            linear.setProgressCompat(if (i < position) 100 else{ if (i == position) progress.toInt() else 0}, true)
+            linear.setProgressCompat(if (i < position) 100 else{ if (i == position) progress.toInt() else 0}, i <= position)
         }
     }
 
@@ -277,4 +279,12 @@ class SelectedPointFragment: CustomFragment() {
         }
     }
 
+    /**
+     * Переопределяем метод разрушения view, удаляем маркер
+     */
+    override fun onDestroy() {
+        super.onDestroy()
+        val marker = requireActivity().findViewById<RelativeLayout>(R.id.marker)
+        (marker?.parent as ViewGroup?)?.removeView(marker)
+    }
 }

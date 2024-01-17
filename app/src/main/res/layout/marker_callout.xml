@@ -3,6 +3,7 @@
     android:layout_width="140dp"
     android:layout_height="80dp"
     android:background="@drawable/marker_callout_shape"
+    android:id="@+id/marker"
     android:elevation="10dp">
 
     <TextView

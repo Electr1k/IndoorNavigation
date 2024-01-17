@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.map.FileHelper
+import com.trifonov.indoor_navigation.map.MapConnector
+import com.trifonov.indoor_navigation.map.MapConstants
 import com.trifonov.indoor_navigation.map.MapConstants.zoomLevelCount
 import com.trifonov.indoor_navigation.map.Navigation
 
@@ -26,19 +28,9 @@ class DownloadFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Thread {
-            val locationName = "Korpus_G"
-            fileHelper = FileHelper(requireActivity(), view, locationName)
-            val json = fileHelper.getJsonMap(locationName)
-            if (json != "empty location") {
-                loadFromString(json)
-                activity?.runOnUiThread {
-                    view.findNavController().navigate(R.id.action_download_to_head)
-                }
-            }
+            val mapConnector = MapConnector(requireActivity(), view, "Korpus_G")
+            MapConstants.startNode++
+            activity?.runOnUiThread { mapConnector.updatePath(136) }
         }.start()
-    }
-    private fun loadFromString(json: String) {
-        zoomLevelCount = fileHelper.getLevelCount("tiles1") - 1
-        navigation.loadMapFromJson(json)
     }
 }

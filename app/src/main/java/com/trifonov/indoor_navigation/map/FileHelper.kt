@@ -16,6 +16,7 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.navigation.findNavController
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.map.MapConstants.dataPath
@@ -84,8 +85,8 @@ class FileHelper(
             activity.runOnUiThread {
                 view.findViewById<TextView>(R.id.progress)?.text =
                     (max(bytes_downloaded.toFloat() / bytes_total.toFloat() * 100 - 1, 0f)).roundToInt().toString() + "%"
-                view.findViewById<LinearProgressIndicator>(R.id.progressBar).progress =
-                    (max(bytes_downloaded.toFloat() / bytes_total.toFloat() * 100 - 1, 0f)).roundToInt()
+                view.findViewById<LinearProgressIndicator>(R.id.progressBar).setProgressCompat(
+                    (max(bytes_downloaded.toFloat() / bytes_total.toFloat() * 100 - 1, 0f)).roundToInt(), true)
             }
             if (status == DownloadManager.STATUS_SUCCESSFUL) {
                 activity.runOnUiThread {

@@ -51,7 +51,6 @@
             android:background="@drawable/level_border"
             android:descendantFocusability="blocksDescendants"
             android:theme="@style/AppTheme.Picker" />
-
     </FrameLayout>
     <fragment
         android:id="@+id/nav_host_fragment_activity_bottom_navigation"

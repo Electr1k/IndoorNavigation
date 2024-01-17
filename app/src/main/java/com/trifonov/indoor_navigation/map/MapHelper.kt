@@ -7,6 +7,7 @@
 package com.trifonov.indoor_navigation.map
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -18,6 +19,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.map.MapConstants.cameraMarkerX
 import com.trifonov.indoor_navigation.map.MapConstants.cameraMarkerY
@@ -58,30 +60,30 @@ import kotlin.math.atan
 
 /**
  * @Constructor Create empty Map helper
- * @Param [context] контекст для работы с ресурсами
+ * @Param [activity] контекст для работы с ресурсами
  * @Param [mapView] MapView для конфигурации карты
  * @Param [locationName] название локации
  * @Param [navigation] навигатор для поиска маршрута
  */
 class MapHelper(
-    private val context: Context,
+    private val activity: Activity,
     private val mapView: MapView,
     private val locationName: String,
     private val navigation: Navigation
 ) : TileStreamProvider {
 
     /** @Param [finishMarker] – маркер конца маршрута на карте */
-    private val finishMarker = AppCompatImageView(context).apply {
+    private val finishMarker = AppCompatImageView(activity).apply {
         setImageResource(R.drawable.finish_marker)
     }
 
     /** @Param [positionMarker] – маркер текущего положения пользователя на карте */
-    private val positionMarker = AppCompatImageView(context).apply {
+    private val positionMarker = AppCompatImageView(activity).apply {
         setImageResource(R.drawable.position_marker)
     }
 
     /** @Param [positionMarker] – маркер текущего положения пользователя на карте */
-    private val centerMarker = AppCompatImageView(context).apply {
+    private val centerMarker = AppCompatImageView(activity).apply {
         setImageResource(R.drawable.position_marker)
     }
 
@@ -177,7 +179,7 @@ class MapHelper(
         name: String,
         angel: Float = 0f
     ) {
-        val marker = MapMarker(context, x, y, id).apply {
+        val marker = MapMarker(activity, x, y, id).apply {
             setImageDrawable(BitmapDrawable(resources, drawText("$name ")))
         }
         marker.rotation = angel
@@ -235,7 +237,7 @@ class MapHelper(
         fullWidth: Int,
         fullHeight: Int
     ): MapViewConfiguration {
-        pathView = PathView(context)
+        pathView = PathView(activity)
         return MapViewConfiguration(levelCount, fullWidth, fullHeight, 256, this).setMaxScale(
             maxScale
         )
@@ -350,7 +352,7 @@ class MapHelper(
         mapView.setMarkerTapListener(object : MarkerTapListener {
             override fun onMarkerTap(view: View, x: Int, y: Int) {
                 if (view is MapMarker) {
-                    val callout = MarkerCallout(mapView.context)
+                    val callout = MarkerCallout(activity)
                     callout.setTitle(view.name)
                     callout.setSubTitle("position: ${view.x} , ${view.y}")
                     mapView.addCallout(callout, view.x, view.y, -0.5f, -1.2f, 0f, 0f)
@@ -380,7 +382,7 @@ class MapHelper(
      *  @Param [strokePaint] настройка кисти для рисования маршрута на карте
      * */
     private val strokePaint = Paint().apply {
-        color = ContextCompat.getColor(context, R.color.brand)
+        color = ContextCompat.getColor(activity, R.color.brand)
         strokeCap = Paint.Cap.ROUND
     }
 

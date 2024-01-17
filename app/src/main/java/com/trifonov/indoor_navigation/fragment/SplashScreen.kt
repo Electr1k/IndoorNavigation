@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.trifonov.indoor_navigation.R
+import com.trifonov.indoor_navigation.map.MapConnector
+import com.trifonov.indoor_navigation.map.MapConstants
 
 class SplashScreen : Fragment() {
     override fun onCreateView(
