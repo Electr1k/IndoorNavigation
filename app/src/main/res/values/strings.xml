@@ -10,4 +10,7 @@
     <string name="route_to">Куда</string>
     <string name="result_search">Результаты поиска</string>
     <string name="splash_screen">Splash Screen</string>
+    <string name="download_title">Для корректной работы приложения нам необходимо установить карту локации</string>
+    <string name="downloading">Загрузка локации</string>
+    <string name="unzip">Разархивация</string>
 </resources>

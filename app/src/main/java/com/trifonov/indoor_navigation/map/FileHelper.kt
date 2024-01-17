@@ -13,8 +13,10 @@ import android.content.Context
 
 import android.net.Uri
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.map.MapConstants.dataPath
 import com.trifonov.indoor_navigation.map.MapConstants.unzipPath
@@ -80,14 +82,20 @@ class FileHelper(
             val bytes_total =
                 cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
             activity.runOnUiThread {
-                view.findViewById<TextView>(R.id.downloadText)?.text =
-                    (max(bytes_downloaded.toFloat() / bytes_total.toFloat() * 100 - 1, 0f)).roundToInt().toString()
+                view.findViewById<TextView>(R.id.progress)?.text =
+                    (max(bytes_downloaded.toFloat() / bytes_total.toFloat() * 100 - 1, 0f)).roundToInt().toString() + "%"
+                view.findViewById<LinearProgressIndicator>(R.id.progressBar).progress =
+                    (max(bytes_downloaded.toFloat() / bytes_total.toFloat() * 100 - 1, 0f)).roundToInt()
             }
             if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                activity.runOnUiThread {
+                    view.findViewById<TextView>(R.id.partLoading)?.text = activity.resources.getString(R.string.unzip)
+                }
                 if (unzip(locationName) == true){
                     activity.runOnUiThread {
-                        view.findViewById<TextView>(R.id.downloadText)?.text =
-                        100.toString()
+                        view.findViewById<TextView>(R.id.progress)?.text =
+                        100.toString() + "%"
+                        view.findViewById<LinearProgressIndicator>(R.id.progressBar).progress = 100
                         Toast.makeText(activity, "Установка успешна", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -120,7 +128,6 @@ class FileHelper(
                 e.message.toString()
             }
         } else {
-            println("location not found")
             fileDownload("1rq4aFmBEvLCAhXTQ3YPbtaHkoc2_8B8v")
             return File("$dataPath$name/map.json").readText()
         }

@@ -1,4 +1,4 @@
-package com.trifonov.indoor_navigation
+package com.trifonov.indoor_navigation.fragment
 
 import android.os.Bundle
 import android.os.Handler

@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.map.FileHelper
 import com.trifonov.indoor_navigation.map.MapConstants.zoomLevelCount
@@ -23,15 +25,15 @@ class DownloadFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        println("Start download")
         Thread {
             val locationName = "Korpus_G"
             fileHelper = FileHelper(requireActivity(), view, locationName)
             val json = fileHelper.getJsonMap(locationName)
-            println(json)
             if (json != "empty location") {
-                println("location is find")
                 loadFromString(json)
+                activity?.runOnUiThread {
+                    view.findNavController().navigate(R.id.action_download_to_head)
+                }
             }
         }.start()
     }

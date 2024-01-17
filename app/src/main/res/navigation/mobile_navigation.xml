@@ -21,7 +21,9 @@
         tools:layout="@layout/download_fragment"
         >
         <action
-            android:id="@+id/action_download_to_route"
+            android:id="@+id/action_download_to_head"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/mobile_navigation"
             app:destination="@id/head" />
     </fragment>
 
