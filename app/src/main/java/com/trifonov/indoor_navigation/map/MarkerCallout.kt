@@ -8,6 +8,7 @@ package com.trifonov.indoor_navigation.map
 
 import android.app.Activity
 import android.content.Context
+import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
@@ -30,7 +31,7 @@ import com.trifonov.indoor_navigation.R
  * @Constructor создаёт шаблон окна над маркером
  * @Param activity контекст для работы с ресурсами
  */
-class MarkerCallout(private val activity: Activity) : RelativeLayout(activity) {
+class MarkerCallout(private val activity: Activity, private val name: String) : RelativeLayout(activity) {
     private val mTitle: TextView
     private val mSubTitle: TextView
 
@@ -80,7 +81,9 @@ class MarkerCallout(private val activity: Activity) : RelativeLayout(activity) {
      */
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        activity.findNavController(R.id.head).navigate(R.id.action_head_to_scan)
+        val bundle = Bundle()
+        bundle.putString("id", name)
+        activity.findNavController(R.id.head).navigate(R.id.action_head_to_scan, bundle)
     }
 
     /**

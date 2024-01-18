@@ -13,6 +13,9 @@ import android.content.Context
 
 import android.net.Uri
 import android.view.View
+import android.view.View.GONE
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -49,11 +52,14 @@ class FileHelper(
     private var dataPathTmp = dataPath
     private var unzipPathTmp = unzipPath
     private var downloading = false
+    private var checkConnectionFlag = true
+
 
     @SuppressLint("Range")
     internal fun fileDownload(uRl: String) {
         dataPathTmp += "$locationName/"
         unzipPathTmp += "$locationName/"
+        startThreadConnection()
         val request = DownloadManager.Request(Uri.parse(convertUrl(uRl)))
             .setTitle("$locationName.zip")
             .setDescription("Downloading")
@@ -92,6 +98,7 @@ class FileHelper(
                 activity.runOnUiThread {
                     view.findViewById<TextView>(R.id.partLoading)?.text = activity.resources.getString(R.string.unzip)
                 }
+                checkConnectionFlag = false
                 if (unzip(locationName) == true){
                     activity.runOnUiThread {
                         view.findViewById<TextView>(R.id.progress)?.text =
@@ -106,6 +113,35 @@ class FileHelper(
         }
     }
 
+
+    /**
+    *   Создает новый поток, в котором проверяет наличие Интернет соединения, если нет, то уведомляет об этом пользователя
+    * */
+    private fun startThreadConnection(){
+        Thread{
+            // Проверяем есть ли интернет
+            while (checkConnectionFlag) {
+                val cm =
+                    activity.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+                val netInfo = cm.activeNetworkInfo
+                if (netInfo != null && netInfo.isConnectedOrConnecting) {
+                    activity.runOnUiThread {
+                        view.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.connectionError)!!.visibility =
+                            INVISIBLE
+                        view.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.download_progress)!!.visibility =
+                            VISIBLE
+                    }
+                } else {
+                    activity.runOnUiThread {
+                        view.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.download_progress)!!.visibility =
+                            GONE
+                        view.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.connectionError)!!.visibility =
+                            VISIBLE
+                    }
+                }
+            }
+        }.start()
+    }
 
     /**
      * @Param [id] идентификатор документа на google Drive

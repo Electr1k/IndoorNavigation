@@ -352,7 +352,7 @@ class MapHelper(
         mapView.setMarkerTapListener(object : MarkerTapListener {
             override fun onMarkerTap(view: View, x: Int, y: Int) {
                 if (view is MapMarker) {
-                    val callout = MarkerCallout(activity)
+                    val callout = MarkerCallout(activity,view.name)
                     callout.setTitle(view.name)
                     callout.setSubTitle("position: ${view.x} , ${view.y}")
                     mapView.addCallout(callout, view.x, view.y, -0.5f, -1.2f, 0f, 0f)

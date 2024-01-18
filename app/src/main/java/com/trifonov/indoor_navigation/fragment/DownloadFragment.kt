@@ -1,18 +1,24 @@
 package com.trifonov.indoor_navigation.fragment
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.ProgressBar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.map.FileHelper
 import com.trifonov.indoor_navigation.map.MapConnector
 import com.trifonov.indoor_navigation.map.MapConstants
-import com.trifonov.indoor_navigation.map.MapConstants.zoomLevelCount
+import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
 import com.trifonov.indoor_navigation.map.Navigation
+
 
 class DownloadFragment : Fragment() {
     private lateinit var fileHelper: FileHelper
@@ -28,9 +34,10 @@ class DownloadFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Thread {
-            val mapConnector = MapConnector(requireActivity(), view, "Korpus_G")
+            mapConnector = MapConnector(requireActivity(), view, "Korpus_G")
             MapConstants.startNode++
             activity?.runOnUiThread { mapConnector.updatePath(136) }
         }.start()
     }
+
 }

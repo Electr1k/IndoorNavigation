@@ -51,4 +51,5 @@ object MapConstants {
         Environment.getExternalStorageDirectory().absolutePath + "/Android/data/com.trifonov.indoor_navigation"
     internal val dataPath = "$SDPath/files/locations/"
     internal val unzipPath = "$SDPath/files/locations/"
+    lateinit var mapConnector: MapConnector
 }

@@ -2,6 +2,8 @@ package com.trifonov.indoor_navigation.fragment
 
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +16,7 @@ import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.SCROLL_STATE_IDLE
 import androidx.viewpager.widget.ViewPager.SCROLL_STATE_SETTLING
@@ -22,6 +25,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.ImagePagerAdapter
+import com.trifonov.indoor_navigation.map.MapConstants.finishNode
+import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
 import java.lang.Float.max
 
 
@@ -76,6 +81,12 @@ class SelectedPointFragment: CustomFragment() {
         mBottomSheetBehavior.skipCollapsed = false
         mBottomSheetBehavior.peekHeight = peekHeight
         val density = requireContext().resources.displayMetrics.density
+        view.findViewById<CardView>(R.id.route_to).setOnClickListener {
+            mapConnector.updatePath(arguments?.getString("id", "136")!!.toInt())
+        }
+        view.findViewById<CardView>(R.id.route_from).setOnClickListener {
+            mapConnector.updatePath(finish = finishNode, start = arguments?.getString("id", "136")!!.toInt())
+        }
         mBottomSheetBehavior.addBottomSheetCallback(
             object : BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {

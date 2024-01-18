@@ -13,4 +13,5 @@
     <string name="download_title">Для корректной работы приложения нам необходимо установить карту локации</string>
     <string name="downloading">Загрузка локации</string>
     <string name="unzip">Разархивация</string>
+    <string name="connection_error">Сперва нужно подключиться к Интернету</string>
 </resources>

@@ -3,6 +3,7 @@ package com.trifonov.indoor_navigation.fragment
 import android.annotation.SuppressLint
 import android.media.Image
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.AudienceRouteAdapter
 import com.trifonov.indoor_navigation.adapter.AudienceTypeAdapter
+import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
 
 class RouteFragment: CustomFragment() {
     private lateinit var typesRV: RecyclerView
@@ -45,11 +47,33 @@ class RouteFragment: CustomFragment() {
         swapImage = view.findViewById(R.id.swap_image)
         pointA = view.findViewById(R.id.route_from)
         pointB = view.findViewById(R.id.route_to)
-
+        pointA.setOnKeyListener { v, keyCode, event -> // if the event is a key down event on the enter button
+            try{
+                val start = pointA.text.toString().toInt()
+                val end = pointB.text.toString().toInt()
+                mapConnector.updatePath(start, end)
+            }
+            catch(e: Exception){
+                println(e.message)
+            }
+            false
+        }
+        pointB.setOnKeyListener { v, keyCode, event ->
+            try{
+                val start = pointA.text.toString().toInt()
+                val end = pointB.text.toString().toInt()
+                mapConnector.updatePath(start, end)
+            }
+            catch(e: Exception){
+                println(e.message)
+            }
+            false
+        }
         typesRV.setHasFixedSize(true)
         audienceRV.setHasFixedSize(true)
         swapImage.setOnClickListener{
             pointA.text = pointB.text.also { pointB.text = pointA.text } // Swap
+            mapConnector.updatePath(pointA.text.toString().toInt(), pointB.text.toString().toInt())
         }
         val list = listOf(
             "Туалет",

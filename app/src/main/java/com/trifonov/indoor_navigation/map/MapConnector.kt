@@ -188,9 +188,11 @@ class MapConnector(
     /**
      * Метод для построения маршрута
      * @Param [finish] идентификатор точки конца маршрута
+     * @Param [start] идентификатор точки начала маршрута
      * */
-    internal fun updatePath(finish: Int) {
+    internal fun updatePath(finish: Int, start: Int = startNode) {
         finishNode = finish
+        startNode = start
         mapHelper.updatePath()
         mapHelper.movePosition(startNode.toString())
     }
