@@ -38,7 +38,7 @@ import kotlin.math.roundToInt
  */
 class FileHelper(
     private val activity: Activity,
-    private val view: View,
+    private val downloadView: View,
     val locationName: String
 ) {
 
@@ -46,7 +46,6 @@ class FileHelper(
      * Скачивает архив с тайлами и графом навигации
      * @Param [uRl] идентификатор документа для скачивания
      * @See [FileHelper.convertUrl] метод для дополнения ссылки
-     * @See [FileHelper.onComplete] ресивер для обработки конца загрузки
      */
 
     private var dataPathTmp = dataPath
@@ -89,21 +88,20 @@ class FileHelper(
             val bytes_total =
                 cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
             activity.runOnUiThread {
-                view.findViewById<TextView>(R.id.progress)?.text =
+                downloadView.findViewById<TextView>(R.id.progress)?.text =
                     (max(bytes_downloaded.toFloat() / bytes_total.toFloat() * 100 - 1, 0f)).roundToInt().toString() + "%"
-                view.findViewById<LinearProgressIndicator>(R.id.progressBar).setProgressCompat(
+                downloadView.findViewById<LinearProgressIndicator>(R.id.progressBar).setProgressCompat(
                     (max(bytes_downloaded.toFloat() / bytes_total.toFloat() * 100 - 1, 0f)).roundToInt(), true)
             }
             if (status == DownloadManager.STATUS_SUCCESSFUL) {
                 activity.runOnUiThread {
-                    view.findViewById<TextView>(R.id.partLoading)?.text = activity.resources.getString(R.string.unzip)
+                    downloadView.findViewById<TextView>(R.id.partLoading)?.text = activity.resources.getString(R.string.unzip)
                 }
                 checkConnectionFlag = false
                 if (unzip(locationName) == true){
                     activity.runOnUiThread {
-                        view.findViewById<TextView>(R.id.progress)?.text =
-                        100.toString() + "%"
-                        view.findViewById<LinearProgressIndicator>(R.id.progressBar).progress = 100
+                        downloadView.findViewById<TextView>(R.id.progress)?.text = "100%"
+                        downloadView.findViewById<LinearProgressIndicator>(R.id.progressBar).progress = 100
                         Toast.makeText(activity, "Установка успешна", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -126,16 +124,16 @@ class FileHelper(
                 val netInfo = cm.activeNetworkInfo
                 if (netInfo != null && netInfo.isConnectedOrConnecting) {
                     activity.runOnUiThread {
-                        view.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.connectionError)!!.visibility =
+                        downloadView.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.connectionError)!!.visibility =
                             INVISIBLE
-                        view.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.download_progress)!!.visibility =
+                        downloadView.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.download_progress)!!.visibility =
                             VISIBLE
                     }
                 } else {
                     activity.runOnUiThread {
-                        view.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.download_progress)!!.visibility =
+                        downloadView.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.download_progress)!!.visibility =
                             GONE
-                        view.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.connectionError)!!.visibility =
+                        downloadView.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.connectionError)!!.visibility =
                             VISIBLE
                     }
                 }
@@ -161,7 +159,7 @@ class FileHelper(
             return try {
                 return File("$dataPath$name/map.json").readText()
             } catch (e: Exception) {
-                println()
+                println(e.message)
                 e.message.toString()
             }
         } else {
@@ -205,13 +203,11 @@ class FileHelper(
      * Метод для проверки наличия локации в файлах устройства
      * @Return true при наличии файла в памяти
      * */
-    internal fun checkStorageLocation(): Boolean {
+    private fun checkStorageLocation(): Boolean {
         try {
-            println(locationName)
-            println(File(unzipPath).listFiles())
-            for (file in File(unzipPath).listFiles()!!) {
-                println(file.name)
-                if (file.name == locationName){
+            for (file in File("$unzipPathTmp/$locationName").listFiles()!!) {
+                println("File ${file.name}")
+                if (file.name == "map.json"){
                     return true
                 }
             }

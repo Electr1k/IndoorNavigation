@@ -10,22 +10,12 @@
         android:label="@string/splash_screen"
         tools:layout="@layout/splash_screen_fragment">
         <action
-            android:id="@+id/action_splash_to_download"
+            android:id="@+id/action_splash_to_head"
             app:popUpToInclusive="true"
             app:popUpTo="@id/mobile_navigation"
-            app:destination="@+id/download_map"/>
+            app:destination="@+id/head"/>
     </fragment>
 
-    <fragment android:id="@+id/download_map"
-        android:name="com.trifonov.indoor_navigation.fragment.DownloadFragment"
-        tools:layout="@layout/download_fragment"
-        >
-        <action
-            android:id="@+id/action_download_to_head"
-            app:popUpToInclusive="true"
-            app:popUpTo="@id/mobile_navigation"
-            app:destination="@id/head" />
-    </fragment>
 
     <fragment android:id="@+id/head"
         android:name="com.trifonov.indoor_navigation.fragment.HeadFragment"

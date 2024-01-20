@@ -8,7 +8,6 @@ import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.NumberPicker
 import androidx.core.view.size
-import androidx.navigation.findNavController
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.map.MapConstants.dotList
 import com.trifonov.indoor_navigation.map.MapConstants.finishNode
@@ -20,8 +19,7 @@ import ovh.plrapps.mapview.MapView
 
 class MapConnector(
     private val activity: Activity,
-    private val fragmentView: View,
-    private val locationName: String
+    private var locationName: String
 ):
     NumberPicker.OnValueChangeListener,
     View.OnClickListener
@@ -40,24 +38,33 @@ class MapConnector(
      * @Param [fileHelper] класс для работы с файловой системой
      * @See [FileHelper]
      * */
-    private var fileHelper = FileHelper(
-        activity,
-        fragmentView,
-        locationName
-    )
+    private lateinit var fileHelper: FileHelper
 
     init {
-        fileHelper = FileHelper(activity, fragmentView, locationName)
+        activity.runOnUiThread {
+            configureViews(parentView, false)
+        }
+    }
+
+
+    /**
+     * Метод для инициализации MapView по названию локации
+     * @Param [location] - название локаци
+     * @Param [downloadView] - view с прогресс баром (R.layout.download_view)
+     * */
+    internal fun initialMapView(location: String, downloadView: View) {
+        locationName = location
+        fileHelper = FileHelper(activity, downloadView, locationName)
         val json = fileHelper.getJsonMap(locationName)
         println(json.substring(0, 20))
         if (json != "empty location") {
             loadFromString(json)
             activity.runOnUiThread {
                 configureViews(parentView)
-                fragmentView.findNavController().navigate(R.id.action_download_to_head)
             }
         }
     }
+
 
     /**
      * Метод для настройки view выбора этажа
@@ -83,7 +90,6 @@ class MapConnector(
      * @Param [max] максимальный номер этажа
      * @Param [p] view для выбора этажа которую мы настраиваем
      * @Param [levels] массив номеров этажей
-     *
      * @See [MapFragment.configureLevelPicker]
      * */
     private fun initPickerWithString(min: Int, max: Int, p: NumberPicker, levels: Array<String>) {
@@ -98,16 +104,15 @@ class MapConnector(
      * @Param [confMap] флаг для проверки сконфигурированность [mapView]
      * */
     private fun configureViews(view: View, confMap: Boolean = true) {
-        println("Настройка конфигурации")
         zoomIn = view.findViewById(R.id.btn_zoomIn)
         zoomOut = view.findViewById(R.id.btn_zoomOut)
         position = view.findViewById(R.id.btn_position)
-        zoomIn.setOnClickListener(this)
-        zoomOut.setOnClickListener(this)
-        position.setOnClickListener(this)
+        if (confMap) zoomIn.setOnClickListener(this)
+        if (confMap) zoomOut.setOnClickListener(this)
+        if (confMap) position.setOnClickListener(this)
         levelPicker = view.findViewById(R.id.picker)
         mapView = view.findViewById(R.id.mapView) ?: return
-        configureLevelPicker(levelPicker)
+        if (confMap) configureLevelPicker(levelPicker)
         if (confMap) configureMapView(mapView)
     }
 

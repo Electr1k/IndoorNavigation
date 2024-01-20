@@ -104,7 +104,7 @@ class MapHelper(
     init {
         markerList.clear()
         mapView.configure(generateConfig(zoomLevelCount, mapWidth, mapHeight))
-        mapView.defineBounds(0.0, 0.0, mapWidth.toDouble(), mapHeight.toDouble())
+            mapView.defineBounds(0.0, 0.0, mapWidth.toDouble(), mapHeight.toDouble())
     }
 
     /**

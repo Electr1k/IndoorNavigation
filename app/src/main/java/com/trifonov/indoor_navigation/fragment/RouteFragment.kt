@@ -73,7 +73,14 @@ class RouteFragment: CustomFragment() {
         audienceRV.setHasFixedSize(true)
         swapImage.setOnClickListener{
             pointA.text = pointB.text.also { pointB.text = pointA.text } // Swap
-            mapConnector.updatePath(pointA.text.toString().toInt(), pointB.text.toString().toInt())
+            try{
+                val start = pointA.text.toString().toInt()
+                val end = pointB.text.toString().toInt()
+                mapConnector.updatePath(start, end)
+            }
+            catch(e: Exception){
+                println(e.message)
+            }
         }
         val list = listOf(
             "Туалет",
