@@ -2,6 +2,7 @@ package com.trifonov.indoor_navigation.map
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -51,18 +52,19 @@ class MapConnector(
      * Метод для инициализации MapView по названию локации
      * @Param [location] - название локаци
      * @Param [downloadView] - view с прогресс баром (R.layout.download_view)
+     * @return Boolean - успешная/безуспешная инициализация
      * */
-    internal fun initialMapView(location: String, downloadView: View) {
+    internal fun initialMapView(location: String, downloadView: View, dialog: AlertDialog? = null): Boolean {
         locationName = location
-        fileHelper = FileHelper(activity, downloadView, locationName)
+        fileHelper = FileHelper(activity, downloadView, locationName, dialog)
         val json = fileHelper.getJsonMap(locationName)
-        println(json.substring(0, 20))
-        if (json != "empty location") {
+        return if (json != "empty location") {
             loadFromString(json)
             activity.runOnUiThread {
                 configureViews(parentView)
             }
-        }
+            true
+        } else false
     }
 
 

@@ -8,6 +8,7 @@ package com.trifonov.indoor_navigation.map
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.app.DownloadManager
 import android.content.Context
 
@@ -16,6 +17,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -39,13 +41,15 @@ import kotlin.math.roundToInt
 class FileHelper(
     private val activity: Activity,
     private val downloadView: View,
-    val locationName: String
+    val locationName: String,
+    private val dialog: AlertDialog? = null,
 ) {
 
     /**
      * Скачивает архив с тайлами и графом навигации
      * @Param [uRl] идентификатор документа для скачивания
      * @See [FileHelper.convertUrl] метод для дополнения ссылки
+     * @return Boolean - успешная/безуспешная загрузка
      */
 
     private var dataPathTmp = dataPath
@@ -55,7 +59,8 @@ class FileHelper(
 
 
     @SuppressLint("Range")
-    internal fun fileDownload(uRl: String) {
+    internal fun fileDownload(uRl: String): Boolean {
+        var returning = false
         dataPathTmp += "$locationName/"
         unzipPathTmp += "$locationName/"
         startThreadConnection()
@@ -75,6 +80,14 @@ class FileHelper(
         downloading = true
         val downloadId = downloadManager.enqueue(request)
         val query = DownloadManager.Query().setFilterById(downloadId)
+        activity.runOnUiThread {
+            downloadView.findViewById<Button>(R.id.cancel_button)?.setOnClickListener {
+                checkConnectionFlag = false
+                downloading = false
+                downloadManager.remove(downloadId)
+                dialog?.cancel()
+            }
+        }
         println("Process is run")
         while (downloading) {
             val cursor = downloadManager.query(query)
@@ -105,10 +118,12 @@ class FileHelper(
                         Toast.makeText(activity, "Установка успешна", Toast.LENGTH_SHORT).show()
                     }
                 }
+                returning = true
                 println("download is Success")
             }
             cursor.close()
         }
+        return returning
     }
 
 
@@ -160,11 +175,11 @@ class FileHelper(
                 return File("$dataPath$name/map.json").readText()
             } catch (e: Exception) {
                 println(e.message)
-                e.message.toString()
+                "empty location"
             }
         } else {
-            fileDownload("1rq4aFmBEvLCAhXTQ3YPbtaHkoc2_8B8v")
-            return File("$dataPath$name/map.json").readText()
+            return if (fileDownload("1rq4aFmBEvLCAhXTQ3YPbtaHkoc2_8B8v")) File("$dataPath$name/map.json").readText()
+            else "empty location"
         }
         return "empty location"
     }

@@ -2,6 +2,8 @@ package com.trifonov.indoor_navigation
 
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -37,6 +39,9 @@ class MainActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({initialAlertDialog()}, 7000)
     }
 
+    /**
+     * Инициализирует и запускает Alter Dialog с загрузкой локации
+     * */
     private fun initialAlertDialog(){
         val builder = AlertDialog.Builder(this)
         val dialog = builder.setMessage("Вы находитесь в корпусе Г, хотите загрузить карту локации?")
@@ -45,6 +50,7 @@ class MainActivity : AppCompatActivity() {
                 dialog, id ->  dialog.cancel()
             }
             .create()
+        dialog.window?.setBackgroundDrawable(getDrawable(R.drawable.dialog_rounded_background))
         dialog.setCanceledOnTouchOutside(false)
         dialog.show()
         val positive_btn = dialog.getButton(DialogInterface.BUTTON_POSITIVE)
@@ -55,11 +61,12 @@ class MainActivity : AppCompatActivity() {
             val viewGroup = alertDialogView as ViewGroup
             viewGroup.addView(downloadView)
             Thread {
-                mapConnector.initialMapView("Korpus_G", downloadView)
-                startNode++
-                this.runOnUiThread {
-                    mapConnector.updatePath(136)
-                    dialog.cancel()
+                if (mapConnector.initialMapView("Korpus_G", downloadView, dialog)) {
+                    startNode++
+                    this.runOnUiThread {
+                        mapConnector.updatePath(136)
+                        dialog.cancel()
+                    }
                 }
             }.start()
         }
