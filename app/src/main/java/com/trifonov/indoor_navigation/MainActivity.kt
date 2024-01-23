@@ -2,8 +2,6 @@ package com.trifonov.indoor_navigation
 
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -40,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Инициализирует и запускает Alter Dialog с загрузкой локации
+     * Инициализирует и запускает Alert Dialog с загрузкой локации
      * */
     private fun initialAlertDialog(){
         val builder = AlertDialog.Builder(this)

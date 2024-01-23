@@ -81,7 +81,7 @@ class FileHelper(
         val downloadId = downloadManager.enqueue(request)
         val query = DownloadManager.Query().setFilterById(downloadId)
         activity.runOnUiThread {
-            downloadView.findViewById<Button>(R.id.cancel_button)?.setOnClickListener {
+            downloadView.findViewById<TextView>(R.id.cancel_button)?.setOnClickListener {
                 checkConnectionFlag = false
                 downloading = false
                 downloadManager.remove(downloadId)
@@ -135,7 +135,7 @@ class FileHelper(
             // Проверяем есть ли интернет
             while (checkConnectionFlag) {
                 val cm =
-                    activity.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+                    activity.getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
                 val netInfo = cm.activeNetworkInfo
                 if (netInfo != null && netInfo.isConnectedOrConnecting) {
                     activity.runOnUiThread {
@@ -147,7 +147,7 @@ class FileHelper(
                 } else {
                     activity.runOnUiThread {
                         downloadView.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.download_progress)!!.visibility =
-                            GONE
+                            INVISIBLE
                         downloadView.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.connectionError)!!.visibility =
                             VISIBLE
                     }
