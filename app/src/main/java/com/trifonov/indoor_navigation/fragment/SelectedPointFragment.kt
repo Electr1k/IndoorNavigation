@@ -2,6 +2,7 @@ package com.trifonov.indoor_navigation.fragment
 
 
 import android.annotation.SuppressLint
+import android.content.ClipDescription
 import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Bundle
@@ -25,6 +26,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.ImagePagerAdapter
+import com.trifonov.indoor_navigation.map.Map
+import com.trifonov.indoor_navigation.map.MapConstants.dotList
 import com.trifonov.indoor_navigation.map.MapConstants.finishNode
 import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
 import java.lang.Float.max
@@ -39,9 +42,11 @@ class SelectedPointFragment: CustomFragment() {
     private lateinit var countImages: TextView
     private lateinit var linearMainContent: LinearLayout
     private lateinit var navigateMenu: LinearLayout
+    private lateinit var title: TextView
+    private lateinit var description: TextView
     private var heightNavigationMenu: Int = 0
     private var progress = 0f
-
+    private lateinit var selectedPoint: Map.Dot
     @Nullable
     @MainThread
     @SuppressLint("KotlinNullnessAnnotation")
@@ -56,13 +61,17 @@ class SelectedPointFragment: CustomFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val id = arguments?.getInt("id", -1)
+        selectedPoint = dotList.find { id == it.getId() }!!
+
         countImages = view.findViewById(R.id.countImages)
         cardView = view.findViewById(R.id.card)
         viewPager = view.findViewById(R.id.imagesPager)
         linearIndicator = view.findViewById(R.id.linearIndicator)
         linearMainContent = view.findViewById(R.id.main_content)
         navigateMenu = view.findViewById(R.id.navigateMenu)
-
+        title = view.findViewById(R.id.title)
+        description = view.findViewById(R.id.description)
         initBottomSheet(view)
 
         initPager()
@@ -81,11 +90,13 @@ class SelectedPointFragment: CustomFragment() {
         mBottomSheetBehavior.skipCollapsed = false
         mBottomSheetBehavior.peekHeight = peekHeight
         val density = requireContext().resources.displayMetrics.density
+        title.text = selectedPoint.getType() + " " + selectedPoint.getName()
+        description.text = selectedPoint.getDescription()
         view.findViewById<CardView>(R.id.route_to).setOnClickListener {
-            mapConnector.updatePath(arguments?.getString("id", "136")!!.toInt())
+            mapConnector.updatePath(selectedPoint.getId())
         }
         view.findViewById<CardView>(R.id.route_from).setOnClickListener {
-            mapConnector.updatePath(finish = finishNode, start = arguments?.getString("id", "136")!!.toInt())
+            mapConnector.updatePath(finish = finishNode, start = selectedPoint.getId())
         }
         mBottomSheetBehavior.addBottomSheetCallback(
             object : BottomSheetCallback() {

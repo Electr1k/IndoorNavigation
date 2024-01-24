@@ -31,7 +31,10 @@ import com.trifonov.indoor_navigation.R
  * @Constructor создаёт шаблон окна над маркером
  * @Param activity контекст для работы с ресурсами
  */
-class MarkerCallout(private val activity: Activity, private val name: String) : RelativeLayout(activity) {
+class MarkerCallout(
+    private val activity: Activity,
+    private val dot: Map.Dot?
+) : RelativeLayout(activity) {
     private val mTitle: TextView
     private val mSubTitle: TextView
 
@@ -82,7 +85,7 @@ class MarkerCallout(private val activity: Activity, private val name: String) : 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         val bundle = Bundle()
-        bundle.putString("id", name)
+        bundle.putInt("id", dot?.getId() ?: -1)
         activity.findNavController(R.id.head).navigate(R.id.action_head_to_scan, bundle)
     }
 
