@@ -60,11 +60,14 @@ class FileHelper(
 
     @SuppressLint("Range")
     internal fun fileDownload(uRl: String): Boolean {
+        println("Download")
         var returning = false
         dataPathTmp += "$locationName/"
         unzipPathTmp += "$locationName/"
         startThreadConnection()
-        val request = DownloadManager.Request(Uri.parse(convertUrl(uRl)))
+        val url = Uri.parse(convertUrl(uRl))
+        println(url)
+        val request = DownloadManager.Request(url)
             .setTitle("$locationName.zip")
             .setDescription("Downloading")
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
@@ -178,7 +181,7 @@ class FileHelper(
                 "empty location"
             }
         } else {
-            return if (fileDownload("1rq4aFmBEvLCAhXTQ3YPbtaHkoc2_8B8v")) File("$dataPath$name/map.json").readText()
+            return if (fileDownload("1sfEBUv4amX3lMCfdNmwO-9WKSB_o9YOK")) File("$dataPath$name/map.json").readText()
             else "empty location"
         }
         return "empty location"

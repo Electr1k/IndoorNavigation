@@ -29,13 +29,13 @@ class HeadFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val locationData = LocationData(requireContext())
-        var currentLocation = locationData.getCurrentLocation()
-        if (currentLocation == null){
-            currentLocation = "ЮФУ Корпус Д"
-            locationData.setCurrentLocation(currentLocation)
+        var currentLocationId = locationData.getCurrentLocation()
+        if (currentLocationId == -1){
+            currentLocationId = 0
+            locationData.setCurrentLocation(currentLocationId)
         }
         val btn = view.findViewById<TextView>(R.id.current_location)
-        btn.text = currentLocation
+        btn.text = locationData.getLocationById(currentLocationId)!!.name
         val cardView =  view.findViewById<CardView>(R.id.card_location)
         cardView.setOnClickListener {
             val scaleUpX = ObjectAnimator.ofFloat(cardView, "scaleX", 1.1f)

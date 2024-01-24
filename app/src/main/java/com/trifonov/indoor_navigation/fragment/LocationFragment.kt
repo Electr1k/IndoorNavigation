@@ -18,10 +18,14 @@ import com.trifonov.indoor_navigation.adapter.AudienceRouteAdapter
 import com.trifonov.indoor_navigation.adapter.AudienceTypeAdapter
 import com.trifonov.indoor_navigation.adapter.LocationAdapter
 import com.trifonov.indoor_navigation.common.LocationData
+import com.trifonov.indoor_navigation.common.LocationEntity
+import org.json.JSONObject
+import org.json.JSONTokener
+import java.io.File
 
 class LocationFragment: CustomFragment() {
-    private lateinit var currentLocation: String
-    private lateinit var selectedLocation: String
+    private lateinit var currentLocation: LocationEntity
+    private lateinit var selectedLocation: LocationEntity
     private lateinit var locationRV: RecyclerView
     private lateinit var acceptButton: CardView
 
@@ -43,15 +47,6 @@ class LocationFragment: CustomFragment() {
         super.onViewCreated(view, savedInstanceState)
         locationRV = view.findViewById(R.id.location_list)
         acceptButton = view.findViewById(R.id.accept_button)
-
-        val list = listOf(
-            "Туалет",
-            "Аудитория",
-            "Лекционный зал",
-            "Кафе",
-            "Зона отдыха",
-
-        )
         mBottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {}
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -64,12 +59,13 @@ class LocationFragment: CustomFragment() {
             }
         })
         val locationData = LocationData(requireContext())
-        currentLocation = locationData.getCurrentLocation() ?: "Корпус Д"
+
+        currentLocation = locationData.getLocationById(locationData.getCurrentLocation())!!
         selectedLocation = currentLocation
         acceptButton.setOnClickListener{
-            locationData.setCurrentLocation(selectedLocation)
+            locationData.setCurrentLocation(selectedLocation.id)
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
-        locationRV.adapter = LocationAdapter(list, {selectedLocation = it}, currentLocation)
+        locationRV.adapter = LocationAdapter(locationData.getAllLocations(), {selectedLocation = it}, currentLocation)
     }
 }

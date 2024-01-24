@@ -29,19 +29,19 @@ class Map {
         println("loadFromString")
         val map = JSONTokener(json).nextValue() as JSONObject
         val jsonDots = map.getJSONArray("dots")
-        //val locationId = map.getInt("locationId")
+        val locationId = map.getInt("locationId")
         mapWidth = map.getInt("width")
         mapHeight = map.getInt("height")
         var i = -1
         while (++i < jsonDots.length()) {
             val jsonDot = jsonDots.getJSONObject(i)
             val dot = Dot(jsonDot.getDouble("x").toFloat(), jsonDot.getDouble("y").toFloat())
-//            dot.setLevel(jsonDot.getInt("floor"))
-//            dot.setMac(jsonDot.getString("mac"))
-//            dot.setName(jsonDot.getString("name"))
-//            dot.setDescription(jsonDot.getString("description"))
-//            dot.setType(jsonDot.getString("type"))
-//            dot.setPhotos(jsonDot.getJSONArray("photoUrls"))
+            dot.setLevel(jsonDot.getInt("floor"))
+            dot.setMac(jsonDot.getString("mac"))
+            dot.setName(jsonDot.getString("name"))
+            dot.setDescription(jsonDot.getString("description"))
+            dot.setType(jsonDot.getString("type"))
+            dot.setPhotos(jsonDot.getJSONArray("photoUrls"))
             dot.setId(jsonDot.getInt("id"))
             dot.setConnected(jsonDot.getJSONArray("connected"))
             if (!levelArray.contains(dot.getLevel().toString())) {

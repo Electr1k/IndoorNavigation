@@ -7,13 +7,14 @@ import android.widget.RadioButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.trifonov.indoor_navigation.R
+import com.trifonov.indoor_navigation.common.LocationEntity
 
 class LocationAdapter(
-    private val locationList: List<String>,
-    val click: (String) -> Unit,
-    private val currentLocation: String
+    private val locationList: List<LocationEntity>,
+    val click: (LocationEntity) -> Unit,
+    private val currentLocation: LocationEntity
 ): RecyclerView.Adapter<LocationAdapter.LocationViewHolder>() {
-    private var selectedLocation: String = currentLocation
+    private var selectedLocation: LocationEntity = currentLocation
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -27,8 +28,8 @@ class LocationAdapter(
     }
 
     override fun onBindViewHolder(holder: LocationViewHolder, position: Int) {
-        holder.title.text = locationList[position]
-        holder.address.text = locationList[position]
+        holder.title.text = locationList[position].name
+        holder.address.text = locationList[position].address
         holder.btn.setOnClickListener{
             selectedLocation = locationList[position]
             click(selectedLocation!!)
