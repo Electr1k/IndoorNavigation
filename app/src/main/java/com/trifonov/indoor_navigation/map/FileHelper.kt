@@ -120,9 +120,9 @@ class FileHelper(
                         downloadView.findViewById<LinearProgressIndicator>(R.id.progressBar).progress = 100
                         Toast.makeText(activity, "Установка успешна", Toast.LENGTH_SHORT).show()
                     }
+                    returning = true
+                    println("download is Success")
                 }
-                returning = true
-                println("download is Success")
             }
             cursor.close()
         }
@@ -198,6 +198,10 @@ class FileHelper(
             val zipFile = ZipFile("$dataPathTmp$fileName.zip")
             zipFile.extractAll(unzipPathTmp)
             File("$dataPathTmp$fileName.zip").delete()
+            if (!downloading){
+                File(dataPathTmp).deleteRecursively()
+                return false
+            }
             downloading = false
             true
         } catch (e: Exception) {
