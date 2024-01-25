@@ -30,6 +30,7 @@
                 android:text="@string/connection_error"
                 android:textColor="@color/black"
                 android:layout_gravity="center"
+                android:justificationMode="inter_word"
                 android:paddingHorizontal="20dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -71,6 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:trackCornerRadius="50dp"
+                android:layout_marginTop="7dp"
                 android:max="100"
                 android:progress="0"
                 app:indicatorColor="@color/dark_blue"
@@ -82,13 +84,19 @@
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <TextView
-        android:textStyle="bold"
+    <com.google.android.material.button.MaterialButton
+        android:textStyle="normal"
         android:id="@+id/cancel_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/cancel"
         android:textColor="@color/dark_blue"
+        android:textFontWeight="600"
+        android:paddingHorizontal="0dp"
+        android:includeFontPadding="false"
+        android:minHeight="0dp"
+        android:paddingVertical="0dp"
+        android:backgroundTint="@color/white"
         android:layout_marginEnd="20dp"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -22,6 +22,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.findNavController
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.map.MapConstants.dataPath
@@ -84,7 +85,7 @@ class FileHelper(
         val downloadId = downloadManager.enqueue(request)
         val query = DownloadManager.Query().setFilterById(downloadId)
         activity.runOnUiThread {
-            downloadView.findViewById<TextView>(R.id.cancel_button)?.setOnClickListener {
+            downloadView.findViewById<MaterialButton>(R.id.cancel_button)?.setOnClickListener {
                 checkConnectionFlag = false
                 downloading = false
                 downloadManager.remove(downloadId)
