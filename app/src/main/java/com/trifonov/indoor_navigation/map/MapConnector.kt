@@ -78,9 +78,6 @@ class MapConnector(
             levelArray.reverse()
             levelPicker.wrapSelectorWheel = false
             initPickerWithString(1, levelArray.size, levelPicker, levelArray.toTypedArray())
-            val delta =
-                (levelPicker.minValue + levelPicker.value - levelArray.size) % levelPicker.size
-            levelPicker.scrollBy(0, -(delta * levelPicker.getChildAt(0).height))
             levelPicker.setOnValueChangedListener(this)
         } catch (e: Exception) {
         }
@@ -97,6 +94,7 @@ class MapConnector(
     private fun initPickerWithString(min: Int, max: Int, p: NumberPicker, levels: Array<String>) {
         p.minValue = min
         p.maxValue = max
+        p.value = max
         p.displayedValues = levels
     }
 

@@ -293,7 +293,6 @@ class MapHelper(
         mapView.setScaleFromCenter(scale)
         mapView.moveToMarker(centerMarker, false)
         Log.d("MyLog", "$cameraRotation")
-        mapView.setAngle(135f)
     }
 
     /**
