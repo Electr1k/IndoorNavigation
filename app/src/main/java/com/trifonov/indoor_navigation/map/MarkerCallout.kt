@@ -37,9 +37,12 @@ class MarkerCallout(
 ) : RelativeLayout(activity) {
     private val mTitle: TextView
     private val mSubTitle: TextView
+    private val marker: RelativeLayout
 
     init {
         View.inflate(activity, R.layout.marker_callout, this)
+        marker = findViewById(R.id.marker)
+        marker.visibility = INVISIBLE
         mTitle = findViewById(R.id.callout_title)
         mSubTitle = findViewById(R.id.callout_subtitle)
     }

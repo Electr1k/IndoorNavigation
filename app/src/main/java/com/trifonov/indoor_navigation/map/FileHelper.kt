@@ -21,6 +21,7 @@ import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
 import androidx.navigation.findNavController
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
@@ -85,14 +86,13 @@ class FileHelper(
         val downloadId = downloadManager.enqueue(request)
         val query = DownloadManager.Query().setFilterById(downloadId)
         activity.runOnUiThread {
-            downloadView.findViewById<MaterialButton>(R.id.cancel_button)?.setOnClickListener {
+            downloadView.findViewById<AppCompatButton>(R.id.cancel_button)?.setOnClickListener {
                 checkConnectionFlag = false
                 downloading = false
                 downloadManager.remove(downloadId)
                 dialog?.cancel()
             }
         }
-        println("Process is run")
         while (downloading) {
             val cursor = downloadManager.query(query)
             cursor.moveToFirst()

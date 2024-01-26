@@ -352,12 +352,13 @@ class MapHelper(
             override fun onMarkerTap(view: View, x: Int, y: Int) {
                 if (view is MapMarker) {
                     val dot = dotList.find { view.name.toInt() == it.getId() }
-                    println(dot)
-                    val callout = MarkerCallout(activity, dot)
-                    callout.setTitle(dot?.getName() ?: view.name)
-                    callout.setSubTitle("position: ${view.x} , ${view.y}")
-                    mapView.addCallout(callout, view.x, view.y, -0.5f, -1.2f, 0f, 0f)
-                    callout.transitionIn()
+                    if (dot?.getName() != "") {
+                        val callout = MarkerCallout(activity, dot)
+                        callout.setTitle(dot?.getName() ?: view.name)
+                        callout.setSubTitle("position: ${view.x} , ${view.y}")
+                        mapView.addCallout(callout, view.x, view.y, -0.5f, -1.2f, 0f, 0f)
+                        callout.transitionIn()
+                    }
                 }
             }
         })
