@@ -13,6 +13,7 @@ import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.trifonov.indoor_navigation.MainActivity
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.AudienceRouteAdapter
 import com.trifonov.indoor_navigation.adapter.AudienceTypeAdapter
@@ -64,6 +65,8 @@ class LocationFragment: CustomFragment() {
         selectedLocation = currentLocation
         acceptButton.setOnClickListener{
             locationData.setCurrentLocation(selectedLocation.id)
+            (requireActivity() as MainActivity).initialAlertDialog(selectedLocation)
+            // TODO: ИСПРАВИТЬ БАГ С РЕГЕНЕРАЦИЕЙ КАРТЫ
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
         locationRV.adapter = LocationAdapter(locationData.getAllLocations(), {selectedLocation = it}, currentLocation)

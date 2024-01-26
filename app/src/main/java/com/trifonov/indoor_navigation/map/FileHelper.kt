@@ -86,7 +86,7 @@ class FileHelper(
         val downloadId = downloadManager.enqueue(request)
         val query = DownloadManager.Query().setFilterById(downloadId)
         activity.runOnUiThread {
-            downloadView.findViewById<AppCompatButton>(R.id.cancel_button)?.setOnClickListener {
+            downloadView.findViewById<Button>(R.id.cancel_button)?.setOnClickListener {
                 checkConnectionFlag = false
                 downloading = false
                 downloadManager.remove(downloadId)
@@ -174,7 +174,7 @@ class FileHelper(
      * @Return карта в строковом представлении
      */
     internal fun getJsonMap(name: String): String {
-        if (checkStorageLocation()) {
+        if (checkStorageLocation(locationName)) {
             return try {
                 return File("$dataPath$name/map.json").readText()
             } catch (e: Exception) {
@@ -182,6 +182,7 @@ class FileHelper(
                 "empty location"
             }
         } else {
+            // TODO: ИЗМЕНИТЬ ССЫЛКУ ВЗАВИСИМОСТИ ОТ ЛОКАЦИИ КОГДА КАРТЫ БУДУТ ГОТОВЫ
             return if (fileDownload("1sfEBUv4amX3lMCfdNmwO-9WKSB_o9YOK")) File("$dataPath$name/map.json").readText()
             else "empty location"
         }
@@ -221,23 +222,24 @@ class FileHelper(
         val files = directory.listFiles()
         return files?.size ?: 0
     }
-
-    /**
-     * Метод для проверки наличия локации в файлах устройства
-     * @Return true при наличии файла в памяти
-     * */
-    private fun checkStorageLocation(): Boolean {
-        try {
-            for (file in File("$unzipPathTmp/$locationName").listFiles()!!) {
-                println("File ${file.name}")
-                if (file.name == "map.json"){
-                    return true
+        /**
+         * Статический метод для проверки наличия локации в файлах устройства
+         * @Param [locationName] название локации для карты
+         * @Return true при наличии файла в памяти
+         * */
+    companion object {
+        internal fun checkStorageLocation(locationName: String): Boolean {
+            try {
+                for (file in File("$unzipPath/$locationName").listFiles()!!) {
+                    println("File ${file.name}")
+                    if (file.name == "map.json") {
+                        return true
+                    }
                 }
+            } catch (e: Exception) {
+                println("Location not found")
             }
-            Toast.makeText(activity, "Локация не найдена", Toast.LENGTH_SHORT).show()
-        }catch (e: Exception){
-            println("Location not found")
+            return false
         }
-        return false
     }
 }
