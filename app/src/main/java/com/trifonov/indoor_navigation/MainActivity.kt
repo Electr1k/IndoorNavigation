@@ -1,7 +1,6 @@
 package com.trifonov.indoor_navigation
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -15,7 +14,6 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.button.MaterialButton
 import com.trifonov.indoor_navigation.common.LocationData
 import com.trifonov.indoor_navigation.common.LocationEntity
 import com.trifonov.indoor_navigation.databinding.ActivityMainBinding
@@ -41,13 +39,17 @@ class MainActivity : AppCompatActivity() {
             else findViewById<CardView>(R.id.cardNav).visibility = View.VISIBLE
         }
         val locationData = LocationData(this)
-        Handler(Looper.getMainLooper()).postDelayed({initialAlertDialog(locationData.getLocationById(0)!!)}, 2000)
+        Handler(Looper.getMainLooper()).postDelayed(
+            {
+                locationData.setCurrentLocation(0)
+                initialAlertDialog(locationData.getLocationById(0)!!, true)
+            }, 2000)
     }
 
     /**
      * Инициализирует и запускает Alert Dialog с загрузкой локации
      * */
-    internal fun initialAlertDialog(location: LocationEntity){
+    internal fun initialAlertDialog(location: LocationEntity, isFirstLoading: Boolean = false){
         val builder = AlertDialog.Builder(this)
         val dialog = builder
             .create()
@@ -65,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                 viewGroup.addView(downloadView)
             }
             Thread {
-                if (mapConnector.initialMapView(location.dataUrl, downloadView, dialog)) {
+                if (mapConnector.setLocation(location, downloadView, dialog, isFirstLoading)) {
                     startNode++
                     this.runOnUiThread {
                         mapConnector.updatePath(136)

@@ -32,6 +32,7 @@ class Map {
         val locationId = map.getInt("locationId")
         mapWidth = map.getInt("width")
         mapHeight = map.getInt("height")
+        dotList.clear()
         var i = -1
         while (++i < jsonDots.length()) {
             val jsonDot = jsonDots.getJSONObject(i)

@@ -104,7 +104,7 @@ class MapHelper(
     init {
         markerList.clear()
         mapView.configure(generateConfig(zoomLevelCount, mapWidth, mapHeight))
-            mapView.defineBounds(0.0, 0.0, mapWidth.toDouble(), mapHeight.toDouble())
+        mapView.defineBounds(0.0, 0.0, mapWidth.toDouble(), mapHeight.toDouble())
     }
 
     /**
@@ -245,7 +245,8 @@ class MapHelper(
     }
 
     /**
-     * Метод для подгрузки тайлов карты к MapView*/
+     * Метод для подгрузки тайлов карты к MapView
+     * */
     @SuppressLint("SdCardPath")
     override fun getTileStream(row: Int, col: Int, zoomLvl: Int): InputStream? {
         return try {

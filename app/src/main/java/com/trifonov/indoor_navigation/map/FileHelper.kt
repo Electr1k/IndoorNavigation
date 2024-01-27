@@ -26,6 +26,7 @@ import androidx.navigation.findNavController
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trifonov.indoor_navigation.R
+import com.trifonov.indoor_navigation.common.LocationEntity
 import com.trifonov.indoor_navigation.map.MapConstants.dataPath
 import com.trifonov.indoor_navigation.map.MapConstants.unzipPath
 import net.lingala.zip4j.ZipFile
@@ -173,17 +174,24 @@ class FileHelper(
      * @Param [name] название локации для отображения
      * @Return карта в строковом представлении
      */
-    internal fun getJsonMap(name: String): String {
+    internal fun getJsonMap(location: LocationEntity): String {
         if (checkStorageLocation(locationName)) {
             return try {
-                return File("$dataPath$name/map.json").readText()
+                return File("$dataPath${location.dataUrl}/map.json").readText()
             } catch (e: Exception) {
                 println(e.message)
                 "empty location"
             }
         } else {
             // TODO: ИЗМЕНИТЬ ССЫЛКУ ВЗАВИСИМОСТИ ОТ ЛОКАЦИИ КОГДА КАРТЫ БУДУТ ГОТОВЫ
-            return if (fileDownload("1sfEBUv4amX3lMCfdNmwO-9WKSB_o9YOK")) File("$dataPath$name/map.json").readText()
+            val url = when(location.id){
+                0 -> "1sfEBUv4amX3lMCfdNmwO-9WKSB_o9YOK"
+                1 -> "1L1SKHm-7ly8PzMWk03EPyRIDmN0575qA"
+                2 -> "1BO5pAiFnk8tkaXeDlOqlm69akazW9pA1"
+                3 -> "1WoSJEoXBKcEu5vht4JVsodQLLCzd4VsN"
+                else -> "1sfEBUv4amX3lMCfdNmwO-9WKSB_o9YOK"
+            }
+            return if (fileDownload(url)) File("$dataPath${location.dataUrl}/map.json").readText()
             else "empty location"
         }
         return "empty location"

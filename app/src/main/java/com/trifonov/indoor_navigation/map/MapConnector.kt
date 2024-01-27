@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.NumberPicker
-import androidx.core.view.size
 import com.trifonov.indoor_navigation.R
+import com.trifonov.indoor_navigation.common.LocationEntity
 import com.trifonov.indoor_navigation.map.MapConstants.dotList
 import com.trifonov.indoor_navigation.map.MapConstants.finishNode
 import com.trifonov.indoor_navigation.map.MapConstants.levelArray
@@ -43,25 +43,41 @@ class MapConnector(
 
     init {
         activity.runOnUiThread {
-            configureViews(parentView, false)
+            configureViews(parentView,false)
         }
     }
 
 
     /**
-     * Метод для инициализации MapView по названию локации
+     * Метод для установки локации по названию локации
      * @Param [location] - название локаци
      * @Param [downloadView] - view с прогресс баром (R.layout.download_view)
+     * @Param [dialog] - dialog, для закрытия диалога после загрузки
+     * @Param [isFirstLoading] - флаг первой установки локации
      * @return Boolean - успешная/безуспешная инициализация
      * */
-    internal fun initialMapView(location: String, downloadView: View, dialog: AlertDialog? = null): Boolean {
-        locationName = location
+    internal fun setLocation(location: LocationEntity, downloadView: View, dialog: AlertDialog? = null, isFirstLoading: Boolean = false): Boolean {
+        locationName = location.dataUrl
         fileHelper = FileHelper(activity, downloadView, locationName, dialog)
-        val json = fileHelper.getJsonMap(locationName)
+        val json = fileHelper.getJsonMap(location)
         return if (json != "empty location") {
             loadFromString(json)
             activity.runOnUiThread {
-                configureViews(parentView)
+                if (isFirstLoading){
+                    configureViews(parentView)
+                }
+                else{
+                    mapHelper.updateCameraData()
+                    parentView.removeAllViewsInLayout()
+                    mapView = MapView(activity)
+                    parentView.addView(mapView)
+                    parentView.addView(levelPicker)
+                    parentView.addView(zoomIn)
+                    parentView.addView(zoomOut)
+                    parentView.addView(position)
+                    configureViews(parentView, false)
+                    configureMapView(mapView, mapHelper.getScale())
+                }
             }
             true
         } else false
