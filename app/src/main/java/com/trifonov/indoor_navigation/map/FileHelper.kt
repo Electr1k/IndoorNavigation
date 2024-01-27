@@ -183,7 +183,7 @@ class FileHelper(
                 "empty location"
             }
         } else {
-            // TODO: ИЗМЕНИТЬ ССЫЛКУ ВЗАВИСИМОСТИ ОТ ЛОКАЦИИ КОГДА КАРТЫ БУДУТ ГОТОВЫ
+            // TODO: ИЗМЕНИТЬ ССЫЛКУ В ЗАВИСИМОСТИ ОТ ЛОКАЦИИ КОГДА КАРТЫ БУДУТ ГОТОВЫ
             val url = when(location.id){
                 0 -> "1sfEBUv4amX3lMCfdNmwO-9WKSB_o9YOK"
                 1 -> "1L1SKHm-7ly8PzMWk03EPyRIDmN0575qA"

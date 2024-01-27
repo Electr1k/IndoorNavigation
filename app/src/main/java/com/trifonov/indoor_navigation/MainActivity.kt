@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         Log.d("MyBluetoothScanner", macAddress)
         val locationData = LocationData(this)
         //TODO: Заменить костыль на сравнение с маками локации
-        if("C5:BB:B0:62:5B:F9" == macAddress) initialAlertDialog(locationData.getLocationById(0)!!, true)
+        if("C5:BB:B0:62:5B:F9" == macAddress) initialAlertDialog(locationData.getLocationById(0)!!)
     }
 
     private fun hasPermissions(): Boolean {
@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * Инициализирует и запускает Alert Dialog с загрузкой локации
      * */
-    internal fun initialAlertDialog(location: LocationEntity, isFirstLoading: Boolean = false){
+    internal fun initialAlertDialog(location: LocationEntity){
         if(!isDialogEnable){
             val builder = AlertDialog.Builder(this)
             val dialog = builder
@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity() {
                     viewGroup.addView(downloadView)
                 }
                 Thread {
-                    if (mapConnector.setLocation(location, downloadView, dialog, isFirstLoading)) {
+                    if (mapConnector.setLocation(location, downloadView, dialog)) {
                         startNode++
                         this.runOnUiThread {
                             mapConnector.updatePath(136)

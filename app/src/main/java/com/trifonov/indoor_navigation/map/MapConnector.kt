@@ -56,28 +56,22 @@ class MapConnector(
      * @Param [isFirstLoading] - флаг первой установки локации
      * @return Boolean - успешная/безуспешная инициализация
      * */
-    internal fun setLocation(location: LocationEntity, downloadView: View, dialog: AlertDialog? = null, isFirstLoading: Boolean = false): Boolean {
+    internal fun setLocation(location: LocationEntity, downloadView: View, dialog: AlertDialog? = null): Boolean {
         locationName = location.dataUrl
         fileHelper = FileHelper(activity, downloadView, locationName, dialog)
         val json = fileHelper.getJsonMap(location)
         return if (json != "empty location") {
             loadFromString(json)
             activity.runOnUiThread {
-                if (isFirstLoading){
-                    configureViews(parentView)
-                }
-                else{
-                    mapHelper.updateCameraData()
-                    parentView.removeAllViewsInLayout()
-                    mapView = MapView(activity)
-                    parentView.addView(mapView)
-                    parentView.addView(levelPicker)
-                    parentView.addView(zoomIn)
-                    parentView.addView(zoomOut)
-                    parentView.addView(position)
-                    configureViews(parentView, false)
-                    configureMapView(mapView, mapHelper.getScale())
-                }
+                parentView.removeAllViewsInLayout()
+                mapView = MapView(activity)
+                parentView.addView(mapView)
+                parentView.addView(zoomIn)
+                parentView.addView(zoomOut)
+                parentView.addView(position)
+                parentView.addView(levelPicker)
+                configureViews(parentView)
+                configureMapView(mapView,1f)
             }
             true
         } else false
@@ -127,8 +121,8 @@ class MapConnector(
         if (confMap) zoomOut.setOnClickListener(this)
         if (confMap) position.setOnClickListener(this)
         levelPicker = view.findViewById(R.id.picker)
-        mapView = view.findViewById(R.id.mapView) ?: return
         if (confMap) configureLevelPicker(levelPicker)
+        mapView = view.findViewById(R.id.mapView) ?: return
         if (confMap) configureMapView(mapView)
     }
 
