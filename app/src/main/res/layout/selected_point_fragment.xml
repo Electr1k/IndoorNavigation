@@ -109,6 +109,7 @@
                             android:text="Аудитория Г-337"
                             android:textSize="28sp"
                             android:gravity="start"
+                            android:textColor="@color/black"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
@@ -138,13 +139,15 @@
                         android:textColor="@color/orange"
                         android:layout_marginBottom="10dp"
                         android:layout_marginHorizontal="16dp"/>
+
                     <TextView
                         android:id="@+id/description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:justificationMode="inter_word"
                         android:text="Тут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста\nТут много текста"
-                        android:textSize="18sp"
-                        android:layout_marginHorizontal="16dp"/>
+                        android:textSize="18sp" />
                 </LinearLayout>
             </LinearLayout>
             </androidx.core.widget.NestedScrollView>
@@ -188,7 +191,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textStyle="bold"
+                    android:textStyle="normal"
                     android:textSize="18sp"
                     android:textColor="@color/white"
                     android:text="Отсюда"
@@ -223,7 +226,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textStyle="bold"
+                    android:textStyle="normal"
                     android:textSize="18sp"
                     android:textColor="@color/white"
                     android:text="Сюда"
