@@ -18,7 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.trifonov.indoor_navigation.R
 
 open class CustomFragment: Fragment() {
-    private lateinit var mBottomSheet: View
+    protected lateinit var mBottomSheet: View
     protected lateinit var mBottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var translateYAnimator: ObjectAnimator
     private lateinit var fragment: View
@@ -47,13 +47,5 @@ open class CustomFragment: Fragment() {
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             requireActivity().supportFragmentManager.popBackStack()
         }
-    }
-
-    override fun onStart() {
-        mBottomSheet.visibility = View.VISIBLE
-        mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        val slideUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
-        mBottomSheet.startAnimation(slideUpAnimation)
-        super.onStart()
     }
 }

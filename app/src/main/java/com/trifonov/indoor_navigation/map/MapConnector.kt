@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.NumberPicker
+import androidx.navigation.NavController
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.common.LocationEntity
 import com.trifonov.indoor_navigation.map.MapConstants.dotList
@@ -20,7 +21,8 @@ import ovh.plrapps.mapview.MapView
 
 class MapConnector(
     private val activity: Activity,
-    private var locationName: String
+    private var locationName: String,
+    private val navController: NavController
 ):
     NumberPicker.OnValueChangeListener,
     View.OnClickListener
@@ -137,7 +139,7 @@ class MapConnector(
         scale: Float = 0f
     ) {
         mapHelper =
-            MapHelper(activity, mapView, locationName, navigation)
+            MapHelper(activity, mapView, locationName, navigation, navController)
         mapHelper.setScale(scale)
         mapHelper.addAllMarkers(dotList)
         mapHelper.addReferentialListener()

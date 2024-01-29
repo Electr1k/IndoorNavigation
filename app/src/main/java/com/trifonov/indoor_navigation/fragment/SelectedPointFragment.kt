@@ -18,6 +18,7 @@ import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.navigation.findNavController
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.SCROLL_STATE_IDLE
 import androidx.viewpager.widget.ViewPager.SCROLL_STATE_SETTLING
@@ -30,6 +31,7 @@ import com.trifonov.indoor_navigation.map.Map
 import com.trifonov.indoor_navigation.map.MapConstants.dotList
 import com.trifonov.indoor_navigation.map.MapConstants.finishNode
 import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
+import com.trifonov.indoor_navigation.map.MapConstants.startNode
 import java.lang.Float.max
 
 
@@ -79,6 +81,7 @@ class SelectedPointFragment: CustomFragment() {
 
     override fun onStart() {
         super.onStart()
+        mBottomSheet.visibility = View.VISIBLE
         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
@@ -93,10 +96,18 @@ class SelectedPointFragment: CustomFragment() {
         title.text = selectedPoint.getType() + " " + selectedPoint.getName()
         description.text = selectedPoint.getDescription()
         view.findViewById<CardView>(R.id.route_to).setOnClickListener {
-            mapConnector.updatePath(selectedPoint.getId())
+            finishNode = selectedPoint.getId()
+            val bundle = Bundle()
+            bundle.putBoolean("isFromPoint", true)
+            view.findNavController().navigate(R.id.action_scan_to_route, bundle)
+            mapConnector.updatePath(finishNode)
         }
         view.findViewById<CardView>(R.id.route_from).setOnClickListener {
-            mapConnector.updatePath(finish = finishNode, start = selectedPoint.getId())
+            startNode = selectedPoint.getId()
+            val bundle = Bundle()
+            bundle.putBoolean("isFromPoint", true)
+            view.findNavController().navigate(R.id.action_scan_to_route, bundle)
+            mapConnector.updatePath(finish = finishNode, start = startNode)
         }
         mBottomSheetBehavior.addBottomSheetCallback(
             object : BottomSheetCallback() {

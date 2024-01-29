@@ -39,7 +39,11 @@
     <fragment android:id="@+id/route"
         android:name="com.trifonov.indoor_navigation.fragment.RouteFragment"
         android:label="@string/route"
-        tools:layout="@layout/route_fragment"/>
+        tools:layout="@layout/route_fragment">
+        <action
+            android:id="@+id/action_route_to_scan"
+            app:destination="@id/scan" />
+    </fragment>
 
 
     <fragment android:id="@+id/search"
@@ -50,7 +54,11 @@
     <fragment android:id="@+id/scan"
         android:name="com.trifonov.indoor_navigation.fragment.SelectedPointFragment"
         android:label="@string/scan"
-        tools:layout="@layout/selected_point_fragment"/>
+        tools:layout="@layout/selected_point_fragment">
+        <action
+            android:id="@+id/action_scan_to_route"
+            app:destination="@id/route" />
+    </fragment>
 
     <fragment android:id="@+id/location"
         android:name="com.trifonov.indoor_navigation.fragment.LocationFragment"

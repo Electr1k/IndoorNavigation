@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.AudienceSearchAdapter
 
@@ -34,5 +36,13 @@ class SearchFragment: CustomFragment() {
             list.add(it, "Г - $it")
         }
         recyclerView.adapter = AudienceSearchAdapter(list)
+    }
+
+    override fun onStart() {
+        mBottomSheet.visibility = View.VISIBLE
+        mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        val slideUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
+        mBottomSheet.startAnimation(slideUpAnimation)
+        super.onStart()
     }
 }

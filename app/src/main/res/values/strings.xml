@@ -18,4 +18,5 @@
     <string name="cancel">Отменить</string>
     <string name="yes">"Да"</string>
     <string name="no">"Нет"</string>
+    <string name="go">Пройти</string>
 </resources>

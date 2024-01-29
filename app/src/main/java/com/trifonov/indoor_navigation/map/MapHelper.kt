@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.map.MapConstants.cameraMarkerX
@@ -69,7 +70,8 @@ class MapHelper(
     private val activity: Activity,
     private val mapView: MapView,
     private val locationName: String,
-    private val navigation: Navigation
+    private val navigation: Navigation,
+    private val navController: NavController
 ) : TileStreamProvider {
 
     /** @Param [finishMarker] – маркер конца маршрута на карте */
@@ -354,7 +356,7 @@ class MapHelper(
                 if (view is MapMarker) {
                     val dot = dotList.find { view.name.toInt() == it.getId() }
                     if (dot?.getName() != "") {
-                        val callout = MarkerCallout(activity, dot)
+                        val callout = MarkerCallout(activity, dot, navController)
                         callout.setTitle(dot?.getName() ?: view.name)
                         callout.setSubTitle("position: ${view.x} , ${view.y}")
                         mapView.addCallout(callout, view.x, view.y, -0.5f, -1.2f, 0f, 0f)

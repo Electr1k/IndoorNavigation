@@ -22,6 +22,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.trifonov.indoor_navigation.R
@@ -33,7 +34,8 @@ import com.trifonov.indoor_navigation.R
  */
 class MarkerCallout(
     private val activity: Activity,
-    private val dot: Map.Dot?
+    private val dot: Map.Dot?,
+    private val navController: NavController
 ) : RelativeLayout(activity) {
     private val mTitle: TextView
     private val mSubTitle: TextView
@@ -89,7 +91,10 @@ class MarkerCallout(
         super.onAttachedToWindow()
         val bundle = Bundle()
         bundle.putInt("id", dot?.getId() ?: -1)
-        activity.findNavController(R.id.head).navigate(R.id.action_head_to_scan, bundle)
+        while (navController.currentDestination!!.id != R.id.head){
+            navController.popBackStack()
+        }
+        navController.navigate(R.id.action_head_to_scan, bundle)
     }
 
     /**

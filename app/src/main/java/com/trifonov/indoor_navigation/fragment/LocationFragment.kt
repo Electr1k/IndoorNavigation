@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
@@ -64,5 +65,13 @@ class LocationFragment: CustomFragment() {
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
         locationRV.adapter = LocationAdapter(locationData.getAllLocations(), {selectedLocation = it}, currentLocation)
+    }
+
+    override fun onStart() {
+        mBottomSheet.visibility = View.VISIBLE
+        mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        val slideUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
+        mBottomSheet.startAnimation(slideUpAnimation)
+        super.onStart()
     }
 }
