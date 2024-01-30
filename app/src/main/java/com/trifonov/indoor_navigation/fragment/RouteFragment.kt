@@ -1,12 +1,11 @@
 package com.trifonov.indoor_navigation.fragment
 
 import android.annotation.SuppressLint
-import android.media.Image
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -14,18 +13,12 @@ import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.cardview.widget.CardView
-import androidx.core.view.doOnLayout
-import androidx.core.view.isVisible
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.AudienceRouteAdapter
 import com.trifonov.indoor_navigation.adapter.AudienceTypeAdapter
-import com.trifonov.indoor_navigation.map.MapConstants
-import com.trifonov.indoor_navigation.map.MapConstants.finishNode
 import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
-import com.trifonov.indoor_navigation.map.MapConstants.startNode
 
 class RouteFragment: CustomFragment() {
     private lateinit var typesRV: RecyclerView
@@ -64,6 +57,8 @@ class RouteFragment: CustomFragment() {
         super.onStart()
         mBottomSheet.visibility = View.VISIBLE
         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        val slideUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
+        mBottomSheet.startAnimation(slideUpAnimation)
         val viewCollapsed = fragment.findViewById<LinearLayout>(R.id.view_collapsed)
         viewCollapsed.post {
             mBottomSheetBehavior.peekHeight = viewCollapsed.height
@@ -77,10 +72,15 @@ class RouteFragment: CustomFragment() {
     private fun initBottomSheet(view: View){
         mBottomSheetBehavior.skipCollapsed = false
         val isFromPoint = arguments?.getBoolean("isFromPoint") ?: false
-        if (isFromPoint) pointA.setText(startNode.toString())
-        if (isFromPoint) pointB.setText(finishNode.toString())
-        pointA.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->  pointB.isCursorVisible = hasFocus }
-        pointB.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->  pointA.isCursorVisible = hasFocus }
+        val isToPoint = arguments?.getBoolean("isToPoint") ?: false
+        if (isFromPoint) {
+            pointA.setText(arguments?.getString("nameFrom"))
+            pointB.setText("Моё местоположение")
+        }
+        if (isToPoint){
+            pointA.setText("Моё местоположение")
+            pointB.setText(arguments?.getString("nameTo"))
+        }
         view.findViewById<CardView>(R.id.build_route).setOnClickListener {
             try{
                 val start = pointA.text.toString().toInt()

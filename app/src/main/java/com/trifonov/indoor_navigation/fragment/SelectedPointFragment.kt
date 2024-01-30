@@ -2,14 +2,11 @@ package com.trifonov.indoor_navigation.fragment
 
 
 import android.annotation.SuppressLint
-import android.content.ClipDescription
-import android.content.Context
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -17,10 +14,8 @@ import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.findNavController
 import androidx.viewpager.widget.ViewPager
-import androidx.viewpager.widget.ViewPager.SCROLL_STATE_IDLE
 import androidx.viewpager.widget.ViewPager.SCROLL_STATE_SETTLING
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
@@ -83,6 +78,8 @@ class SelectedPointFragment: CustomFragment() {
         super.onStart()
         mBottomSheet.visibility = View.VISIBLE
         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        val slideUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
+        mBottomSheet.startAnimation(slideUpAnimation)
     }
 
     /**
@@ -96,16 +93,20 @@ class SelectedPointFragment: CustomFragment() {
         title.text = selectedPoint.getType() + " " + selectedPoint.getName()
         description.text = selectedPoint.getDescription()
         view.findViewById<CardView>(R.id.route_to).setOnClickListener {
+            mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             finishNode = selectedPoint.getId()
             val bundle = Bundle()
-            bundle.putBoolean("isFromPoint", true)
+            bundle.putBoolean("isToPoint", true)
+            bundle.putString("nameTo", selectedPoint.getName())
             view.findNavController().navigate(R.id.action_scan_to_route, bundle)
             mapConnector.updatePath(finishNode)
         }
         view.findViewById<CardView>(R.id.route_from).setOnClickListener {
+            mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             startNode = selectedPoint.getId()
             val bundle = Bundle()
             bundle.putBoolean("isFromPoint", true)
+            bundle.putString("nameFrom", selectedPoint.getName())
             view.findNavController().navigate(R.id.action_scan_to_route, bundle)
             mapConnector.updatePath(finish = finishNode, start = startNode)
         }
@@ -123,8 +124,8 @@ class SelectedPointFragment: CustomFragment() {
                 }
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
                     view.findViewById<LinearLayout>(R.id.linearLayout).translationY = max(-1 * 260 * density * (1 - slideOffset), -1 * 260 * density)
-                    println("Current offset: $slideOffset")
-                    navigateMenu.translationY = - heightNavigationMenu * (slideOffset - 1)
+                    println("Current slideOffset: $slideOffset ${mBottomSheetBehavior.state}")
+                    if (slideOffset >= 0) navigateMenu.translationY = - heightNavigationMenu * (slideOffset - 1)
                 }
             }
 
@@ -316,6 +317,7 @@ class SelectedPointFragment: CustomFragment() {
      * Переопределяем метод разрушения view, удаляем маркер
      */
     override fun onDestroy() {
+        mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         super.onDestroy()
         val marker = requireActivity().findViewById<RelativeLayout>(R.id.marker)
         (marker?.parent as ViewGroup?)?.removeView(marker)
