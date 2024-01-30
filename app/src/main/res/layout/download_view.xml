@@ -93,6 +93,7 @@
         android:textColor="@color/dark_blue"
         android:textSize="18sp"
         android:minWidth="0dp"
+        app:cornerRadius="4dp"
         android:backgroundTint="@color/button_ripple_color"
         android:paddingHorizontal="16dp"
         android:minHeight="0dp"

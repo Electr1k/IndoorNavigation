@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.TextView
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
@@ -18,6 +19,8 @@ import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.LocationAdapter
 import com.trifonov.indoor_navigation.common.LocationData
 import com.trifonov.indoor_navigation.common.LocationEntity
+import com.trifonov.indoor_navigation.map.FileHelper
+import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
 
 
 class LocationFragment: CustomFragment() {
@@ -60,9 +63,20 @@ class LocationFragment: CustomFragment() {
         currentLocation = locationData.getLocationById(locationData.getCurrentLocation())!!
         selectedLocation = currentLocation
         acceptButton.setOnClickListener{
-            locationData.setCurrentLocation(selectedLocation.id)
-            (requireActivity() as MainActivity).initialAlertDialog(selectedLocation)
-            mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            if (FileHelper.checkStorageLocation(selectedLocation.dataUrl)){
+                Thread{
+                    mapConnector.setLocation(selectedLocation)
+                    requireActivity().runOnUiThread {
+                        mapConnector.updatePath(136)
+                        locationData.setCurrentLocation(selectedLocation.id)
+                        mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                    }
+                }.start()
+            }
+            else {
+                (requireActivity() as MainActivity).initialAlertDialog(selectedLocation, locationData)
+                mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            }
         }
         locationRV.adapter = LocationAdapter(locationData.getAllLocations(), {selectedLocation = it}, currentLocation)
     }

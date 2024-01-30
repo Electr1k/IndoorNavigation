@@ -58,9 +58,9 @@ class MapConnector(
      * @Param [isFirstLoading] - флаг первой установки локации
      * @return Boolean - успешная/безуспешная инициализация
      * */
-    internal fun setLocation(location: LocationEntity, downloadView: View, dialog: AlertDialog? = null): Boolean {
+    internal fun setLocation(location: LocationEntity, downloadView: View? = null, dialog: AlertDialog? = null): Boolean {
         locationName = location.dataUrl
-        fileHelper = FileHelper(activity, downloadView, locationName, dialog)
+        fileHelper = FileHelper(activity, downloadView, location, dialog)
         val json = fileHelper.getJsonMap(location)
         return if (json != "empty location") {
             loadFromString(json)

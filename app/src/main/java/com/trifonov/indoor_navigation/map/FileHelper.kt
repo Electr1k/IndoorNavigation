@@ -14,16 +14,11 @@ import android.content.Context
 
 import android.net.Uri
 import android.view.View
-import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatButton
-import androidx.navigation.findNavController
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.common.LocationEntity
@@ -38,13 +33,13 @@ import kotlin.math.roundToInt
 /**
  * Класс для работы с файловой системой
  * @Param [contextActivity] для работы с сервисами
- * @Param [locationName] название локации для подгрузки
+ * @Param [location] название локации для подгрузки
  * @Constructor Создаёт FileHelper для работы с системой
  */
 class FileHelper(
     private val activity: Activity,
-    private val downloadView: View,
-    val locationName: String,
+    private val downloadView: View? = null,
+    val location: LocationEntity,
     private val dialog: AlertDialog? = null,
 ) {
 
@@ -65,19 +60,19 @@ class FileHelper(
     internal fun fileDownload(uRl: String): Boolean {
         println("Download")
         var returning = false
-        dataPathTmp += "$locationName/"
-        unzipPathTmp += "$locationName/"
+        dataPathTmp += "${location.dataUrl}/"
+        unzipPathTmp += "${location.dataUrl}/"
         startThreadConnection()
         val url = Uri.parse(convertUrl(uRl))
         println(url)
         val request = DownloadManager.Request(url)
-            .setTitle("$locationName.zip")
+            .setTitle("${location.dataUrl}.zip")
             .setDescription("Downloading")
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             .setDestinationInExternalFilesDir(
                 activity,
-                "locations/$locationName",
-                "$locationName.zip"
+                "locations/${location.dataUrl}",
+                "${location.dataUrl}.zip"
             )
             .setAllowedOverMetered(true)
             .setAllowedOverRoaming(true)
@@ -87,7 +82,7 @@ class FileHelper(
         val downloadId = downloadManager.enqueue(request)
         val query = DownloadManager.Query().setFilterById(downloadId)
         activity.runOnUiThread {
-            downloadView.findViewById<Button>(R.id.cancel_button)?.setOnClickListener {
+            downloadView?.findViewById<Button>(R.id.cancel_button)?.setOnClickListener {
                 checkConnectionFlag = false
                 downloading = false
                 downloadManager.remove(downloadId)
@@ -97,29 +92,42 @@ class FileHelper(
         while (downloading) {
             val cursor = downloadManager.query(query)
             cursor.moveToFirst()
-            val status: Int =
-                cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-            val bytes_downloaded = cursor.getInt(
-                cursor
-                    .getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)
-            )
-            val bytes_total =
-                cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
-            activity.runOnUiThread {
-                downloadView.findViewById<TextView>(R.id.progress)?.text =
-                    (max(bytes_downloaded.toFloat() / bytes_total.toFloat() * 100 - 1, 0f)).roundToInt().toString() + "%"
-                downloadView.findViewById<LinearProgressIndicator>(R.id.progressBar).setProgressCompat(
-                    (max(bytes_downloaded.toFloat() / bytes_total.toFloat() * 100 - 1, 0f)).roundToInt(), true)
+            var status: Int = 0
+            var bytes_downloaded: Int = 0
+            var bytes_total: Int = 0
+            try {
+                status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+                bytes_downloaded = cursor.getInt(
+                    cursor
+                        .getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)
+                )
+                bytes_total =
+                    cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
+                activity.runOnUiThread {
+                    downloadView?.findViewById<TextView>(R.id.progress)?.text =
+                        (max(bytes_downloaded.toFloat() / bytes_total.toFloat() * 100 - 1, 0f)).roundToInt().toString() + "%"
+                    downloadView?.findViewById<LinearProgressIndicator>(R.id.progressBar)?.setProgressCompat(
+                        (max(bytes_downloaded.toFloat() / bytes_total.toFloat() * 100 - 1, 0f)).roundToInt(), true)
+                }
+            }
+            catch (e: Exception){
+                activity.runOnUiThread {
+                    checkConnectionFlag = false
+                    downloading = false
+                    downloadManager.remove(downloadId)
+                    dialog?.cancel()
+                }
             }
             if (status == DownloadManager.STATUS_SUCCESSFUL) {
                 activity.runOnUiThread {
-                    downloadView.findViewById<TextView>(R.id.partLoading)?.text = activity.resources.getString(R.string.unzip)
+                    downloadView?.findViewById<TextView>(R.id.partLoading)?.text = activity.resources.getString(R.string.unzip)
                 }
                 checkConnectionFlag = false
-                if (unzip(locationName) == true){
+                if (unzip(location.dataUrl) == true){
                     activity.runOnUiThread {
-                        downloadView.findViewById<TextView>(R.id.progress)?.text = "100%"
-                        downloadView.findViewById<LinearProgressIndicator>(R.id.progressBar).progress = 100
+                        downloadView?.findViewById<TextView>(R.id.progress)?.text = "100%"
+                        downloadView?.findViewById<LinearProgressIndicator>(R.id.progressBar)?.progress = 100
+                        activity.findViewById<TextView>(R.id.current_location).text = location.name
                         Toast.makeText(activity, "Установка успешна", Toast.LENGTH_SHORT).show()
                     }
                     returning = true
@@ -144,16 +152,16 @@ class FileHelper(
                 val netInfo = cm.activeNetworkInfo
                 if (netInfo != null && netInfo.isConnectedOrConnecting) {
                     activity.runOnUiThread {
-                        downloadView.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.connectionError)!!.visibility =
+                        downloadView?.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.connectionError)!!.visibility =
                             INVISIBLE
                         downloadView.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.download_progress)!!.visibility =
                             VISIBLE
                     }
                 } else {
                     activity.runOnUiThread {
-                        downloadView.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.download_progress)!!.visibility =
+                        downloadView?.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.download_progress)!!.visibility =
                             INVISIBLE
-                        downloadView.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.connectionError)!!.visibility =
+                        downloadView?.findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.connectionError)!!.visibility =
                             VISIBLE
                     }
                 }
@@ -175,7 +183,7 @@ class FileHelper(
      * @Return карта в строковом представлении
      */
     internal fun getJsonMap(location: LocationEntity): String {
-        if (checkStorageLocation(locationName)) {
+        if (checkStorageLocation(location.dataUrl)) {
             return try {
                 return File("$dataPath${location.dataUrl}/map.json").readText()
             } catch (e: Exception) {
@@ -226,7 +234,7 @@ class FileHelper(
      * @Return количество уровней приближения
      */
     internal fun getLevelCount(fileName: String): Int {
-        val directory = File("$unzipPath$locationName/$fileName")
+        val directory = File("$unzipPath${location.dataUrl}/$fileName")
         val files = directory.listFiles()
         return files?.size ?: 0
     }
@@ -238,7 +246,7 @@ class FileHelper(
     companion object {
         internal fun checkStorageLocation(locationName: String): Boolean {
             try {
-                for (file in File("$unzipPath/$locationName").listFiles()!!) {
+                for (file in File("$unzipPath/$locationName/").listFiles()!!) {
                     println("File ${file.name}")
                     if (file.name == "map.json") {
                         return true
