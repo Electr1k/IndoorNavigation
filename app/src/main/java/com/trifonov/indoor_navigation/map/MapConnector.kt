@@ -170,7 +170,6 @@ class MapConnector(
             levelNumber = levelArray[picker?.value!! - 1].toInt()
             if (oldVal != newVal) {
                 updateViews()
-                configureViews(parentView, false)
                 configureMapView(mapView, mapHelper.getScale())
                 mapHelper.updatePath()
             }
@@ -199,7 +198,7 @@ class MapConnector(
         parentView.addView(zoomIn)
         parentView.addView(zoomOut)
         parentView.addView(position)
-        configureViews(parentView)
+        configureViews(parentView, false)
     }
 
     /**
