@@ -1,0 +1,2485 @@
+{
+  "locationId": 0,
+  "width": 3840,
+  "height": 2160,
+  "dots": [
+    {
+      "id": 0,
+      "floor": 1,
+      "x": 658,
+      "y": 1849,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        2,
+        1
+      ],
+      "photoUrls": [
+        "/photo0.jpg",
+        "/photo1.jpg"
+      ]
+    },
+    {
+      "id": 1,
+      "floor": 1,
+      "x": 568,
+      "y": 1692,
+      "mac": "00:00:00:00",
+      "name": "Г-301",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        0,
+        20
+      ],
+      "photoUrls": [
+        "/photo2.jpg",
+        "/photo3.jpg"
+      ]
+    },
+    {
+      "id": 2,
+      "floor": 1,
+      "x": 396,
+      "y": 1692,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        19,
+        0
+      ],
+      "photoUrls": [
+        "/photo4.jpg",
+        "/photo5.jpg"
+      ]
+    },
+    {
+      "id": 3,
+      "floor": 1,
+      "x": 340,
+      "y": 1529,
+      "mac": "00:00:00:00",
+      "name": "Г-303",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        19,
+        4
+      ],
+      "photoUrls": [
+        "/photo6.jpg",
+        "/photo7.jpg"
+      ]
+    },
+    {
+      "id": 4,
+      "floor": 1,
+      "x": 402,
+      "y": 1463,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        3
+      ],
+      "photoUrls": [
+        "/photo8.jpg",
+        "/photo9.jpg"
+      ]
+    },
+    {
+      "id": 5,
+      "floor": 1,
+      "x": 690,
+      "y": 1418,
+      "mac": "00:00:00:00",
+      "name": "Г-304",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        21,
+        6
+      ],
+      "photoUrls": [
+        "/photo10.jpg",
+        "/photo11.jpg"
+      ]
+    },
+    {
+      "id": 6,
+      "floor": 1,
+      "x": 798,
+      "y": 1418,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        5
+      ],
+      "photoUrls": [
+        "/photo12.jpg",
+        "/photo13.jpg"
+      ]
+    },
+    {
+      "id": 7,
+      "floor": 1,
+      "x": 796,
+      "y": 1605,
+      "mac": "00:00:00:00",
+      "name": "Лестница запад",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        20
+      ],
+      "photoUrls": [
+        "/photo14.jpg",
+        "/photo15.jpg"
+      ]
+    },
+    {
+      "id": 8,
+      "floor": 1,
+      "x": 798,
+      "y": 1233,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        9
+      ],
+      "photoUrls": [
+        "/photo16.jpg",
+        "/photo17.jpg"
+      ]
+    },
+    {
+      "id": 9,
+      "floor": 1,
+      "x": 686,
+      "y": 1287,
+      "mac": "00:00:00:00",
+      "name": "Г-302",
+      "description": "Профессиональная аудитория – это специалисты, желающие быть в курсе последних тенденций и инноваций в своей области. От медицинских работников до инженеров, от бизнес-аналитиков до художников, они ищут лекции, которые помогут им поддерживать высокий уровень профессиональной квалификации и стоять на переднем крае своей отрасли. Предпринимательская аудитория – это предприниматели, стартаперы и бизнес-лидеры, которые стремятся к поиску новых идей, стратегий и практик для улучшения своего бизнеса. Потоковые лекции предоставляют им возможность обмена опытом с успешными предпринимателями, анализа рыночных тенденций и обсуждения вопросов, касающихся управления и инноваций. Любознательные индивидуалы – это те, кто ценит обучение в качестве самоценности. \n Независимо от профессиональной области, они ищут лекции по разнообразным темам, таким как искусство, наука, технологии, история и культура, чтобы обогатить свой интеллектуальный опыт и расширить свой кругозор. Суммируя, аудитория для потоковых лекций представляет собой разнообразное сообщество людей, стремящихся к обучению и саморазвитию. Это объединенная группа личностей, готовых идти в ногу со временем и открытых для новых знаний, идеи которых могут вдохновить, обогатить и преобразить их жизни и карьеры.",
+      "type": "Аудитория",
+      "connected": [
+        22,
+        8
+      ],
+      "photoUrls": [
+        "/photo18.jpg",
+        "/photo19.jpg"
+      ]
+    },
+    {
+      "id": 10,
+      "floor": 1,
+      "x": 690,
+      "y": 1083,
+      "mac": "00:00:00:00",
+      "name": "Туалет запад",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        11,
+        25
+      ],
+      "photoUrls": [
+        "/photo20.jpg",
+        "/photo21.jpg"
+      ]
+    },
+    {
+      "id": 11,
+      "floor": 1,
+      "x": 784,
+      "y": 1038,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        10
+      ],
+      "photoUrls": [
+        "/photo22.jpg",
+        "/photo23.jpg"
+      ]
+    },
+    {
+      "id": 12,
+      "floor": 1,
+      "x": 516,
+      "y": 1155,
+      "mac": "00:00:00:00",
+      "name": "Г-307",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        24,
+        13
+      ],
+      "photoUrls": [
+        "/photo24.jpg",
+        "/photo25.jpg"
+      ]
+    },
+    {
+      "id": 13,
+      "floor": 1,
+      "x": 394,
+      "y": 1076,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        12
+      ],
+      "photoUrls": [
+        "/photo26.jpg",
+        "/photo27.jpg"
+      ]
+    },
+    {
+      "id": 14,
+      "floor": 1,
+      "x": 520,
+      "y": 1236,
+      "mac": "00:00:00:00",
+      "name": "Г-305",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        23,
+        15
+      ],
+      "photoUrls": [
+        "/photo28.jpg",
+        "/photo29.jpg"
+      ]
+    },
+    {
+      "id": 15,
+      "floor": 1,
+      "x": 406,
+      "y": 1306,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        14
+      ],
+      "photoUrls": [
+        "/photo30.jpg",
+        "/photo31.jpg"
+      ]
+    },
+    {
+      "id": 16,
+      "floor": 1,
+      "x": 512,
+      "y": 760,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        17,
+        27
+      ],
+      "photoUrls": [
+        "/photo32.jpg",
+        "/photo33.jpg"
+      ]
+    },
+    {
+      "id": 17,
+      "floor": 1,
+      "x": 586,
+      "y": 494,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        16,
+        18
+      ],
+      "photoUrls": [
+        "/photo34.jpg",
+        "/photo35.jpg"
+      ]
+    },
+    {
+      "id": 18,
+      "floor": 1,
+      "x": 804,
+      "y": 756,
+      "mac": "00:00:00:00",
+      "name": "Г-309",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        28,
+        17
+      ],
+      "photoUrls": [
+        "/photo36.jpg",
+        "/photo37.jpg"
+      ]
+    },
+    {
+      "id": 19,
+      "floor": 1,
+      "x": 396,
+      "y": 1605,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        20,
+        3,
+        2
+      ],
+      "photoUrls": [
+        "/photo38.jpg",
+        "/photo39.jpg"
+      ]
+    },
+    {
+      "id": 20,
+      "floor": 1,
+      "x": 598,
+      "y": 1605,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        21,
+        19,
+        1,
+        7
+      ],
+      "photoUrls": [
+        "/photo40.jpg",
+        "/photo41.jpg"
+      ]
+    },
+    {
+      "id": 21,
+      "floor": 1,
+      "x": 598,
+      "y": 1423,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        22,
+        20,
+        5
+      ],
+      "photoUrls": [
+        "/photo42.jpg",
+        "/photo43.jpg"
+      ]
+    },
+    {
+      "id": 22,
+      "floor": 1,
+      "x": 598,
+      "y": 1282,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        23,
+        21,
+        9
+      ],
+      "photoUrls": [
+        "/photo44.jpg",
+        "/photo45.jpg"
+      ]
+    },
+    {
+      "id": 23,
+      "floor": 1,
+      "x": 598,
+      "y": 1233,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        24,
+        22,
+        14
+      ],
+      "photoUrls": [
+        "/photo46.jpg",
+        "/photo47.jpg"
+      ]
+    },
+    {
+      "id": 24,
+      "floor": 1,
+      "x": 598,
+      "y": 1153,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        25,
+        23,
+        12
+      ],
+      "photoUrls": [
+        "/photo48.jpg",
+        "/photo49.jpg"
+      ]
+    },
+    {
+      "id": 25,
+      "floor": 1,
+      "x": 598,
+      "y": 1083,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        26,
+        24,
+        10
+      ],
+      "photoUrls": [
+        "/photo50.jpg",
+        "/photo51.jpg"
+      ]
+    },
+    {
+      "id": 26,
+      "floor": 1,
+      "x": 598,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        27,
+        28,
+        25
+      ],
+      "photoUrls": [
+        "/photo52.jpg",
+        "/photo53.jpg"
+      ]
+    },
+    {
+      "id": 27,
+      "floor": 1,
+      "x": 512,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        16,
+        26
+      ],
+      "photoUrls": [
+        "/photo54.jpg",
+        "/photo55.jpg"
+      ]
+    },
+    {
+      "id": 28,
+      "floor": 1,
+      "x": 800,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        26,
+        18,
+        54
+      ],
+      "photoUrls": [
+        "/photo56.jpg",
+        "/photo57.jpg"
+      ]
+    },
+    {
+      "id": 29,
+      "floor": 1,
+      "x": 1156,
+      "y": 1042,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        49
+      ],
+      "photoUrls": [
+        "/photo58.jpg",
+        "/photo59.jpg"
+      ]
+    },
+    {
+      "id": 30,
+      "floor": 1,
+      "x": 1318,
+      "y": 1044,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        50
+      ],
+      "photoUrls": [
+        "/photo60.jpg",
+        "/photo61.jpg"
+      ]
+    },
+    {
+      "id": 31,
+      "floor": 1,
+      "x": 1484,
+      "y": 1034,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        51
+      ],
+      "photoUrls": [
+        "/photo62.jpg",
+        "/photo63.jpg"
+      ]
+    },
+    {
+      "id": 32,
+      "floor": 1,
+      "x": 1708,
+      "y": 1040,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        53
+      ],
+      "photoUrls": [
+        "/photo64.jpg",
+        "/photo65.jpg"
+      ]
+    },
+    {
+      "id": 33,
+      "floor": 1,
+      "x": 1898,
+      "y": 1038,
+      "mac": "00:00:00:00",
+      "name": "Самая первая локация",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        66,
+        135
+      ],
+      "photoUrls": [
+        "/photo66.jpg",
+        "/photo67.jpg"
+      ]
+    },
+    {
+      "id": 34,
+      "floor": 1,
+      "x": 2030,
+      "y": 756,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        36,
+        96
+      ],
+      "photoUrls": [
+        "/photo68.jpg",
+        "/photo69.jpg"
+      ]
+    },
+    {
+      "id": 35,
+      "floor": 1,
+      "x": 1756,
+      "y": 630,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        64,
+        37
+      ],
+      "photoUrls": [
+        "/photo70.jpg",
+        "/photo71.jpg"
+      ]
+    },
+    {
+      "id": 36,
+      "floor": 1,
+      "x": 2030,
+      "y": 630,
+      "mac": "00:00:00:00",
+      "name": "Буфет",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        37,
+        37,
+        34
+      ],
+      "photoUrls": [
+        "/photo72.jpg",
+        "/photo73.jpg"
+      ]
+    },
+    {
+      "id": 37,
+      "floor": 1,
+      "x": 1898,
+      "y": 630,
+      "mac": "00:00:00:00",
+      "name": "Холл",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        35,
+        38,
+        36,
+        36
+      ],
+      "photoUrls": [
+        "/photo74.jpg",
+        "/photo75.jpg"
+      ]
+    },
+    {
+      "id": 38,
+      "floor": 1,
+      "x": 1898,
+      "y": 756,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        37,
+        66
+      ],
+      "photoUrls": [
+        "/photo76.jpg",
+        "/photo77.jpg"
+      ]
+    },
+    {
+      "id": 39,
+      "floor": 1,
+      "x": 1590,
+      "y": 756,
+      "mac": "00:00:00:00",
+      "name": "Г-318",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        48,
+        61
+      ],
+      "photoUrls": [
+        "/photo78.jpg",
+        "/photo79.jpg"
+      ]
+    },
+    {
+      "id": 40,
+      "floor": 1,
+      "x": 1436,
+      "y": 753,
+      "mac": "00:00:00:00",
+      "name": "Г-317",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        47,
+        59
+      ],
+      "photoUrls": [
+        "/photo80.jpg",
+        "/photo81.jpg"
+      ]
+    },
+    {
+      "id": 41,
+      "floor": 1,
+      "x": 1146,
+      "y": 756,
+      "mac": "00:00:00:00",
+      "name": "Г-313",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        46,
+        57
+      ],
+      "photoUrls": [
+        "/photo82.jpg",
+        "/photo83.jpg"
+      ]
+    },
+    {
+      "id": 42,
+      "floor": 1,
+      "x": 1036,
+      "y": 756,
+      "mac": "00:00:00:00",
+      "name": "Г-312",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        45,
+        55
+      ],
+      "photoUrls": [
+        "/photo84.jpg",
+        "/photo85.jpg"
+      ]
+    },
+    {
+      "id": 43,
+      "floor": 1,
+      "x": 958,
+      "y": 758,
+      "mac": "00:00:00:00",
+      "name": "Г-311",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        44,
+        54
+      ],
+      "photoUrls": [
+        "/photo86.jpg",
+        "/photo87.jpg"
+      ]
+    },
+    {
+      "id": 44,
+      "floor": 1,
+      "x": 958,
+      "y": 643,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        43
+      ],
+      "photoUrls": [
+        "/photo88.jpg",
+        "/photo89.jpg"
+      ]
+    },
+    {
+      "id": 45,
+      "floor": 1,
+      "x": 1048,
+      "y": 643,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        42
+      ],
+      "photoUrls": [
+        "/photo90.jpg",
+        "/photo91.jpg"
+      ]
+    },
+    {
+      "id": 46,
+      "floor": 1,
+      "x": 1208,
+      "y": 635,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        41
+      ],
+      "photoUrls": [
+        "/photo92.jpg",
+        "/photo93.jpg"
+      ]
+    },
+    {
+      "id": 47,
+      "floor": 1,
+      "x": 1430,
+      "y": 639,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        40
+      ],
+      "photoUrls": [
+        "/photo94.jpg",
+        "/photo95.jpg"
+      ]
+    },
+    {
+      "id": 48,
+      "floor": 1,
+      "x": 1620,
+      "y": 635,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        39
+      ],
+      "photoUrls": [
+        "/photo96.jpg",
+        "/photo97.jpg"
+      ]
+    },
+    {
+      "id": 49,
+      "floor": 1,
+      "x": 1110,
+      "y": 943,
+      "mac": "00:00:00:00",
+      "name": "Г-314",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        29,
+        56
+      ],
+      "photoUrls": [
+        "/photo98.jpg",
+        "/photo99.jpg"
+      ]
+    },
+    {
+      "id": 50,
+      "floor": 1,
+      "x": 1302,
+      "y": 943,
+      "mac": "00:00:00:00",
+      "name": "Г-315",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        30,
+        58
+      ],
+      "photoUrls": [
+        "/photo100.jpg",
+        "/photo101.jpg"
+      ]
+    },
+    {
+      "id": 51,
+      "floor": 1,
+      "x": 1490,
+      "y": 943,
+      "mac": "00:00:00:00",
+      "name": "Г-316",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        31,
+        60
+      ],
+      "photoUrls": [
+        "/photo102.jpg",
+        "/photo103.jpg"
+      ]
+    },
+    {
+      "id": 52,
+      "floor": 1,
+      "x": 1568,
+      "y": 945,
+      "mac": "00:00:00:00",
+      "name": "Г-319",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        61,
+        63
+      ],
+      "photoUrls": [
+        "/photo104.jpg",
+        "/photo105.jpg"
+      ]
+    },
+    {
+      "id": 53,
+      "floor": 1,
+      "x": 1716,
+      "y": 945,
+      "mac": "00:00:00:00",
+      "name": "Г-320",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        32,
+        62
+      ],
+      "photoUrls": [
+        "/photo106.jpg",
+        "/photo107.jpg"
+      ]
+    },
+    {
+      "id": 54,
+      "floor": 1,
+      "x": 958,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        28,
+        55,
+        43
+      ],
+      "photoUrls": [
+        "/photo108.jpg",
+        "/photo109.jpg"
+      ]
+    },
+    {
+      "id": 55,
+      "floor": 1,
+      "x": 1036,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        54,
+        56,
+        42
+      ],
+      "photoUrls": [
+        "/photo110.jpg",
+        "/photo111.jpg"
+      ]
+    },
+    {
+      "id": 56,
+      "floor": 1,
+      "x": 1110,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        55,
+        57,
+        49
+      ],
+      "photoUrls": [
+        "/photo112.jpg",
+        "/photo113.jpg"
+      ]
+    },
+    {
+      "id": 57,
+      "floor": 1,
+      "x": 1146,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        56,
+        58,
+        41
+      ],
+      "photoUrls": [
+        "/photo114.jpg",
+        "/photo115.jpg"
+      ]
+    },
+    {
+      "id": 58,
+      "floor": 1,
+      "x": 1302,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        57,
+        59,
+        50
+      ],
+      "photoUrls": [
+        "/photo116.jpg",
+        "/photo117.jpg"
+      ]
+    },
+    {
+      "id": 59,
+      "floor": 1,
+      "x": 1436,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        58,
+        60,
+        40
+      ],
+      "photoUrls": [
+        "/photo118.jpg",
+        "/photo119.jpg"
+      ]
+    },
+    {
+      "id": 60,
+      "floor": 1,
+      "x": 1490,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        59,
+        61,
+        51
+      ],
+      "photoUrls": [
+        "/photo120.jpg",
+        "/photo121.jpg"
+      ]
+    },
+    {
+      "id": 61,
+      "floor": 1,
+      "x": 1568,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        60,
+        62,
+        39,
+        52
+      ],
+      "photoUrls": [
+        "/photo122.jpg",
+        "/photo123.jpg"
+      ]
+    },
+    {
+      "id": 62,
+      "floor": 1,
+      "x": 1716,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        61,
+        53,
+        65
+      ],
+      "photoUrls": [
+        "/photo124.jpg",
+        "/photo125.jpg"
+      ]
+    },
+    {
+      "id": 63,
+      "floor": 1,
+      "x": 1588,
+      "y": 1059,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        52
+      ],
+      "photoUrls": [
+        "/photo126.jpg",
+        "/photo127.jpg"
+      ]
+    },
+    {
+      "id": 64,
+      "floor": 1,
+      "x": 1756,
+      "y": 758,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        35,
+        65
+      ],
+      "photoUrls": [
+        "/photo128.jpg",
+        "/photo129.jpg"
+      ]
+    },
+    {
+      "id": 65,
+      "floor": 1,
+      "x": 1756,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        62,
+        64,
+        66
+      ],
+      "photoUrls": [
+        "/photo130.jpg",
+        "/photo131.jpg"
+      ]
+    },
+    {
+      "id": 66,
+      "floor": 1,
+      "x": 1898,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        65,
+        33,
+        38,
+        96
+      ],
+      "photoUrls": [
+        "/photo132.jpg",
+        "/photo133.jpg"
+      ]
+    },
+    {
+      "id": 67,
+      "floor": 1,
+      "x": 2084,
+      "y": 945,
+      "mac": "00:00:00:00",
+      "name": "Г-321",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        87,
+        68
+      ],
+      "photoUrls": [
+        "/photo134.jpg",
+        "/photo135.jpg"
+      ]
+    },
+    {
+      "id": 68,
+      "floor": 1,
+      "x": 2082,
+      "y": 1047,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        67
+      ],
+      "photoUrls": [
+        "/photo136.jpg",
+        "/photo137.jpg"
+      ]
+    },
+    {
+      "id": 69,
+      "floor": 1,
+      "x": 2198,
+      "y": 1044,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        70
+      ],
+      "photoUrls": [
+        "/photo138.jpg",
+        "/photo139.jpg"
+      ]
+    },
+    {
+      "id": 70,
+      "floor": 1,
+      "x": 2198,
+      "y": 945,
+      "mac": "00:00:00:00",
+      "name": "Г-322",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        89,
+        69
+      ],
+      "photoUrls": [
+        "/photo140.jpg",
+        "/photo141.jpg"
+      ]
+    },
+    {
+      "id": 71,
+      "floor": 1,
+      "x": 2142,
+      "y": 756,
+      "mac": "00:00:00:00",
+      "name": "Г-323",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        88,
+        72
+      ],
+      "photoUrls": [
+        "/photo142.jpg",
+        "/photo143.jpg"
+      ]
+    },
+    {
+      "id": 72,
+      "floor": 1,
+      "x": 2148,
+      "y": 637,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        71
+      ],
+      "photoUrls": [
+        "/photo144.jpg",
+        "/photo145.jpg"
+      ]
+    },
+    {
+      "id": 73,
+      "floor": 1,
+      "x": 2228,
+      "y": 625,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        74
+      ],
+      "photoUrls": [
+        "/photo146.jpg",
+        "/photo147.jpg"
+      ]
+    },
+    {
+      "id": 74,
+      "floor": 1,
+      "x": 2232,
+      "y": 753,
+      "mac": "00:00:00:00",
+      "name": "Г-324",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        95,
+        73
+      ],
+      "photoUrls": [
+        "/photo148.jpg",
+        "/photo149.jpg"
+      ]
+    },
+    {
+      "id": 75,
+      "floor": 1,
+      "x": 2316,
+      "y": 753,
+      "mac": "00:00:00:00",
+      "name": "Г-326",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        90,
+        76
+      ],
+      "photoUrls": [
+        "/photo150.jpg",
+        "/photo151.jpg"
+      ]
+    },
+    {
+      "id": 76,
+      "floor": 1,
+      "x": 2380,
+      "y": 645,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        75
+      ],
+      "photoUrls": [
+        "/photo152.jpg",
+        "/photo153.jpg"
+      ]
+    },
+    {
+      "id": 77,
+      "floor": 1,
+      "x": 2514,
+      "y": 753,
+      "mac": "00:00:00:00",
+      "name": "Г-330",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        92,
+        78
+      ],
+      "photoUrls": [
+        "/photo154.jpg",
+        "/photo155.jpg"
+      ]
+    },
+    {
+      "id": 78,
+      "floor": 1,
+      "x": 2556,
+      "y": 635,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        77
+      ],
+      "photoUrls": [
+        "/photo156.jpg",
+        "/photo157.jpg"
+      ]
+    },
+    {
+      "id": 79,
+      "floor": 1,
+      "x": 2674,
+      "y": 760,
+      "mac": "00:00:00:00",
+      "name": "Г-331",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        93,
+        80
+      ],
+      "photoUrls": [
+        "/photo158.jpg",
+        "/photo159.jpg"
+      ]
+    },
+    {
+      "id": 80,
+      "floor": 1,
+      "x": 2672,
+      "y": 615,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        79
+      ],
+      "photoUrls": [
+        "/photo160.jpg",
+        "/photo161.jpg"
+      ]
+    },
+    {
+      "id": 81,
+      "floor": 1,
+      "x": 2648,
+      "y": 1040,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        82
+      ],
+      "photoUrls": [
+        "/photo162.jpg",
+        "/photo163.jpg"
+      ]
+    },
+    {
+      "id": 82,
+      "floor": 1,
+      "x": 2674,
+      "y": 945,
+      "mac": "00:00:00:00",
+      "name": "Г-328",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        93,
+        81
+      ],
+      "photoUrls": [
+        "/photo164.jpg",
+        "/photo165.jpg"
+      ]
+    },
+    {
+      "id": 83,
+      "floor": 1,
+      "x": 2524,
+      "y": 1049,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        84
+      ],
+      "photoUrls": [
+        "/photo166.jpg",
+        "/photo167.jpg"
+      ]
+    },
+    {
+      "id": 84,
+      "floor": 1,
+      "x": 2514,
+      "y": 945,
+      "mac": "00:00:00:00",
+      "name": "Г-327",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        92,
+        83
+      ],
+      "photoUrls": [
+        "/photo168.jpg",
+        "/photo169.jpg"
+      ]
+    },
+    {
+      "id": 85,
+      "floor": 1,
+      "x": 2370,
+      "y": 1042,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        86
+      ],
+      "photoUrls": [
+        "/photo170.jpg",
+        "/photo171.jpg"
+      ]
+    },
+    {
+      "id": 86,
+      "floor": 1,
+      "x": 2372,
+      "y": 943,
+      "mac": "00:00:00:00",
+      "name": "Г-325",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        91,
+        85
+      ],
+      "photoUrls": [
+        "/photo172.jpg",
+        "/photo173.jpg"
+      ]
+    },
+    {
+      "id": 87,
+      "floor": 1,
+      "x": 2084,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        67,
+        88,
+        96
+      ],
+      "photoUrls": [
+        "/photo174.jpg",
+        "/photo175.jpg"
+      ]
+    },
+    {
+      "id": 88,
+      "floor": 1,
+      "x": 2142,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        87,
+        71,
+        89
+      ],
+      "photoUrls": [
+        "/photo176.jpg",
+        "/photo177.jpg"
+      ]
+    },
+    {
+      "id": 89,
+      "floor": 1,
+      "x": 2198,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        88,
+        70,
+        95
+      ],
+      "photoUrls": [
+        "/photo178.jpg",
+        "/photo179.jpg"
+      ]
+    },
+    {
+      "id": 90,
+      "floor": 1,
+      "x": 2316,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        95,
+        75,
+        91
+      ],
+      "photoUrls": [
+        "/photo180.jpg",
+        "/photo181.jpg"
+      ]
+    },
+    {
+      "id": 91,
+      "floor": 1,
+      "x": 2372,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        90,
+        86,
+        92
+      ],
+      "photoUrls": [
+        "/photo182.jpg",
+        "/photo183.jpg"
+      ]
+    },
+    {
+      "id": 92,
+      "floor": 1,
+      "x": 2514,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        91,
+        84,
+        77,
+        93
+      ],
+      "photoUrls": [
+        "/photo184.jpg",
+        "/photo185.jpg"
+      ]
+    },
+    {
+      "id": 93,
+      "floor": 1,
+      "x": 2674,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        92,
+        82,
+        79,
+        94
+      ],
+      "photoUrls": [
+        "/photo186.jpg",
+        "/photo187.jpg"
+      ]
+    },
+    {
+      "id": 94,
+      "floor": 1,
+      "x": 2846,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        93,
+        97,
+        131
+      ],
+      "photoUrls": [
+        "/photo188.jpg",
+        "/photo189.jpg"
+      ]
+    },
+    {
+      "id": 95,
+      "floor": 1,
+      "x": 2232,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        89,
+        74,
+        90
+      ],
+      "photoUrls": [
+        "/photo190.jpg",
+        "/photo191.jpg"
+      ]
+    },
+    {
+      "id": 96,
+      "floor": 1,
+      "x": 2030,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        66,
+        87,
+        34
+      ],
+      "photoUrls": [
+        "/photo192.jpg",
+        "/photo193.jpg"
+      ]
+    },
+    {
+      "id": 97,
+      "floor": 1,
+      "x": 2846,
+      "y": 756,
+      "mac": "00:00:00:00",
+      "name": "Г-332",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        94,
+        98
+      ],
+      "photoUrls": [
+        "/photo194.jpg",
+        "/photo195.jpg"
+      ]
+    },
+    {
+      "id": 98,
+      "floor": 1,
+      "x": 2860,
+      "y": 635,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        97
+      ],
+      "photoUrls": [
+        "/photo196.jpg",
+        "/photo197.jpg"
+      ]
+    },
+    {
+      "id": 99,
+      "floor": 1,
+      "x": 3144,
+      "y": 1049,
+      "mac": "00:00:00:00",
+      "name": "Туалет восток",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        100,
+        121
+      ],
+      "photoUrls": [
+        "/photo198.jpg",
+        "/photo199.jpg"
+      ]
+    },
+    {
+      "id": 100,
+      "floor": 1,
+      "x": 3014,
+      "y": 1053,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        99
+      ],
+      "photoUrls": [
+        "/photo200.jpg",
+        "/photo201.jpg"
+      ]
+    },
+    {
+      "id": 101,
+      "floor": 1,
+      "x": 3140,
+      "y": 1161,
+      "mac": "00:00:00:00",
+      "name": "Г-337",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        102,
+        122
+      ],
+      "photoUrls": [
+        "/photo202.jpg",
+        "/photo203.jpg"
+      ]
+    },
+    {
+      "id": 102,
+      "floor": 1,
+      "x": 3008,
+      "y": 1166,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        101
+      ],
+      "photoUrls": [
+        "/photo204.jpg",
+        "/photo205.jpg"
+      ]
+    },
+    {
+      "id": 103,
+      "floor": 1,
+      "x": 3138,
+      "y": 1259,
+      "mac": "00:00:00:00",
+      "name": "Г-338",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        124,
+        104
+      ],
+      "photoUrls": [
+        "/photo206.jpg",
+        "/photo207.jpg"
+      ]
+    },
+    {
+      "id": 104,
+      "floor": 1,
+      "x": 3012,
+      "y": 1267,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        103
+      ],
+      "photoUrls": [
+        "/photo208.jpg",
+        "/photo209.jpg"
+      ]
+    },
+    {
+      "id": 105,
+      "floor": 1,
+      "x": 3138,
+      "y": 1355,
+      "mac": "00:00:00:00",
+      "name": "Г-339",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        125,
+        106
+      ],
+      "photoUrls": [
+        "/photo210.jpg",
+        "/photo211.jpg"
+      ]
+    },
+    {
+      "id": 106,
+      "floor": 1,
+      "x": 3006,
+      "y": 1361,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        105
+      ],
+      "photoUrls": [
+        "/photo212.jpg",
+        "/photo213.jpg"
+      ]
+    },
+    {
+      "id": 107,
+      "floor": 1,
+      "x": 3140,
+      "y": 1459,
+      "mac": "00:00:00:00",
+      "name": "Г-340",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        126,
+        108
+      ],
+      "photoUrls": [
+        "/photo214.jpg",
+        "/photo215.jpg"
+      ]
+    },
+    {
+      "id": 108,
+      "floor": 1,
+      "x": 3016,
+      "y": 1473,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        107
+      ],
+      "photoUrls": [
+        "/photo216.jpg",
+        "/photo217.jpg"
+      ]
+    },
+    {
+      "id": 109,
+      "floor": 1,
+      "x": 3140,
+      "y": 1750,
+      "mac": "00:00:00:00",
+      "name": "Г-341а",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        128,
+        112
+      ],
+      "photoUrls": [
+        "/photo218.jpg",
+        "/photo219.jpg"
+      ]
+    },
+    {
+      "id": 110,
+      "floor": 1,
+      "x": 3318,
+      "y": 1750,
+      "mac": "00:00:00:00",
+      "name": "Г-341",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        112,
+        111
+      ],
+      "photoUrls": [
+        "/photo220.jpg",
+        "/photo221.jpg"
+      ]
+    },
+    {
+      "id": 111,
+      "floor": 1,
+      "x": 3438,
+      "y": 1843,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        110
+      ],
+      "photoUrls": [
+        "/photo222.jpg",
+        "/photo223.jpg"
+      ]
+    },
+    {
+      "id": 112,
+      "floor": 1,
+      "x": 3226,
+      "y": 1750,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        127,
+        109,
+        110
+      ],
+      "photoUrls": [
+        "/photo224.jpg",
+        "/photo225.jpg"
+      ]
+    },
+    {
+      "id": 113,
+      "floor": 1,
+      "x": 3314,
+      "y": 1612,
+      "mac": "00:00:00:00",
+      "name": "Г-342",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        127,
+        129
+      ],
+      "photoUrls": [
+        "/photo226.jpg",
+        "/photo227.jpg"
+      ]
+    },
+    {
+      "id": 114,
+      "floor": 1,
+      "x": 3314,
+      "y": 1355,
+      "mac": "00:00:00:00",
+      "name": "Г-343",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        125,
+        134
+      ],
+      "photoUrls": [
+        "/photo228.jpg",
+        "/photo229.jpg"
+      ]
+    },
+    {
+      "id": 115,
+      "floor": 1,
+      "x": 3316,
+      "y": 1212,
+      "mac": "00:00:00:00",
+      "name": "Г-344",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        123,
+        116
+      ],
+      "photoUrls": [
+        "/photo230.jpg",
+        "/photo231.jpg"
+      ]
+    },
+    {
+      "id": 116,
+      "floor": 1,
+      "x": 3432,
+      "y": 1125,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        115
+      ],
+      "photoUrls": [
+        "/photo232.jpg",
+        "/photo233.jpg"
+      ]
+    },
+    {
+      "id": 117,
+      "floor": 1,
+      "x": 3322,
+      "y": 809,
+      "mac": "00:00:00:00",
+      "name": "Г-345",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        118,
+        132
+      ],
+      "photoUrls": [
+        "/photo234.jpg",
+        "/photo235.jpg"
+      ]
+    },
+    {
+      "id": 118,
+      "floor": 1,
+      "x": 3440,
+      "y": 834,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        119,
+        117
+      ],
+      "photoUrls": [
+        "/photo236.jpg",
+        "/photo237.jpg"
+      ]
+    },
+    {
+      "id": 119,
+      "floor": 1,
+      "x": 3430,
+      "y": 760,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        120,
+        118
+      ],
+      "photoUrls": [
+        "/photo238.jpg",
+        "/photo239.jpg"
+      ]
+    },
+    {
+      "id": 120,
+      "floor": 1,
+      "x": 3280,
+      "y": 484,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        119,
+        133
+      ],
+      "photoUrls": [
+        "/photo240.jpg",
+        "/photo241.jpg"
+      ]
+    },
+    {
+      "id": 121,
+      "floor": 1,
+      "x": 3226,
+      "y": 1044,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        122,
+        99,
+        132
+      ],
+      "photoUrls": [
+        "/photo242.jpg",
+        "/photo243.jpg"
+      ]
+    },
+    {
+      "id": 122,
+      "floor": 1,
+      "x": 3226,
+      "y": 1161,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        121,
+        123,
+        101
+      ],
+      "photoUrls": [
+        "/photo244.jpg",
+        "/photo245.jpg"
+      ]
+    },
+    {
+      "id": 123,
+      "floor": 1,
+      "x": 3226,
+      "y": 1212,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        122,
+        124,
+        115
+      ],
+      "photoUrls": [
+        "/photo246.jpg",
+        "/photo247.jpg"
+      ]
+    },
+    {
+      "id": 124,
+      "floor": 1,
+      "x": 3226,
+      "y": 1259,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        123,
+        125,
+        103
+      ],
+      "photoUrls": [
+        "/photo248.jpg",
+        "/photo249.jpg"
+      ]
+    },
+    {
+      "id": 125,
+      "floor": 1,
+      "x": 3226,
+      "y": 1355,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        124,
+        126,
+        105,
+        114
+      ],
+      "photoUrls": [
+        "/photo250.jpg",
+        "/photo251.jpg"
+      ]
+    },
+    {
+      "id": 126,
+      "floor": 1,
+      "x": 3226,
+      "y": 1459,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        125,
+        127,
+        127,
+        107
+      ],
+      "photoUrls": [
+        "/photo252.jpg",
+        "/photo253.jpg"
+      ]
+    },
+    {
+      "id": 127,
+      "floor": 1,
+      "x": 3226,
+      "y": 1612,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        126,
+        112,
+        113,
+        126,
+        130
+      ],
+      "photoUrls": [
+        "/photo254.jpg",
+        "/photo255.jpg"
+      ]
+    },
+    {
+      "id": 128,
+      "floor": 1,
+      "x": 2982,
+      "y": 1832,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        109
+      ],
+      "photoUrls": [
+        "/photo256.jpg",
+        "/photo257.jpg"
+      ]
+    },
+    {
+      "id": 129,
+      "floor": 1,
+      "x": 3442,
+      "y": 1561,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        113
+      ],
+      "photoUrls": [
+        "/photo258.jpg",
+        "/photo259.jpg"
+      ]
+    },
+    {
+      "id": 130,
+      "floor": 1,
+      "x": 3022,
+      "y": 1612,
+      "mac": "00:00:00:00",
+      "name": "Лестница восток",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        127
+      ],
+      "photoUrls": [
+        "/photo260.jpg",
+        "/photo261.jpg"
+      ]
+    },
+    {
+      "id": 131,
+      "floor": 1,
+      "x": 3142,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        94,
+        133,
+        132
+      ],
+      "photoUrls": [
+        "/photo262.jpg",
+        "/photo263.jpg"
+      ]
+    },
+    {
+      "id": 132,
+      "floor": 1,
+      "x": 3226,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        131,
+        117,
+        121
+      ],
+      "photoUrls": [
+        "/photo264.jpg",
+        "/photo265.jpg"
+      ]
+    },
+    {
+      "id": 133,
+      "floor": 1,
+      "x": 3142,
+      "y": 751,
+      "mac": "00:00:00:00",
+      "name": "Г-333",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        131,
+        120
+      ],
+      "photoUrls": [
+        "/photo266.jpg",
+        "/photo267.jpg"
+      ]
+    },
+    {
+      "id": 134,
+      "floor": 1,
+      "x": 3440,
+      "y": 1357,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        114
+      ],
+      "photoUrls": [
+        "/photo268.jpg",
+        "/photo269.jpg"
+      ]
+    },
+    {
+      "id": 135,
+      "floor": 2,
+      "x": 1898,
+      "y": 1038,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        33,
+        136
+      ],
+      "photoUrls": [
+        "/photo270.jpg",
+        "/photo271.jpg"
+      ]
+    },
+    {
+      "id": 136,
+      "floor": 2,
+      "x": 1898,
+      "y": 858,
+      "mac": "00:00:00:00",
+      "name": "",
+      "description": "Описание",
+      "type": "Аудитория",
+      "connected": [
+        135
+      ],
+      "photoUrls": [
+        "/photo272.jpg",
+        "/photo273.jpg"
+      ]
+    }
+  ]
+}

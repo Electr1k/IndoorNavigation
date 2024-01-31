@@ -71,7 +71,8 @@ class MapHelper(
     private val mapView: MapView,
     private val locationName: String,
     private val navigation: Navigation,
-    private val navController: NavController
+    private val navController: NavController,
+    private val isFromAssets: Boolean = false
 ) : TileStreamProvider {
 
     /** @Param [finishMarker] – маркер конца маршрута на карте */
@@ -249,9 +250,18 @@ class MapHelper(
     /**
      * Метод для подгрузки тайлов карты к MapView
      * */
-    @SuppressLint("SdCardPath")
+    @SuppressLint("SdCardPath", "SuspiciousIndentation")
     override fun getTileStream(row: Int, col: Int, zoomLvl: Int): InputStream? {
         return try {
+            if (isFromAssets) {
+                try {
+                    activity.assets.open("tiles$levelNumber/$zoomLvl/$row/$col.jpg")
+                }
+                catch (e: Exception){
+                    activity.assets.open("tiles$levelNumber/blank.png")
+                }
+            }
+            else
             FileInputStream(
                 File(
                     "$unzipPath/$locationName/",

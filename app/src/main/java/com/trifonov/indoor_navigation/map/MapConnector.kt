@@ -17,17 +17,19 @@ import com.trifonov.indoor_navigation.map.MapConstants.levelArray
 import com.trifonov.indoor_navigation.map.MapConstants.levelNumber
 import com.trifonov.indoor_navigation.map.MapConstants.startNode
 import com.trifonov.indoor_navigation.map.MapConstants.zoomLevelCount
+import org.json.JSONObject
+import org.json.JSONTokener
 import ovh.plrapps.mapview.MapView
 
 class MapConnector(
     private val activity: Activity,
-    private var locationName: String,
     private val navController: NavController
 ):
     NumberPicker.OnValueChangeListener,
     View.OnClickListener
 {
 
+    private lateinit var locationName: String
     private lateinit var mapView: MapView
     private lateinit var mapHelper: MapHelper
     private lateinit var levelPicker: NumberPicker
@@ -46,16 +48,62 @@ class MapConnector(
     init {
         activity.runOnUiThread {
             configureViews(parentView,false)
+            initStartMap()
         }
     }
 
+    /**
+     * Метод для установки начальной карты
+     * */
+    private fun initStartMap(){
+        val json = activity.assets.open("map.json").bufferedReader().use{
+            it.readText()
+        }
+        locationName = ""
+
+        zoomLevelCount = activity.assets.list("tiles1")!!.size - 1;
+
+        val map = JSONTokener(json).nextValue() as JSONObject
+        val jsonDots = map.getJSONArray("dots")
+        val locationId = map.getInt("locationId")
+        MapConstants.mapWidth = map.getInt("width")
+        MapConstants.mapHeight = map.getInt("height")
+        dotList.clear()
+        var i = -1
+        while (++i < jsonDots.length()) {
+            val jsonDot = jsonDots.getJSONObject(i)
+            val dot = Map.Dot(jsonDot.getDouble("x").toFloat(), jsonDot.getDouble("y").toFloat())
+            dot.setLevel(jsonDot.getInt("floor"))
+            dot.setMac(jsonDot.getString("mac"))
+            dot.setName(jsonDot.getString("name"))
+            dot.setDescription(jsonDot.getString("description"))
+            dot.setType(jsonDot.getString("type"))
+            dot.setPhotos(jsonDot.getJSONArray("photoUrls"))
+            dot.setId(jsonDot.getInt("id"))
+            dot.setConnected(jsonDot.getJSONArray("connected"))
+            if (!levelArray.contains(dot.getLevel().toString())) {
+                levelArray.add(dot.getLevel().toString())
+            }
+            dotList.add(dot)
+        }
+        levelArray.sort()
+
+        parentView.removeAllViewsInLayout()
+        mapView = MapView(activity)
+        parentView.addView(mapView)
+        parentView.addView(zoomIn)
+        parentView.addView(zoomOut)
+        parentView.addView(position)
+        parentView.addView(levelPicker)
+        configureViews(parentView)
+        configureMapView(mapView,1f, true)
+    }
 
     /**
      * Метод для установки локации по названию локации
-     * @Param [location] - название локаци
+     * @Param [location] - локация
      * @Param [downloadView] - view с прогресс баром (R.layout.download_view)
      * @Param [dialog] - dialog, для закрытия диалога после загрузки
-     * @Param [isFirstLoading] - флаг первой установки локации
      * @return Boolean - успешная/безуспешная инициализация
      * */
     internal fun setLocation(location: LocationEntity, downloadView: View? = null, dialog: AlertDialog? = null): Boolean {
@@ -136,10 +184,11 @@ class MapConnector(
      * */
     private fun configureMapView(
         mapView: MapView,
-        scale: Float = 0f
+        scale: Float = 0f,
+        isFromAssets: Boolean = false,
     ) {
         mapHelper =
-            MapHelper(activity, mapView, locationName, navigation, navController)
+            MapHelper(activity, mapView, locationName, navigation, navController, isFromAssets)
         mapHelper.setScale(scale)
         mapHelper.addAllMarkers(dotList)
         mapHelper.addReferentialListener()
