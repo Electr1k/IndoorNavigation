@@ -38,7 +38,7 @@ class MapConnector(
     private lateinit var position: ImageButton
     private var navigation: Navigation = Navigation()
     private val parentView: ViewGroup = activity.findViewById<FrameLayout>(R.id.viewGroup) as ViewGroup
-
+    private var isFromAssets = true
     /**
      * @Param [fileHelper] класс для работы с файловой системой
      * @See [FileHelper]
@@ -47,7 +47,7 @@ class MapConnector(
 
     init {
         activity.runOnUiThread {
-            configureViews(parentView,false)
+            configureViews(parentView, false)
             initStartMap()
         }
     }
@@ -60,8 +60,8 @@ class MapConnector(
             it.readText()
         }
         locationName = ""
-
-        zoomLevelCount = activity.assets.list("tiles1")!!.size - 1;
+        isFromAssets = true
+        zoomLevelCount = activity.assets.list("tiles1")!!.size - 1
 
         val map = JSONTokener(json).nextValue() as JSONObject
         val jsonDots = map.getJSONArray("dots")
@@ -96,7 +96,7 @@ class MapConnector(
         parentView.addView(position)
         parentView.addView(levelPicker)
         configureViews(parentView)
-        configureMapView(mapView,1f, true)
+        configureMapView(mapView,1f)
     }
 
     /**
@@ -108,6 +108,7 @@ class MapConnector(
      * */
     internal fun setLocation(location: LocationEntity, downloadView: View? = null, dialog: AlertDialog? = null): Boolean {
         locationName = location.dataUrl
+        isFromAssets = false
         fileHelper = FileHelper(activity, downloadView, location, dialog)
         val json = fileHelper.getJsonMap(location)
         return if (json != "empty location") {
@@ -185,7 +186,6 @@ class MapConnector(
     private fun configureMapView(
         mapView: MapView,
         scale: Float = 0f,
-        isFromAssets: Boolean = false,
     ) {
         mapHelper =
             MapHelper(activity, mapView, locationName, navigation, navController, isFromAssets)
