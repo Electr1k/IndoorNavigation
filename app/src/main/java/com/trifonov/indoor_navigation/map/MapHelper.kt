@@ -420,41 +420,31 @@ class MapHelper(
      * @See [Navigation]
      */
     internal fun updatePath() {
-        val myPath = navigation.path(startNode, finishNode, levelNumber)
-        if (myPath?.size!! > 3) {
-            val x1 = myPath[0].toInt()
-            val y1 = myPath[1].toInt()
-            val x2 = myPath[2].toInt()
-            val y2 = myPath[3].toInt()
-            positionRotation = calculateAngel(x1, y1, x2, y2)
-        }
         var myMarker = Map.Dot(0f, 0f)
         var myFinishMarker = Map.Dot(0f, 0f)
         for (marker in dotList) {
-            if (marker.getId() == startNode) {
-                myMarker = marker
-            }
+            if (marker.getId() == startNode) myMarker = marker
             if (marker.getId() == finishNode) myFinishMarker = marker
         }
-        if (levelNumber == myMarker.getLevel()) positionMarker.visibility = View.VISIBLE
-        if (levelNumber == myFinishMarker.getLevel()) {
-            addFinishMarker(finishNode.toString())
-            finishMarker.visibility = View.VISIBLE
-        } else
-            finishMarker.visibility = View.INVISIBLE
+        changeMarkerVisibility(myMarker, myFinishMarker)
 
-        var temp = minPathWidth + (maxPathWidth - minPathWidth) * newScale / maxScale
-        if (newScale == minScale) temp = minPathWidth
-        else if (newScale == maxScale) temp = maxPathWidth
         val drawablePath = object : PathView.DrawablePath {
             override val visible: Boolean = true
-            override var path: FloatArray = myPath as FloatArray
+            override var path: FloatArray = calculatePath()
             override var paint: Paint? = strokePaint
-            override val width: Float = temp
+            override val width: Float = calculatePathWidth()
         }
 
         pathView.updatePaths(listOf(drawablePath))
         if (!isPathSet) addPathView()
+    }
+
+    private fun changeMarkerVisibility(myMarker: Map.Dot, myFinishMarker: Map.Dot) {
+        if (levelNumber == myMarker.getLevel()) positionMarker.visibility = View.VISIBLE
+        if (levelNumber == myFinishMarker.getLevel()) {
+            addFinishMarker(finishNode.toString())
+            finishMarker.visibility = View.VISIBLE
+        } else finishMarker.visibility = View.INVISIBLE
     }
 
     /**
@@ -470,6 +460,27 @@ class MapHelper(
         angel += if (x2 - x1 >= 0) tmp
         else tmp + 180
         return angel
+    }
+
+    private fun calculatePath(): FloatArray {
+        val finish = if(finishMarker.visibility == View.INVISIBLE) dotList[dotList.size-3].getId() else finishNode
+        val start = if(positionMarker.visibility == View.INVISIBLE) dotList[dotList.size-2].getId() else startNode
+        val myPath = navigation.path(start, finish, levelNumber)
+        if (myPath?.size!! > 3) {
+            val x1 = myPath[0].toInt()
+            val y1 = myPath[1].toInt()
+            val x2 = myPath[2].toInt()
+            val y2 = myPath[3].toInt()
+            positionRotation = calculateAngel(x1, y1, x2, y2)
+        }
+        return myPath
+    }
+
+    private fun calculatePathWidth() : Float{
+        var temp = minPathWidth + (maxPathWidth - minPathWidth) * newScale / maxScale
+        if (newScale == minScale) temp = minPathWidth
+        else if (newScale == maxScale) temp = maxPathWidth
+        return temp
     }
 
     /**
