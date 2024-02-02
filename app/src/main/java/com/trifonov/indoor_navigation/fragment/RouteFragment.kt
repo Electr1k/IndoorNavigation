@@ -1,6 +1,7 @@
 package com.trifonov.indoor_navigation.fragment
 
 import android.annotation.SuppressLint
+import android.app.ActionBar.LayoutParams
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.AudienceRouteAdapter
 import com.trifonov.indoor_navigation.adapter.AudienceTypeAdapter
 import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
+import kotlin.properties.Delegates
 
 class RouteFragment: CustomFragment() {
     private lateinit var typesRV: RecyclerView
@@ -26,7 +28,10 @@ class RouteFragment: CustomFragment() {
     private lateinit var swapImage: ImageView
     private lateinit var pointA: EditText
     private lateinit var pointB: EditText
+    private lateinit var btnContainer: LinearLayout
+    private lateinit var resultSearchLinearLayout: LinearLayout
     private lateinit var fragment: View
+    private var peekHeight = 0
 
     @Nullable
     @MainThread
@@ -47,9 +52,11 @@ class RouteFragment: CustomFragment() {
         fragment = view
         typesRV = view.findViewById(R.id.audience_types)
         audienceRV = view.findViewById(R.id.result_search)
+        resultSearchLinearLayout = view.findViewById(R.id.result_search_LL)
         swapImage = view.findViewById(R.id.swap_image)
         pointA = view.findViewById(R.id.route_from)
         pointB = view.findViewById(R.id.route_to)
+        btnContainer = view.findViewById(R.id.btnContainer)
         initBottomSheet(view)
     }
 
@@ -59,9 +66,16 @@ class RouteFragment: CustomFragment() {
         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         val slideUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
         mBottomSheet.startAnimation(slideUpAnimation)
+        btnContainer.translationY = 0f
+        btnContainer.startAnimation(slideUpAnimation)
         val viewCollapsed = fragment.findViewById<LinearLayout>(R.id.view_collapsed)
         viewCollapsed.post {
-            mBottomSheetBehavior.peekHeight = viewCollapsed.height
+            println("Height btn ${btnContainer.height}")
+            peekHeight = viewCollapsed.height + btnContainer.height
+            mBottomSheetBehavior.peekHeight = peekHeight
+            val view = View(activity)
+            view.layoutParams = LinearLayout.LayoutParams(0, btnContainer.height + 40)
+            resultSearchLinearLayout.addView(view)
         }
     }
 
