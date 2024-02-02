@@ -96,8 +96,7 @@ class SelectedPointFragment: CustomFragment() {
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             finishNode = selectedPoint.getId()
             val bundle = Bundle()
-            bundle.putBoolean("isToPoint", true)
-            bundle.putString("nameTo", selectedPoint.getName())
+            bundle.putBoolean("isFromPoint", true)
             view.findNavController().navigate(R.id.action_scan_to_route, bundle)
             mapConnector.updatePath(finishNode)
         }
@@ -106,7 +105,6 @@ class SelectedPointFragment: CustomFragment() {
             startNode = selectedPoint.getId()
             val bundle = Bundle()
             bundle.putBoolean("isFromPoint", true)
-            bundle.putString("nameFrom", selectedPoint.getName())
             view.findNavController().navigate(R.id.action_scan_to_route, bundle)
             mapConnector.updatePath(finish = finishNode, start = startNode)
         }

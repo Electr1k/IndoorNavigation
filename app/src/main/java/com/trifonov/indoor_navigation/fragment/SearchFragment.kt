@@ -9,10 +9,13 @@ import android.view.animation.AnimationUtils
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.AudienceSearchAdapter
+import com.trifonov.indoor_navigation.map.MapConstants
+import com.trifonov.indoor_navigation.map.MapConstants.dotList
 
 class SearchFragment: CustomFragment() {
     @Nullable
@@ -31,11 +34,14 @@ class SearchFragment: CustomFragment() {
     override fun onViewCreated(@NonNull view: View, @Nullable savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val recyclerView = view.findViewById<RecyclerView>(R.id.list_item)
-        val list = mutableListOf<String>()
-        repeat(25) {
-            list.add(it, "Г - $it")
+        val list = dotList.filter { it.getName().isNotEmpty() }
+        recyclerView.adapter = AudienceSearchAdapter(list) { dot ->
+            mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            MapConstants.mapConnector.moveCameraToDot(dot)
+            val bundle = Bundle()
+            bundle.putInt("id", dot.getId())
+            findNavController().navigate(R.id.action_search_to_scan, bundle)
         }
-        recyclerView.adapter = AudienceSearchAdapter(list)
     }
 
     override fun onStart() {

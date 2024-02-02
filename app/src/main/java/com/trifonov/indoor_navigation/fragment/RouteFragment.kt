@@ -1,7 +1,6 @@
 package com.trifonov.indoor_navigation.fragment
 
 import android.annotation.SuppressLint
-import android.app.ActionBar.LayoutParams
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,13 +13,15 @@ import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.cardview.widget.CardView
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.AudienceRouteAdapter
 import com.trifonov.indoor_navigation.adapter.AudienceTypeAdapter
+import com.trifonov.indoor_navigation.map.MapConstants
+import com.trifonov.indoor_navigation.map.MapConstants.dotList
 import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
-import kotlin.properties.Delegates
 
 class RouteFragment: CustomFragment() {
     private lateinit var typesRV: RecyclerView
@@ -32,6 +33,14 @@ class RouteFragment: CustomFragment() {
     private lateinit var resultSearchLinearLayout: LinearLayout
     private lateinit var fragment: View
     private var peekHeight = 0
+    private val filterList = mutableListOf(
+        "Туалет",
+        "Аудитория",
+        "Лекционный зал",
+        "Кафе",
+        "Зона отдыха"
+    )
+    private lateinit var adapterResultDot: AudienceRouteAdapter
 
     @Nullable
     @MainThread
@@ -63,7 +72,8 @@ class RouteFragment: CustomFragment() {
     override fun onStart() {
         super.onStart()
         mBottomSheet.visibility = View.VISIBLE
-        mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        if (arguments?.getBoolean("isFromPoint") == true) mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        else mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         val slideUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
         mBottomSheet.startAnimation(slideUpAnimation)
         btnContainer.translationY = 0f
@@ -77,6 +87,15 @@ class RouteFragment: CustomFragment() {
             view.layoutParams = LinearLayout.LayoutParams(0, btnContainer.height + 40)
             resultSearchLinearLayout.addView(view)
         }
+        val resultList = dotList.filter { it.getType() in filterList && it.getName().isNotEmpty() }
+        adapterResultDot = AudienceRouteAdapter(resultList) { dot ->
+            mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            mapConnector.moveCameraToDot(dot)
+            val bundle = Bundle()
+            bundle.putInt("id", dot.getId())
+            findNavController().navigate(R.id.action_route_to_scan, bundle)
+        }
+        audienceRV.adapter = adapterResultDot
     }
 
     /**
@@ -85,16 +104,20 @@ class RouteFragment: CustomFragment() {
      */
     private fun initBottomSheet(view: View){
         mBottomSheetBehavior.skipCollapsed = false
-        val isFromPoint = arguments?.getBoolean("isFromPoint") ?: false
-        val isToPoint = arguments?.getBoolean("isToPoint") ?: false
-        if (isFromPoint) {
-            pointA.setText(arguments?.getString("nameFrom"))
-            pointB.setText("Моё местоположение")
-        }
-        if (isToPoint){
-            pointA.setText("Моё местоположение")
-            pointB.setText(arguments?.getString("nameTo"))
-        }
+        val dotStart = MapConstants.dotList.find { it.getId() == MapConstants.startNode }
+        val endDot = MapConstants.dotList.find { it.getId() == MapConstants.finishNode }
+//        val isFromPoint = arguments?.getBoolean("isFromPoint") ?: false
+//        val isToPoint = arguments?.getBoolean("isToPoint") ?: false
+//        if (isFromPoint) {
+//            pointA.setText(arguments?.getString("nameFrom"))
+//            pointB.setText("Моё местоположение")
+//        }
+//        if (isToPoint){
+//            pointA.setText("Моё местоположение")
+//            pointB.setText(arguments?.getString("nameTo"))
+//        }
+        pointA.setText(dotStart?.getName() ?: "")
+        pointB.setText(endDot?.getName() ?: "")
         view.findViewById<CardView>(R.id.build_route).setOnClickListener {
             try{
                 val start = pointA.text.toString().toInt()
@@ -111,15 +134,23 @@ class RouteFragment: CustomFragment() {
         swapImage.setOnClickListener{
             pointA.text = pointB.text.also { pointB.text = pointA.text } // Swap
         }
-        val list = listOf(
+        val typeList = listOf(
             "Туалет",
             "Аудитория",
             "Лекционный зал",
             "Кафе",
             "Зона отдыха"
         )
-        val listResult = listOf("Офис", "Туалет", "Офис","Офис", "Туалет","Другое", "Офис", "Туалет","Другое", "Офис")
-        audienceRV.adapter = AudienceRouteAdapter(listResult)
-        typesRV.adapter = AudienceTypeAdapter(list)
+
+        typesRV.adapter = AudienceTypeAdapter(typeList) { type, view ->
+            if (type in filterList) {
+                filterList.remove(type)
+                view.setCardBackgroundColor(resources.getColor(R.color.light_blue))
+            } else {
+                filterList.add(type)
+                view.setCardBackgroundColor(resources.getColor(R.color.lighting_blue))
+            }
+            adapterResultDot.updateList( dotList.filter { it.getType() in filterList && it.getName().isNotEmpty() } )
+        }
     }
 }

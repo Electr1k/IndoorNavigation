@@ -6,9 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.trifonov.indoor_navigation.R
+import com.trifonov.indoor_navigation.map.Map
 
 class AudienceRouteAdapter(
-    private val audienceList: List<String>
+    private var audienceList: List<Map.Dot>,
+    private val action: (Map.Dot) -> Unit
 ): RecyclerView.Adapter<AudienceRouteAdapter.AudienceRouteViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -22,12 +24,18 @@ class AudienceRouteAdapter(
     }
 
     override fun onBindViewHolder(holder: AudienceRouteViewHolder, position: Int) {
-        holder.title.text = audienceList[position]
-        holder.subtitle.text = audienceList[position]
+        holder.title.text = audienceList[position].getName()
+        holder.subtitle.text = audienceList[position].getType()
         holder.itemView.setOnClickListener{
-            println("Click")
+            action(audienceList[position])
         }
     }
+
+    fun updateList(newList: List<Map.Dot>){
+        audienceList = newList
+        notifyDataSetChanged()
+    }
+
     class AudienceRouteViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val title: TextView
         val subtitle: TextView

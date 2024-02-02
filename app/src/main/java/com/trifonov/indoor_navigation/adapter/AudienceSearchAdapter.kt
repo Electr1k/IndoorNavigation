@@ -6,9 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.trifonov.indoor_navigation.R
+import com.trifonov.indoor_navigation.map.Map
 
 class AudienceSearchAdapter(
-    private val audienceList: List<String>
+    private val audienceList: List<Map.Dot>,
+    private val action: (Map.Dot) -> Unit
 ): RecyclerView.Adapter<AudienceSearchAdapter.AudienceSearchViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -22,9 +24,9 @@ class AudienceSearchAdapter(
     }
 
     override fun onBindViewHolder(holder: AudienceSearchViewHolder, position: Int) {
-        holder.title.text = audienceList[position]
+        holder.title.text = audienceList[position].getName()
         holder.itemView.setOnClickListener{
-            println("Click")
+            action(audienceList[position])
         }
     }
     class AudienceSearchViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){

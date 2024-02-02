@@ -301,10 +301,10 @@ class MapHelper(
     /**
      * Метод перемещения камеры на указанные координаты
      * */
-    private fun moveCamera(x: Double, y: Double, scale: Float) {
+    internal fun moveCamera(x: Double, y: Double, scale: Float, shouldAnimate: Boolean = false) {
         mapView.moveMarker(centerMarker, x, y)
         mapView.setScaleFromCenter(scale)
-        mapView.moveToMarker(centerMarker, false)
+        mapView.moveToMarker(centerMarker, shouldAnimate)
         Log.d("MyLog", "$cameraRotation")
     }
 

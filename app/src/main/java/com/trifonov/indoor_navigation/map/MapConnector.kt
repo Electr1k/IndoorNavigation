@@ -145,6 +145,13 @@ class MapConnector(
     }
 
     /**
+     * Метод для перемещения камеры к точке
+     * */
+    internal fun moveCameraToDot(dot: Map.Dot){
+        mapHelper.moveCamera(dot.getX().toDouble(), dot.getY().toDouble(), 1f, true)
+    }
+
+    /**
      * Метод для настройки диапазона значений, отображаемых в [levelPicker]
      * @Param [min] минимальный номер этажа
      * @Param [max] максимальный номер этажа
