@@ -6,9 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
+import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -18,6 +21,10 @@ import com.trifonov.indoor_navigation.map.MapConstants
 import com.trifonov.indoor_navigation.map.MapConstants.dotList
 
 class SearchFragment: CustomFragment() {
+    private lateinit var search: EditText
+    private lateinit var RV: RecyclerView
+    private lateinit var adapter: AudienceSearchAdapter
+
     @Nullable
     @MainThread
     @SuppressLint("KotlinNullnessAnnotation")
@@ -33,14 +40,22 @@ class SearchFragment: CustomFragment() {
     @SuppressLint("KotlinNullnessAnnotation")
     override fun onViewCreated(@NonNull view: View, @Nullable savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.list_item)
+        RV = view.findViewById(R.id.list_item)
+        search = view.findViewById(R.id.search_input)
         val list = dotList.filter { it.getName().isNotEmpty() }
-        recyclerView.adapter = AudienceSearchAdapter(list) { dot ->
+        adapter = AudienceSearchAdapter(list) { dot ->
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             MapConstants.mapConnector.moveCameraToDot(dot)
             val bundle = Bundle()
             bundle.putInt("id", dot.getId())
             findNavController().navigate(R.id.action_search_to_scan, bundle)
+        }
+        RV.adapter = adapter
+        search.addTextChangedListener {
+            if (it.toString().isEmpty()) adapter.updateList(dotList.filter { dot -> dot.getName().isNotEmpty() })
+            else{
+                adapter.updateList(dotList.filter { dot -> dot.getName().contains(it.toString(), ignoreCase = true) })
+            }
         }
     }
 

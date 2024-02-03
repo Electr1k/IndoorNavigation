@@ -101,7 +101,7 @@ class Map {
      * @property [y] Y координата точки
      * @Constructor Создаёт точку с координатами [x], [y]
      */
-    class Dot(private var x: Float, private var y: Float) {
+    data class Dot(private var x: Float, private var y: Float) {
         /**
          * @Param [id] идентификатор точки
          * @Param [g]  стоимость пути от начальной вершины

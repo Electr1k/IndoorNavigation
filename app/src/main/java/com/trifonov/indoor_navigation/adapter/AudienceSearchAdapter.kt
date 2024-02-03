@@ -9,7 +9,7 @@ import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.map.Map
 
 class AudienceSearchAdapter(
-    private val audienceList: List<Map.Dot>,
+    private var audienceList: List<Map.Dot>,
     private val action: (Map.Dot) -> Unit
 ): RecyclerView.Adapter<AudienceSearchAdapter.AudienceSearchViewHolder>() {
     override fun onCreateViewHolder(
@@ -29,6 +29,12 @@ class AudienceSearchAdapter(
             action(audienceList[position])
         }
     }
+
+    internal fun updateList(newList: List<Map.Dot>){
+        audienceList = newList
+        notifyDataSetChanged()
+    }
+
     class AudienceSearchViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val title: TextView
         init {

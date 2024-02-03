@@ -36,6 +36,7 @@ class RouteFragment: CustomFragment() {
     private var peekHeight = 0
     private var btnHeight = 0
     private val filterList = mutableListOf<String>()
+    private var resultList = mutableListOf<Map.Dot>()
     private lateinit var adapterResultDot: AudienceRouteAdapter
 
     @Nullable
@@ -86,9 +87,11 @@ class RouteFragment: CustomFragment() {
             view.layoutParams = LinearLayout.LayoutParams(0, btnContainer.height + 40)
             resultSearchLinearLayout.addView(view)
         }
-        val resultList: MutableList<Map.Dot> = dotList.filter { (it.getType() in filterList || filterList.isEmpty()) && it.getName().isNotEmpty()  } as MutableList<Map.Dot>
-        resultList.add(0, dotList.find { it.getId() == startNode }!!)
-        resultList[0].setName("Моё местоположение")
+        resultList = dotList.filter { (it.getType() in filterList || filterList.isEmpty()) && it.getName().isNotEmpty()  } as MutableList<Map.Dot>
+        val dot = dotList.find { it.getId() == startNode }!!.copy()
+        dot.setName("Моё местоположение")
+        resultList.add(0, dot)
+        println(dotList)
         adapterResultDot = AudienceRouteAdapter(resultList) { dot ->
             pointA.isActivated
             if (pointA.isFocused){
@@ -113,8 +116,8 @@ class RouteFragment: CustomFragment() {
         pointB.setText(endDot?.getName() ?: "")
         view.findViewById<CardView>(R.id.build_route).setOnClickListener {
             try{
-                var start = dotList.find { it.getName() == pointA.text.toString() }
-                var end = dotList.find { it.getName() == pointB.text.toString() }
+                var start = resultList.find { it.getName() == pointA.text.toString() }
+                var end = resultList.find { it.getName() == pointB.text.toString() }
                 // TODO: ИСПРАВИТЬ КРИНЖОВУЮ ЛОГИКУ ПРИ ДОБАВЛЕНИИ ОПЕРЕДЕЛЕНИЯ МЕСТОПОЛОЖЕНИЯ
                 if (start!!.getName() == "Моё местоположение") start = dotList.find { it.getId() == startNode }
                 if (end!!.getName() == "Моё местоположение") end = dotList.find { it.getId() == finishNode }
@@ -153,9 +156,10 @@ class RouteFragment: CustomFragment() {
                 filterList.add(type)
                 view.setCardBackgroundColor(resources.getColor(R.color.lighting_blue))
             }
-            val resultList: MutableList<Map.Dot> = dotList.filter { (it.getType() in filterList || filterList.isEmpty()) && it.getName().isNotEmpty()  } as MutableList<Map.Dot>
-            resultList.add(0, dotList.find { it.getId() == startNode }!!)
-            resultList[0].setName("Моё местоположение")
+            resultList = dotList.filter { (it.getType() in filterList || filterList.isEmpty()) && it.getName().isNotEmpty()  } as MutableList<Map.Dot>
+            val dot = dotList.find { it.getId() == startNode }!!.copy()
+            dot.setName("Моё местоположение")
+            resultList.add(0, dot)
             adapterResultDot.updateList( resultList )
         }
     }
