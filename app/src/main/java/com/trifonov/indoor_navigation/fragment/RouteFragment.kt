@@ -33,13 +33,7 @@ class RouteFragment: CustomFragment() {
     private lateinit var resultSearchLinearLayout: LinearLayout
     private lateinit var fragment: View
     private var peekHeight = 0
-    private val filterList = mutableListOf(
-        "Туалет",
-        "Аудитория",
-        "Лекционный зал",
-        "Кафе",
-        "Зона отдыха"
-    )
+    private val filterList = mutableListOf<String>()
     private lateinit var adapterResultDot: AudienceRouteAdapter
 
     @Nullable
@@ -87,7 +81,7 @@ class RouteFragment: CustomFragment() {
             view.layoutParams = LinearLayout.LayoutParams(0, btnContainer.height + 40)
             resultSearchLinearLayout.addView(view)
         }
-        val resultList = dotList.filter { it.getType() in filterList && it.getName().isNotEmpty() }
+        val resultList = dotList.filter { (it.getType() in filterList || filterList.isEmpty()) && it.getName().isNotEmpty()  }
         adapterResultDot = AudienceRouteAdapter(resultList) { dot ->
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             mapConnector.moveCameraToDot(dot)
@@ -104,8 +98,8 @@ class RouteFragment: CustomFragment() {
      */
     private fun initBottomSheet(view: View){
         mBottomSheetBehavior.skipCollapsed = false
-        val dotStart = MapConstants.dotList.find { it.getId() == MapConstants.startNode }
-        val endDot = MapConstants.dotList.find { it.getId() == MapConstants.finishNode }
+        val dotStart = dotList.find { it.getId() == MapConstants.startNode }
+        val endDot = dotList.find { it.getId() == MapConstants.finishNode }
 //        val isFromPoint = arguments?.getBoolean("isFromPoint") ?: false
 //        val isToPoint = arguments?.getBoolean("isToPoint") ?: false
 //        if (isFromPoint) {
@@ -150,7 +144,7 @@ class RouteFragment: CustomFragment() {
                 filterList.add(type)
                 view.setCardBackgroundColor(resources.getColor(R.color.lighting_blue))
             }
-            adapterResultDot.updateList( dotList.filter { it.getType() in filterList && it.getName().isNotEmpty() } )
+            adapterResultDot.updateList( dotList.filter { (it.getType() in filterList || filterList.isEmpty()) && it.getName().isNotEmpty()  } )
         }
     }
 }
