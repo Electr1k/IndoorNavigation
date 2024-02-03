@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.NumberPicker
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.navigation.NavController
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.common.LocationEntity
@@ -20,6 +21,8 @@ import com.trifonov.indoor_navigation.map.MapConstants.zoomLevelCount
 import org.json.JSONObject
 import org.json.JSONTokener
 import ovh.plrapps.mapview.MapView
+import ovh.plrapps.mapview.api.addMarker
+import ovh.plrapps.mapview.api.removeMarker
 
 class MapConnector(
     private val activity: Activity,
@@ -150,6 +153,16 @@ class MapConnector(
     internal fun moveCameraToDot(dot: Map.Dot){
         mapHelper.moveCamera(dot.getX().toDouble(), dot.getY().toDouble(), 1f, true)
     }
+
+
+    internal fun setMarker(marker: AppCompatImageView, x: Double, y: Double){
+        mapView.addMarker(marker, x, y, -0.5f, -1f)
+    }
+
+    internal fun removeMarker(marker: View){
+        mapView.removeMarker(marker)
+    }
+
 
     /**
      * Метод для настройки диапазона значений, отображаемых в [levelPicker]

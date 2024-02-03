@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.cardview.widget.CardView
 import androidx.navigation.findNavController
 import androidx.viewpager.widget.ViewPager
@@ -44,6 +45,8 @@ class SelectedPointFragment: CustomFragment() {
     private var heightNavigationMenu: Int = 0
     private var progress = 0f
     private lateinit var selectedPoint: Map.Dot
+    private lateinit var markerView: AppCompatImageView
+
     @Nullable
     @MainThread
     @SuppressLint("KotlinNullnessAnnotation")
@@ -69,6 +72,9 @@ class SelectedPointFragment: CustomFragment() {
         navigateMenu = view.findViewById(R.id.navigateMenu)
         title = view.findViewById(R.id.title)
         description = view.findViewById(R.id.description)
+        markerView = AppCompatImageView(requireActivity()).apply {
+            setImageResource(R.drawable.marker)
+        }
         initBottomSheet(view)
 
         initPager()
@@ -76,6 +82,7 @@ class SelectedPointFragment: CustomFragment() {
 
     override fun onStart() {
         super.onStart()
+        mapConnector.setMarker(markerView, selectedPoint.getX().toDouble(), selectedPoint.getY().toDouble())
         mBottomSheet.visibility = View.VISIBLE
         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         val slideUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
@@ -316,6 +323,8 @@ class SelectedPointFragment: CustomFragment() {
      */
     override fun onDestroy() {
         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        mapConnector.removeMarker(markerView)
+
         super.onDestroy()
         val marker = requireActivity().findViewById<RelativeLayout>(R.id.marker)
         (marker?.parent as ViewGroup?)?.removeView(marker)

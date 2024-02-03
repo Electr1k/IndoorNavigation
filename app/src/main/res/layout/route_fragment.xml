@@ -106,7 +106,7 @@
                                 android:hint="@string/route_from"
                                 android:textColorHint="@color/light_gray"
                                 android:textSize="17sp"
-                                android:inputType="number"
+                                android:inputType="text"
                                 android:autofillHints="no"
                                 android:textColor="@color/black"
                                 />
@@ -145,7 +145,7 @@
                                 android:hint="@string/route_to"
                                 android:textColorHint="@color/light_gray"
                                 android:textSize="17sp"
-                                android:inputType="number"
+                                android:inputType="text"
                                 android:imeOptions="actionDone"
                                 android:autofillHints="no"
                                 android:textColor="@color/black"
