@@ -96,9 +96,13 @@ class RouteFragment: CustomFragment() {
             pointA.isActivated
             if (pointA.isFocused){
                 pointA.setText(dot.getName())
+                pointA.setSelection(dot.getName().length)
             }
             else{
-                if (pointB.isFocused) pointB.setText(dot.getName())
+                if (pointB.isFocused) {
+                    pointB.setText(dot.getName())
+                    pointB.setSelection(dot.getName().length)
+                }
             }
         }
         audienceRV.adapter = adapterResultDot
@@ -114,6 +118,15 @@ class RouteFragment: CustomFragment() {
         val endDot = dotList.find { it.getId() == finishNode }
         pointA.setText(dotStart?.getName() ?: "")
         pointB.setText(endDot?.getName() ?: "")
+        val openBottomSheet = {
+            if (mBottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED)
+                mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        pointA.clearFocus()
+        pointB.clearFocus()
+        pointA.setOnFocusChangeListener { _, _ -> openBottomSheet()}
+        pointB.setOnFocusChangeListener { _, _ -> openBottomSheet()}
         view.findViewById<CardView>(R.id.build_route).setOnClickListener {
             try{
                 var start = resultList.find { it.getName() == pointA.text.toString() }
