@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/selected_fragment"
     tools:context=".fragment.SelectedPointFragment">
 
 
@@ -90,6 +89,12 @@
                     android:gravity="center_horizontal"
                     android:background="@drawable/rounded_bottom_sheet"
                     android:layout_height="match_parent">
+                    <LinearLayout
+                        android:id="@+id/collapse_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical">
                     <androidx.cardview.widget.CardView
                         android:layout_width="30dp"
                         android:layout_height="3dp"
@@ -139,7 +144,7 @@
                         android:textColor="@color/orange"
                         android:layout_marginBottom="10dp"
                         android:layout_marginHorizontal="16dp"/>
-
+                    </LinearLayout>
                     <TextView
                         android:id="@+id/description"
                         android:layout_width="match_parent"
@@ -155,20 +160,20 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/navigateMenu"
+        android:id="@+id/routeMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:translationY="200dp"
         android:background="@color/white"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="10dp"
+        android:gravity="center"
+        android:layout_marginHorizontal="16dp"
         android:layout_gravity="bottom" >
         <androidx.cardview.widget.CardView
             android:id="@+id/route_from"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginVertical="5dp"
             android:layout_gravity="bottom"
             app:cardCornerRadius="8dp"
             android:foreground="?android:attr/selectableItemBackground"
@@ -210,6 +215,9 @@
             android:foreground="?android:attr/selectableItemBackground"
             android:focusable="true"
             android:clickable="true"
+
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="5dp"
             app:cardBackgroundColor="@color/dark_blue">
             <LinearLayout
                 android:layout_width="match_parent"

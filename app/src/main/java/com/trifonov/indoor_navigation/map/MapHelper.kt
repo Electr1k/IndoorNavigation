@@ -15,6 +15,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
+import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
@@ -99,6 +100,9 @@ class MapHelper(
     private var isPathSet = false
 
     private var positionRotation = 0f
+
+    /** Лист маркеров, которые будут добавляться динамически, например маркер выбранной локации */
+    private var dynamicMarker = mutableListOf<AppCompatImageView>()
 
     /**
      * Метод для первичной настройки MapView
@@ -317,6 +321,26 @@ class MapHelper(
         positionMarker.scaleY = scale + 1f
         finishMarker.scaleX = scale + 1f
         finishMarker.scaleY = scale + 1f
+//        dynamicMarker.forEach {
+//            it.scaleX = scale + 1f
+//            it.scaleY = scale + 1f
+//        }
+    }
+
+    /**
+     * Метод для добавления маркера
+     * @Param [marker] макер
+     * */
+    internal fun addDynamicMarker(marker: AppCompatImageView){
+        dynamicMarker.add(marker)
+    }
+
+    /**
+     * Метод для удаления маркера
+     * @Param [marker] макер
+     * */
+    internal fun removeDynamicMarker(marker: AppCompatImageView){
+        dynamicMarker.remove(marker)
     }
 
     private fun setPositionMarkerRotation(angle: Float) {
@@ -366,11 +390,19 @@ class MapHelper(
                 if (view is MapMarker) {
                     val dot = dotList.find { view.name.toInt() == it.getId() }
                     if (dot?.getName() != "") {
-                        val callout = MarkerCallout(activity, dot, navController)
-                        callout.setTitle(dot?.getName() ?: view.name)
-                        callout.setSubTitle("position: ${view.x} , ${view.y}")
-                        mapView.addCallout(callout, view.x, view.y, -0.5f, -1.2f, 0f, 0f)
-                        callout.transitionIn()
+//                        val callout = MarkerCallout(activity, dot, navController)
+                        val bundle = Bundle()
+                        bundle.putInt("id", dot?.getId() ?: -1)
+
+                        while (navController.currentDestination!!.id != R.id.head){
+                            navController.popBackStack()
+                        }
+                        navController.navigate(R.id.action_head_to_scan, bundle)
+
+//                        callout.setTitle(dot?.getName() ?: view.name)
+//                        callout.setSubTitle("position: ${view.x} , ${view.y}")
+//                        mapView.addCallout(callout, view.x, view.y, -0.5f, -1.2f, 0f, 0f)
+//                        callout.transitionIn()
                     }
                 }
             }

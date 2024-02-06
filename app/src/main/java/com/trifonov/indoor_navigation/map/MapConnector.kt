@@ -154,12 +154,22 @@ class MapConnector(
         mapHelper.moveCamera(dot.getX().toDouble(), dot.getY().toDouble(), 1f, true)
     }
 
-
+    /**
+     * Метод для добавления маркера
+     * @Param [marker] макер
+     * */
     internal fun setMarker(marker: AppCompatImageView, x: Double, y: Double){
-        mapView.addMarker(marker, x, y, -0.5f, -1f)
+        mapHelper.addDynamicMarker(marker)
+        mapView.addMarker(marker, x, y, -0.5f, -0.5f)
+
     }
 
-    internal fun removeMarker(marker: View){
+    /**
+     * Метод для удаления маркера
+     * @Param [marker] маркер
+     * */
+    internal fun removeMarker(marker: AppCompatImageView){
+        mapHelper.removeDynamicMarker(marker)
         mapView.removeMarker(marker)
     }
 

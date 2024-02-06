@@ -33,13 +33,14 @@ import java.lang.Float.max
 
 class SelectedPointFragment: CustomFragment() {
     private var currentState: Int = BottomSheetBehavior.STATE_COLLAPSED
-    private val peekHeight = 420
+    private var peekHeight = 500
     private lateinit var viewPager: ViewPager
     private lateinit var cardView: CardView
+    private lateinit var collapseContent: LinearLayout
     private lateinit var linearIndicator: LinearLayout
     private lateinit var countImages: TextView
     private lateinit var linearMainContent: LinearLayout
-    private lateinit var navigateMenu: LinearLayout
+    private lateinit var routeMenu: LinearLayout
     private lateinit var title: TextView
     private lateinit var description: TextView
     private var heightNavigationMenu: Int = 0
@@ -63,18 +64,19 @@ class SelectedPointFragment: CustomFragment() {
         super.onViewCreated(view, savedInstanceState)
         val id = arguments?.getInt("id", -1)
         selectedPoint = dotList.find { id == it.getId() }!!
-
+        collapseContent = view.findViewById(R.id.collapse_content)
         countImages = view.findViewById(R.id.countImages)
         cardView = view.findViewById(R.id.card)
         viewPager = view.findViewById(R.id.imagesPager)
         linearIndicator = view.findViewById(R.id.linearIndicator)
         linearMainContent = view.findViewById(R.id.main_content)
-        navigateMenu = view.findViewById(R.id.navigateMenu)
+        routeMenu = view.findViewById(R.id.routeMenu)
         title = view.findViewById(R.id.title)
         description = view.findViewById(R.id.description)
         markerView = AppCompatImageView(requireActivity()).apply {
             setImageResource(R.drawable.marker)
         }
+        mapConnector.setMarker(markerView, selectedPoint.getX().toDouble(), selectedPoint.getY().toDouble())
         initBottomSheet(view)
 
         initPager()
@@ -82,11 +84,17 @@ class SelectedPointFragment: CustomFragment() {
 
     override fun onStart() {
         super.onStart()
-        mapConnector.setMarker(markerView, selectedPoint.getX().toDouble(), selectedPoint.getY().toDouble())
         mBottomSheet.visibility = View.VISIBLE
         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         val slideUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
         mBottomSheet.startAnimation(slideUpAnimation)
+        routeMenu.translationY = 0f
+        routeMenu.startAnimation(slideUpAnimation)
+        collapseContent.post {
+            val routeMenuHeight = routeMenu.height
+            peekHeight = collapseContent.height + routeMenuHeight
+            mBottomSheetBehavior.peekHeight = peekHeight
+        }
     }
 
     /**
@@ -129,8 +137,6 @@ class SelectedPointFragment: CustomFragment() {
                 }
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
                     view.findViewById<LinearLayout>(R.id.linearLayout).translationY = max(-1 * 260 * density * (1 - slideOffset), -1 * 260 * density)
-                    println("Current slideOffset: $slideOffset ${mBottomSheetBehavior.state}")
-                    if (slideOffset >= 0) navigateMenu.translationY = - heightNavigationMenu * (slideOffset - 1)
                 }
             }
 
@@ -138,12 +144,11 @@ class SelectedPointFragment: CustomFragment() {
 
         // Высчитываем высоту меню с кнопками выстроения маршрута и добавляем спейсер после текста,
         // чтобы не загараживать его
-        navigateMenu.post {
+        routeMenu.post {
             val spacer = View(requireContext())
-            heightNavigationMenu = navigateMenu.height + 30
+            heightNavigationMenu = routeMenu.height + 30
             spacer.layoutParams = ViewGroup.LayoutParams(0, heightNavigationMenu)
             linearMainContent.addView(spacer)
-            navigateMenu.translationY = heightNavigationMenu * 1f
         }
     }
 
