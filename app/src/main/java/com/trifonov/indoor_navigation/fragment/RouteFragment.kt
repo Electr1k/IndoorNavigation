@@ -19,9 +19,12 @@ import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.AudienceRouteAdapter
 import com.trifonov.indoor_navigation.adapter.AudienceTypeAdapter
 import com.trifonov.indoor_navigation.map.Map
+import com.trifonov.indoor_navigation.map.MapConnector
+import com.trifonov.indoor_navigation.map.MapConstants
 import com.trifonov.indoor_navigation.map.MapConstants.dotList
 import com.trifonov.indoor_navigation.map.MapConstants.finishNode
 import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
+import com.trifonov.indoor_navigation.map.MapConstants.saveRoute
 import com.trifonov.indoor_navigation.map.MapConstants.startNode
 
 class RouteFragment: CustomFragment() {
@@ -68,6 +71,7 @@ class RouteFragment: CustomFragment() {
 
     override fun onStart() {
         super.onStart()
+        saveRoute = true
         mBottomSheet.visibility = View.VISIBLE
         if (arguments?.getBoolean("isFromPoint") == true) mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         else {
@@ -93,7 +97,6 @@ class RouteFragment: CustomFragment() {
         resultList.add(0, dot)
         println(dotList)
         adapterResultDot = AudienceRouteAdapter(resultList) { dot ->
-            pointA.isActivated
             if (pointA.isFocused){
                 pointA.setText(dot.getName())
                 pointA.setSelection(dot.getName().length)
@@ -114,10 +117,12 @@ class RouteFragment: CustomFragment() {
      */
     private fun initBottomSheet(view: View){
         mBottomSheetBehavior.skipCollapsed = false
-        val dotStart = dotList.find { it.getId() == startNode }
-        val endDot = dotList.find { it.getId() == finishNode }
-        pointA.setText(dotStart?.getName() ?: "")
-        pointB.setText(endDot?.getName() ?: "")
+        if (saveRoute || arguments?.getBoolean("isFromPoint", false) == true) {
+            val dotStart = dotList.find { it.getId() == startNode }
+            val endDot = dotList.find { it.getId() == finishNode }
+            pointA.setText(dotStart?.getName() ?: "")
+            pointB.setText(endDot?.getName() ?: "")
+        }
         val openBottomSheet = {
             if (mBottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED)
                 mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED

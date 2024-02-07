@@ -2,6 +2,7 @@ package com.trifonov.indoor_navigation.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,19 +64,25 @@ class LocationFragment: CustomFragment() {
         currentLocation = locationData.getLocationById(locationData.getCurrentLocation())!!
         selectedLocation = currentLocation
         acceptButton.setOnClickListener{
-            if (FileHelper.checkStorageLocation(selectedLocation.dataUrl)){
-                Thread{
-                    mapConnector.setLocation(selectedLocation)
-                    requireActivity().runOnUiThread {
-                        mapConnector.updatePath(136)
-                        locationData.setCurrentLocation(selectedLocation.id)
-                        mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                    }
-                }.start()
+            try {
+                if (FileHelper.checkStorageLocation(selectedLocation.dataUrl)) {
+                    Thread {
+                        mapConnector.setLocation(selectedLocation)
+                        requireActivity().runOnUiThread {
+                            locationData.setCurrentLocation(selectedLocation.id)
+                            mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                        }
+                    }.start()
+                } else {
+                    (requireActivity() as MainActivity).initialAlertDialog(
+                        selectedLocation,
+                        locationData
+                    )
+                    mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                }
             }
-            else {
-                (requireActivity() as MainActivity).initialAlertDialog(selectedLocation, locationData)
-                mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            catch (e: Exception){
+                Log.e("error", e.message.toString());
             }
         }
         locationRV.adapter = LocationAdapter(locationData.getAllLocations(), {selectedLocation = it}, currentLocation)

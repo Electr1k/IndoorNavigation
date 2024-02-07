@@ -52,4 +52,6 @@ object MapConstants {
     internal val dataPath = "$SDPath/files/locations/"
     internal val unzipPath = "$SDPath/files/locations/"
     lateinit var mapConnector: MapConnector
+    // TODO: ОЧЕНЬ КРИНЖОВЫЙ КОСТЫЛЬ ПОКА ПОСТРОЕНИЕ МАРШРУТА РАБОТАЕТ С САМОГО НАЧАЛА
+    internal var saveRoute = false
 }

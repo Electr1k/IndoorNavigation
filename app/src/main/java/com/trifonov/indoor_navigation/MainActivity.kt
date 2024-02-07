@@ -166,7 +166,6 @@ class MainActivity : AppCompatActivity() {
                     if (mapConnector.setLocation(location, downloadView, dialog)) {
                         //startNode++
                         this.runOnUiThread {
-                            mapConnector.updatePath(136)
                             dialog.cancel()
                             locationData.setCurrentLocation(location.id)
                         }
