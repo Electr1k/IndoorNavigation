@@ -1,11 +1,14 @@
 package com.trifonov.indoor_navigation.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -13,6 +16,7 @@ import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.trifonov.indoor_navigation.R
@@ -97,6 +101,8 @@ class RouteFragment: CustomFragment() {
         resultList.add(0, dot)
         println(dotList)
         adapterResultDot = AudienceRouteAdapter(resultList) { dot ->
+            val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(fragment.windowToken, 0)
             if (pointA.isFocused){
                 pointA.setText(dot.getName())
                 pointA.setSelection(dot.getName().length)
