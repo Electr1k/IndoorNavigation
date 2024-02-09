@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
@@ -30,6 +31,7 @@ import com.trifonov.indoor_navigation.map.MapConstants.finishNode
 import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
 import com.trifonov.indoor_navigation.map.MapConstants.saveRoute
 import com.trifonov.indoor_navigation.map.MapConstants.startNode
+import kotlin.math.abs
 
 class RouteFragment: CustomFragment() {
     private lateinit var typesRV: RecyclerView
@@ -38,12 +40,14 @@ class RouteFragment: CustomFragment() {
     private lateinit var pointA: EditText
     private lateinit var pointB: EditText
     private lateinit var btnContainer: LinearLayout
+    private lateinit var textRouteBuild: TextView
     private lateinit var resultSearchLinearLayout: LinearLayout
     private lateinit var fragment: View
     private var peekHeight = 0
     private var btnHeight = 0
     private val filterList = mutableListOf<String>()
     private var resultList = mutableListOf<Map.Dot>()
+    private var currentState = BottomSheetBehavior.STATE_EXPANDED
     private lateinit var adapterResultDot: AudienceRouteAdapter
 
     @Nullable
@@ -70,6 +74,7 @@ class RouteFragment: CustomFragment() {
         pointA = view.findViewById(R.id.route_from)
         pointB = view.findViewById(R.id.route_to)
         btnContainer = view.findViewById(R.id.btnContainer)
+        textRouteBuild = view.findViewById(R.id.textBuild)
         initBottomSheet(view)
     }
 
@@ -77,9 +82,15 @@ class RouteFragment: CustomFragment() {
         super.onStart()
         saveRoute = true
         mBottomSheet.visibility = View.VISIBLE
-        if (arguments?.getBoolean("isFromPoint") == true) mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        if (arguments?.getBoolean("isFromPoint") == true){
+            mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            textRouteBuild.text = "Пройти"
+            currentState = BottomSheetBehavior.STATE_COLLAPSED
+        }
         else {
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            currentState = BottomSheetBehavior.STATE_EXPANDED
+            textRouteBuild.text = "Построить маршрут"
             pointA.requestFocus()
         }
         val slideUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
@@ -89,7 +100,7 @@ class RouteFragment: CustomFragment() {
         val viewCollapsed = fragment.findViewById<LinearLayout>(R.id.view_collapsed)
         viewCollapsed.post {
             btnHeight = btnContainer.height
-            peekHeight = viewCollapsed.height + btnContainer.height
+            peekHeight = viewCollapsed.height + btnContainer.height - 5
             mBottomSheetBehavior.peekHeight = peekHeight
             val view = View(activity)
             view.layoutParams = LinearLayout.LayoutParams(0, btnContainer.height + 40)
@@ -140,25 +151,52 @@ class RouteFragment: CustomFragment() {
         pointB.setOnFocusChangeListener { _, _ -> openBottomSheet()}
         view.findViewById<CardView>(R.id.build_route).setOnClickListener {
             try{
-                var start = resultList.find { it.getName() == pointA.text.toString() }
-                var end = resultList.find { it.getName() == pointB.text.toString() }
-                // TODO: ИСПРАВИТЬ КРИНЖОВУЮ ЛОГИКУ ПРИ ДОБАВЛЕНИИ ОПЕРЕДЕЛЕНИЯ МЕСТОПОЛОЖЕНИЯ
-                if (start!!.getName() == "Моё местоположение") start = dotList.find { it.getId() == startNode }
-                if (end!!.getName() == "Моё местоположение") end = dotList.find { it.getId() == finishNode }
-                mapConnector.updatePath(start = start!!.getId(), finish = end!!.getId())
-                mapConnector.moveCameraToDot(start)
-                mBottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                    override fun onStateChanged(bottomSheet: View, newState: Int) {}
-                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                        btnContainer.translationY = btnHeight * (1 - slideOffset)
-                    }
-                })
-                mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    var start = resultList.find { it.getName() == pointA.text.toString() }
+                    var end = resultList.find { it.getName() == pointB.text.toString() }
+                    // TODO: ИСПРАВИТЬ КРИНЖОВУЮ ЛОГИКУ ПРИ ДОБАВЛЕНИИ ОПЕРЕДЕЛЕНИЯ МЕСТОПОЛОЖЕНИЯ
+                    if (start!!.getName() == "Моё местоположение") start =
+                        dotList.find { it.getId() == startNode }
+                    if (end!!.getName() == "Моё местоположение") end =
+                        dotList.find { it.getId() == finishNode }
+                    mapConnector.updatePath(start = start!!.getId(), finish = end!!.getId())
+                    mapConnector.moveCameraToDot(start)
+                    mBottomSheetBehavior.addBottomSheetCallback(object :
+                        BottomSheetBehavior.BottomSheetCallback() {
+                        override fun onStateChanged(bottomSheet: View, newState: Int) {}
+                        override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                            btnContainer.translationY = btnHeight * (1 - slideOffset)
+                        }
+                    })
+                    mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                }
+                else{
+                    mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                }
             }
             catch(e: Exception){
                 println(e.message)
             }
         }
+        mBottomSheetBehavior.addBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                println("state $newState")
+                if (mBottomSheetBehavior.state in listOf(5,4,3)) currentState = newState
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                println("slide $slideOffset")
+                textRouteBuild.alpha = abs(2*slideOffset-1)
+                if (slideOffset > 0.5){
+                    textRouteBuild.text = "Построить маршрут"
+                }
+                else{
+                    textRouteBuild.text = "Пройти"
+                }
+
+            }
+
+        })
         typesRV.setHasFixedSize(true)
         audienceRV.setHasFixedSize(true)
         swapImage.setOnClickListener{

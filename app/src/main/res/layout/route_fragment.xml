@@ -232,6 +232,7 @@
             android:focusable="true"
             android:clickable="true">
             <TextView
+                android:id="@+id/textBuild"
                 android:layout_marginHorizontal="35dp"
                 android:layout_marginVertical="7dp"
                 android:layout_width="wrap_content"
@@ -240,6 +241,7 @@
                 android:textStyle="normal"
                 android:textSize="18sp"
                 android:textColor="@color/white"
+                android:textAlignment="center"
                 android:text="@string/go"
                 />
         </androidx.cardview.widget.CardView>
