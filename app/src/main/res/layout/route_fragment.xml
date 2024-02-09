@@ -112,6 +112,14 @@
                                 android:autofillHints="no"
                                 android:textColor="@color/black"
                                 />
+                            <ImageView
+                                android:id="@+id/clear_point_a"
+                                android:layout_gravity="center_vertical|end"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginEnd="4dp"
+                                android:src="@drawable/close_icon"
+                                />
                         </com.google.android.material.card.MaterialCardView>
                     </LinearLayout>
                     <View
@@ -151,6 +159,14 @@
                                 android:imeOptions="actionDone"
                                 android:autofillHints="no"
                                 android:textColor="@color/black"
+                                />
+                            <ImageView
+                                android:id="@+id/clear_point_b"
+                                android:layout_gravity="center_vertical|end"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginEnd="4dp"
+                                android:src="@drawable/close_icon"
                                 />
                         </com.google.android.material.card.MaterialCardView>
                     </LinearLayout>

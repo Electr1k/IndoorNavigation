@@ -1,9 +1,10 @@
 package com.trifonov.indoor_navigation.fragment
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
+import android.media.Image
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,15 +18,15 @@ import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.ContextCompat.getColor
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.card.MaterialCardView
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.AudienceRouteAdapter
 import com.trifonov.indoor_navigation.adapter.AudienceTypeAdapter
 import com.trifonov.indoor_navigation.map.Map
-import com.trifonov.indoor_navigation.map.MapConnector
-import com.trifonov.indoor_navigation.map.MapConstants
 import com.trifonov.indoor_navigation.map.MapConstants.dotList
 import com.trifonov.indoor_navigation.map.MapConstants.finishNode
 import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
@@ -42,6 +43,8 @@ class RouteFragment: CustomFragment() {
     private lateinit var btnContainer: LinearLayout
     private lateinit var textRouteBuild: TextView
     private lateinit var resultSearchLinearLayout: LinearLayout
+    private lateinit var clearPointA: ImageView
+    private lateinit var clearPointB: ImageView
     private lateinit var fragment: View
     private var peekHeight = 0
     private var btnHeight = 0
@@ -75,12 +78,13 @@ class RouteFragment: CustomFragment() {
         pointB = view.findViewById(R.id.route_to)
         btnContainer = view.findViewById(R.id.btnContainer)
         textRouteBuild = view.findViewById(R.id.textBuild)
+        clearPointA = view.findViewById(R.id.clear_point_a)
+        clearPointB = view.findViewById(R.id.clear_point_b)
         initBottomSheet(view)
     }
 
     override fun onStart() {
         super.onStart()
-        saveRoute = true
         mBottomSheet.visibility = View.VISIBLE
         if (arguments?.getBoolean("isFromPoint") == true){
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -100,8 +104,8 @@ class RouteFragment: CustomFragment() {
         val viewCollapsed = fragment.findViewById<LinearLayout>(R.id.view_collapsed)
         viewCollapsed.post {
             btnHeight = btnContainer.height
-            peekHeight = viewCollapsed.height + btnContainer.height - 5
-            mBottomSheetBehavior.peekHeight = peekHeight
+            peekHeight = viewCollapsed.height + btnContainer.height
+            mBottomSheetBehavior.peekHeight = peekHeight + if (currentState==4) 5 else -5;
             val view = View(activity)
             view.layoutParams = LinearLayout.LayoutParams(0, btnContainer.height + 40)
             resultSearchLinearLayout.addView(view)
@@ -115,11 +119,13 @@ class RouteFragment: CustomFragment() {
             val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(fragment.windowToken, 0)
             if (pointA.isFocused){
+                (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
                 pointA.setText(dot.getName())
                 pointA.setSelection(dot.getName().length)
             }
             else{
                 if (pointB.isFocused) {
+                    (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
                     pointB.setText(dot.getName())
                     pointB.setSelection(dot.getName().length)
                 }
@@ -144,14 +150,25 @@ class RouteFragment: CustomFragment() {
             if (mBottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED)
                 mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
-
+        clearPointA.setOnClickListener { pointA.setText("") }
+        clearPointB.setOnClickListener { pointB.setText("") }
         pointA.clearFocus()
         pointB.clearFocus()
-        pointA.setOnFocusChangeListener { _, _ -> openBottomSheet()}
-        pointB.setOnFocusChangeListener { _, _ -> openBottomSheet()}
+        pointA.addTextChangedListener{
+            (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
+            adapterResultDot.updateList(resultList.filter { pointA.text.toString() in it.getName() })
+        }
+        pointB.addTextChangedListener{
+            (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
+            adapterResultDot.updateList(resultList.filter { pointB.text.toString() in it.getName() })
+        }
+
+        pointA.setOnFocusChangeListener { _, focus -> openBottomSheet(); if (!focus) adapterResultDot.updateList(resultList) }
+        pointB.setOnFocusChangeListener { _, focus -> openBottomSheet(); if (!focus) adapterResultDot.updateList(resultList) }
         view.findViewById<CardView>(R.id.build_route).setOnClickListener {
             try{
                 if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    saveRoute = true
                     var start = resultList.find { it.getName() == pointA.text.toString() }
                     var end = resultList.find { it.getName() == pointB.text.toString() }
                     // TODO: ИСПРАВИТЬ КРИНЖОВУЮ ЛОГИКУ ПРИ ДОБАВЛЕНИИ ОПЕРЕДЕЛЕНИЯ МЕСТОПОЛОЖЕНИЯ
@@ -171,7 +188,17 @@ class RouteFragment: CustomFragment() {
                     mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 }
                 else{
-                    mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                    val start = resultList.find { it.getName() == pointA.text.toString() }
+                    val end = resultList.find { it.getName() == pointB.text.toString() }
+                    if (start == null || end == null){
+                        if (start == null) (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.red)
+                        if (end == null) (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.red)
+                    }
+                    else{
+                        (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
+                        (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
+                        mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                    }
                 }
             }
             catch(e: Exception){
@@ -181,7 +208,9 @@ class RouteFragment: CustomFragment() {
         mBottomSheetBehavior.addBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 println("state $newState")
-                if (mBottomSheetBehavior.state in listOf(5,4,3)) currentState = newState
+                if (mBottomSheetBehavior.state in listOf(5,4,3)) {
+                    currentState = newState
+                }
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {

@@ -17,7 +17,7 @@ import com.trifonov.indoor_navigation.common.LocationData
 
 class HeadFragment: Fragment() {
 
-
+    private var isEnable = true
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -28,6 +28,7 @@ class HeadFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        isEnable = true
         val locationData = LocationData(requireContext())
         var currentLocationId = locationData.getCurrentLocation()
         if (currentLocationId == -1){
@@ -69,7 +70,10 @@ class HeadFragment: Fragment() {
             scaleDown.addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
-                    Navigation.findNavController(view).navigate(R.id.location)
+                    if (isEnable) {
+                        Navigation.findNavController(view).navigate(R.id.location)
+                        isEnable = false
+                    }
                 }
             })
         }

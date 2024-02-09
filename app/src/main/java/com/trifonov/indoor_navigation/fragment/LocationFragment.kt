@@ -64,25 +64,20 @@ class LocationFragment: CustomFragment() {
         currentLocation = locationData.getLocationById(locationData.getCurrentLocation())!!
         selectedLocation = currentLocation
         acceptButton.setOnClickListener{
-            try {
-                if (FileHelper.checkStorageLocation(selectedLocation.dataUrl)) {
-                    Thread {
-                        mapConnector.setLocation(selectedLocation)
-                        requireActivity().runOnUiThread {
-                            locationData.setCurrentLocation(selectedLocation.id)
-                            mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                        }
-                    }.start()
-                } else {
-                    (requireActivity() as MainActivity).initialAlertDialog(
-                        selectedLocation,
-                        locationData
-                    )
-                    mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                }
-            }
-            catch (e: Exception){
-                Log.e("error", e.message.toString());
+            if (FileHelper.checkStorageLocation(selectedLocation.dataUrl)) {
+                Thread {
+                    mapConnector.setLocation(selectedLocation)
+                    requireActivity().runOnUiThread {
+                        locationData.setCurrentLocation(selectedLocation.id)
+                        mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                    }
+                }.start()
+            } else {
+                (requireActivity() as MainActivity).initialAlertDialog(
+                    selectedLocation,
+                    locationData
+                )
+                mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             }
         }
         locationRV.adapter = LocationAdapter(locationData.getAllLocations(), {selectedLocation = it}, currentLocation)
