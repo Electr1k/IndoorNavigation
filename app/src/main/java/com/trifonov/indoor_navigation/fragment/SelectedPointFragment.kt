@@ -27,6 +27,7 @@ import com.trifonov.indoor_navigation.map.Map
 import com.trifonov.indoor_navigation.map.MapConstants.dotList
 import com.trifonov.indoor_navigation.map.MapConstants.finishNode
 import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
+import com.trifonov.indoor_navigation.map.MapConstants.myPosition
 import com.trifonov.indoor_navigation.map.MapConstants.startNode
 import java.lang.Float.max
 
@@ -113,7 +114,7 @@ class SelectedPointFragment: CustomFragment() {
             val bundle = Bundle()
             bundle.putBoolean("isFromPoint", true)
             view.findNavController().navigate(R.id.action_scan_to_route, bundle)
-            mapConnector.updatePath(finishNode)
+            mapConnector.updatePath(start = myPosition, finish = finishNode)
         }
         view.findViewById<CardView>(R.id.route_from).setOnClickListener {
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN

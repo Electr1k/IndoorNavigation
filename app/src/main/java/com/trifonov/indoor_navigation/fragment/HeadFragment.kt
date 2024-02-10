@@ -31,12 +31,12 @@ class HeadFragment: Fragment() {
         isEnable = true
         val locationData = LocationData(requireContext())
         var currentLocationId = locationData.getCurrentLocation()
-        if (currentLocationId == -1){
-            currentLocationId = 0
-            locationData.setCurrentLocation(currentLocationId)
-        }
+//        if (currentLocationId == -1){
+//            currentLocationId = 0
+//            locationData.setCurrentLocation(currentLocationId)
+//        }
         val btn = view.findViewById<TextView>(R.id.current_location)
-        btn.text = locationData.getLocationById(currentLocationId)!!.name
+        btn.text = if (currentLocationId != -1)locationData.getLocationById(currentLocationId)!!.name else "Демо локация"
         val cardView =  view.findViewById<CardView>(R.id.card_location)
         cardView.setOnClickListener {
             val scaleUpX = ObjectAnimator.ofFloat(cardView, "scaleX", 1.1f)

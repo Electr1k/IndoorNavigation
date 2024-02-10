@@ -291,6 +291,7 @@ class MapHelper(
                 setMarkerScale(refData.scale, mapMarker)
             }
             newScale = refData.scale
+
             updatePath()
         }
     }

@@ -237,9 +237,10 @@
         android:background="@color/white">
         <androidx.cardview.widget.CardView
             android:id="@+id/build_route"
-            android:layout_width="200dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:minWidth="230dp"
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="10dp"
             app:cardBackgroundColor="@color/dark_blue"
@@ -256,6 +257,7 @@
                 android:layout_gravity="center"
                 android:textStyle="normal"
                 android:textSize="18sp"
+                android:maxLines="1"
                 android:textColor="@color/white"
                 android:textAlignment="center"
                 android:text="@string/go"

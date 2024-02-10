@@ -61,7 +61,9 @@ class LocationFragment: CustomFragment() {
         })
         val locationData = LocationData(requireContext())
 
-        currentLocation = locationData.getLocationById(locationData.getCurrentLocation())!!
+        val currentLocationId = locationData.getCurrentLocation()
+
+        currentLocation = locationData.getLocationById(if (currentLocationId != -1) currentLocationId else 0)!!
         selectedLocation = currentLocation
         acceptButton.setOnClickListener{
             if (FileHelper.checkStorageLocation(selectedLocation.dataUrl)) {

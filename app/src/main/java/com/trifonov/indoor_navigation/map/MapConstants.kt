@@ -30,6 +30,10 @@ object MapConstants {
 
     internal var startNode = 130
     internal var finishNode = 0
+    internal var myPosition = 33
+    /** Для сохранения временного маршрута*/
+    internal var tempStart: Int? = null
+    internal var tempEnd: Int? = null
 
     /**
      * @Param [cameraMarkerX] X координата камеры
