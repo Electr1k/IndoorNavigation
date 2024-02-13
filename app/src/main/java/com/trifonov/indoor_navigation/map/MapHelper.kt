@@ -37,6 +37,7 @@ import com.trifonov.indoor_navigation.map.MapConstants.maxPathWidth
 import com.trifonov.indoor_navigation.map.MapConstants.maxScale
 import com.trifonov.indoor_navigation.map.MapConstants.minPathWidth
 import com.trifonov.indoor_navigation.map.MapConstants.minScale
+import com.trifonov.indoor_navigation.map.MapConstants.saveDraftRoute
 import com.trifonov.indoor_navigation.map.MapConstants.startNode
 import com.trifonov.indoor_navigation.map.MapConstants.unzipPath
 import com.trifonov.indoor_navigation.map.MapConstants.zoomLevelCount
@@ -394,12 +395,11 @@ class MapHelper(
 //                        val callout = MarkerCallout(activity, dot, navController)
                         val bundle = Bundle()
                         bundle.putInt("id", dot?.getId() ?: -1)
-
+                        saveDraftRoute = navController.currentDestination!!.id == R.id.route
                         while (navController.currentDestination!!.id != R.id.head){
                             navController.popBackStack()
                         }
                         navController.navigate(R.id.action_head_to_scan, bundle)
-
 //                        callout.setTitle(dot?.getName() ?: view.name)
 //                        callout.setSubTitle("position: ${view.x} , ${view.y}")
 //                        mapView.addCallout(callout, view.x, view.y, -0.5f, -1.2f, 0f, 0f)

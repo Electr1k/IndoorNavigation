@@ -32,8 +32,9 @@ object MapConstants {
     internal var finishNode = 0
     internal var myPosition = 33
     /** Для сохранения временного маршрута*/
-    internal var tempStart: Int? = null
-    internal var tempEnd: Int? = null
+    internal var draftStart: Int? = null
+    internal var draftEnd: Int? = null
+    internal var saveDraftRoute = false
 
     /**
      * @Param [cameraMarkerX] X координата камеры

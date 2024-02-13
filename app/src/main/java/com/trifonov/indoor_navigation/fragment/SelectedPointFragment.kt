@@ -29,7 +29,11 @@ import com.trifonov.indoor_navigation.map.MapConstants.finishNode
 import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
 import com.trifonov.indoor_navigation.map.MapConstants.myPosition
 import com.trifonov.indoor_navigation.map.MapConstants.startNode
+import com.trifonov.indoor_navigation.map.MapConstants.draftEnd
+import com.trifonov.indoor_navigation.map.MapConstants.draftStart
+import com.trifonov.indoor_navigation.map.MapConstants.saveDraftRoute
 import java.lang.Float.max
+import kotlin.math.abs
 
 
 class SelectedPointFragment: CustomFragment() {
@@ -48,6 +52,7 @@ class SelectedPointFragment: CustomFragment() {
     private var progress = 0f
     private lateinit var selectedPoint: Map.Dot
     private lateinit var markerView: AppCompatImageView
+    private var navigateToRoute = false
 
     @Nullable
     @MainThread
@@ -110,19 +115,26 @@ class SelectedPointFragment: CustomFragment() {
         description.text = selectedPoint.getDescription()
         view.findViewById<CardView>(R.id.route_to).setOnClickListener {
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            if (draftEnd==null) draftEnd = finishNode
+            if (draftStart==null) draftStart = startNode
             finishNode = selectedPoint.getId()
             val bundle = Bundle()
             bundle.putBoolean("isFromPoint", true)
+            navigateToRoute = true
+            mapConnector.updatePath(start = if (saveDraftRoute) startNode else myPosition, finish = finishNode)
+            println("New draft $draftStart $draftEnd")
             view.findNavController().navigate(R.id.action_scan_to_route, bundle)
-            mapConnector.updatePath(start = myPosition, finish = finishNode)
         }
         view.findViewById<CardView>(R.id.route_from).setOnClickListener {
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            if (draftStart==null) draftStart = startNode
             startNode = selectedPoint.getId()
             val bundle = Bundle()
             bundle.putBoolean("isFromPoint", true)
-            view.findNavController().navigate(R.id.action_scan_to_route, bundle)
+            navigateToRoute = true
             mapConnector.updatePath(finish = finishNode, start = startNode)
+            println("New draft $draftStart $draftEnd")
+            view.findNavController().navigate(R.id.action_scan_to_route, bundle)
         }
         mBottomSheetBehavior.addBottomSheetCallback(
             object : BottomSheetCallback() {
@@ -138,6 +150,9 @@ class SelectedPointFragment: CustomFragment() {
                 }
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
                     view.findViewById<LinearLayout>(R.id.linearLayout).translationY = max(-1 * 260 * density * (1 - slideOffset), -1 * 260 * density)
+                    if (slideOffset <= 0){
+                        routeMenu.translationY = heightNavigationMenu * abs(slideOffset)
+                    }
                 }
             }
 
@@ -330,7 +345,13 @@ class SelectedPointFragment: CustomFragment() {
     override fun onDestroy() {
         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         mapConnector.removeMarker(markerView)
-
+        if ((!navigateToRoute || !saveDraftRoute) && !(navigateToRoute && !saveDraftRoute)) {
+            // Возвращаем старый маршрут
+            if (draftStart != null) startNode = draftStart!!
+            if (draftEnd != null) finishNode = draftEnd!!
+            mapConnector.updatePath(start = startNode, finish = finishNode)
+        }
+        saveDraftRoute = false
         super.onDestroy()
         val marker = requireActivity().findViewById<RelativeLayout>(R.id.marker)
         (marker?.parent as ViewGroup?)?.removeView(marker)

@@ -54,7 +54,7 @@ class SearchFragment: CustomFragment() {
         search.addTextChangedListener {
             if (it.toString().isEmpty()) adapter.updateList(dotList.filter { dot -> dot.getName().isNotEmpty() })
             else{
-                adapter.updateList(dotList.filter { dot -> dot.getName().contains(it.toString(), ignoreCase = true) })
+                adapter.updateList(dotList.filter { dot -> dot.getName().contains(it.toString().trim(), ignoreCase = true) })
             }
         }
     }

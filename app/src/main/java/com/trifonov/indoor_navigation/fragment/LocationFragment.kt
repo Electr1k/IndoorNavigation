@@ -25,8 +25,8 @@ import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
 
 
 class LocationFragment: CustomFragment() {
-    private lateinit var currentLocation: LocationEntity
-    private lateinit var selectedLocation: LocationEntity
+    private var currentLocation: LocationEntity? = null
+    private var selectedLocation: LocationEntity? = null
     private lateinit var locationRV: RecyclerView
     private lateinit var acceptButton: CardView
 
@@ -63,23 +63,25 @@ class LocationFragment: CustomFragment() {
 
         val currentLocationId = locationData.getCurrentLocation()
 
-        currentLocation = locationData.getLocationById(if (currentLocationId != -1) currentLocationId else 0)!!
+        currentLocation = if (currentLocationId != -1) locationData.getLocationById(currentLocationId!!) else null
         selectedLocation = currentLocation
         acceptButton.setOnClickListener{
-            if (FileHelper.checkStorageLocation(selectedLocation.dataUrl)) {
-                Thread {
-                    mapConnector.setLocation(selectedLocation)
-                    requireActivity().runOnUiThread {
-                        locationData.setCurrentLocation(selectedLocation.id)
-                        mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                    }
-                }.start()
-            } else {
-                (requireActivity() as MainActivity).initialAlertDialog(
-                    selectedLocation,
-                    locationData
-                )
-                mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            if (selectedLocation != null) {
+                if (FileHelper.checkStorageLocation(selectedLocation!!.dataUrl)) {
+                    Thread {
+                        mapConnector.setLocation(selectedLocation!!)
+                        requireActivity().runOnUiThread {
+                            locationData.setCurrentLocation(selectedLocation!!.id)
+                            mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                        }
+                    }.start()
+                } else {
+                    (requireActivity() as MainActivity).initialAlertDialog(
+                        selectedLocation!!,
+                        locationData
+                    )
+                    mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                }
             }
         }
         locationRV.adapter = LocationAdapter(locationData.getAllLocations(), {selectedLocation = it}, currentLocation)

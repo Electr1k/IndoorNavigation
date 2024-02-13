@@ -12,9 +12,9 @@ import com.trifonov.indoor_navigation.common.LocationEntity
 class LocationAdapter(
     private val locationList: List<LocationEntity>,
     val click: (LocationEntity) -> Unit,
-    private val currentLocation: LocationEntity
+    private val currentLocation: LocationEntity?
 ): RecyclerView.Adapter<LocationAdapter.LocationViewHolder>() {
-    private var selectedLocation: LocationEntity = currentLocation
+    private var selectedLocation: LocationEntity? = currentLocation
 
     override fun onCreateViewHolder(
         parent: ViewGroup,

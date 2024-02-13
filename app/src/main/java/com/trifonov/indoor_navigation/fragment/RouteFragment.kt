@@ -2,9 +2,7 @@ package com.trifonov.indoor_navigation.fragment
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.media.Image
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,8 +31,9 @@ import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
 import com.trifonov.indoor_navigation.map.MapConstants.myPosition
 import com.trifonov.indoor_navigation.map.MapConstants.saveRoute
 import com.trifonov.indoor_navigation.map.MapConstants.startNode
-import com.trifonov.indoor_navigation.map.MapConstants.tempEnd
-import com.trifonov.indoor_navigation.map.MapConstants.tempStart
+import com.trifonov.indoor_navigation.map.MapConstants.draftEnd
+import com.trifonov.indoor_navigation.map.MapConstants.draftStart
+import com.trifonov.indoor_navigation.map.MapConstants.saveDraftRoute
 import kotlin.math.abs
 
 class RouteFragment: CustomFragment() {
@@ -116,7 +115,6 @@ class RouteFragment: CustomFragment() {
         }
         resultList = dotList.filter { (it.getType() in filterList || filterList.isEmpty()) && it.getName().isNotEmpty()  } as MutableList<Map.Dot>
         val dot = dotList.find { it.getId() == myPosition }!!.copy()
-        println("найденная точка моей локации $dot $myPosition");
         dot.setName(myPositionName)
         resultList.add(0, dot)
         adapterResultDot = AudienceRouteAdapter(resultList) { dot ->
@@ -137,6 +135,12 @@ class RouteFragment: CustomFragment() {
             }
         }
         audienceRV.adapter = adapterResultDot
+        val openBottomSheet = {
+            if (mBottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED)
+                mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+        pointB.setOnFocusChangeListener { _, focus -> if (focus){ openBottomSheet(); adapterResultDot.updateList(resultList)} }
+        pointA.setOnFocusChangeListener { _, focus -> if (focus){ openBottomSheet(); adapterResultDot.updateList(resultList)} }
     }
 
     private fun getDotById(list: List<Map.Dot>, id: Int): Map.Dot?{
@@ -155,34 +159,28 @@ class RouteFragment: CustomFragment() {
             pointA.setText(dotStart?.getName() ?: "")
             pointB.setText(endDot?.getName() ?: "")
         }
-        val openBottomSheet = {
-            if (mBottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED)
-                mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        }
+
         clearPointA.setOnClickListener { pointA.setText(""); pointA.requestFocus() }
         clearPointB.setOnClickListener { pointB.setText(""); pointB.requestFocus() }
         pointA.clearFocus()
         pointB.clearFocus()
         pointA.addTextChangedListener{
             (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
-            adapterResultDot.updateList(resultList.filter { pointA.text.toString().toLowerCase() in it.getName().toLowerCase() })
+            adapterResultDot.updateList(resultList.filter { pointA.text.toString().trim().toLowerCase() in it.getName().trim().toLowerCase() })
         }
         pointB.addTextChangedListener{
             (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
-            adapterResultDot.updateList(resultList.filter { pointB.text.toString().toLowerCase() in it.getName().toLowerCase() })
+            adapterResultDot.updateList(resultList.filter { pointB.text.toString().trim().toLowerCase() in it.getName().trim().toLowerCase() })
         }
 
-        pointA.setOnFocusChangeListener { _, focus -> openBottomSheet(); if (!focus) adapterResultDot.updateList(resultList) }
-        pointB.setOnFocusChangeListener { _, focus -> openBottomSheet(); if (!focus) adapterResultDot.updateList(resultList) }
         view.findViewById<CardView>(R.id.build_route).setOnClickListener {
             try{
                 if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
                     saveRoute = true
-                    tempStart = null
-                    tempEnd = null
+                    draftStart = null
+                    draftEnd = null
 
                     mapConnector.updatePath(start = startNode, finish = finishNode)
-                    mapConnector.moveCameraToDot(getDotById(resultList, startNode)!!)
 
                     mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 }
@@ -207,10 +205,11 @@ class RouteFragment: CustomFragment() {
                         pointA.setText(start!!.getName())
                         pointB.setText(end!!.getName())
 
-                        tempStart = startNode
-                        tempEnd = finishNode
+                        draftStart = startNode
+                        draftEnd = finishNode
 
                         mapConnector.updatePath(start = start.getId(), finish = end.getId())
+                        mapConnector.moveCameraToDot(getDotById(resultList, startNode)!!)
 
                         (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
                         (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
@@ -224,14 +223,17 @@ class RouteFragment: CustomFragment() {
         }
         mBottomSheetBehavior.addBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                println("state $newState")
                 if (mBottomSheetBehavior.state in listOf(5,4,3)) {
                     currentState = newState
+                }
+                if (mBottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED){
+                    pointA.clearFocus()
+                    pointB.clearFocus()
                 }
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                println("slide $slideOffset")
+                textRouteBuild.alpha = abs(2*slideOffset-1)
                 textRouteBuild.alpha = abs(2*slideOffset-1)
                 if (slideOffset > 0.5f){
                     textRouteBuild.text = "Показать маршрут"
@@ -276,7 +278,12 @@ class RouteFragment: CustomFragment() {
     }
 
     override fun onDestroy() {
-        if (tempStart != null && tempEnd != null) mapConnector.updatePath(start = tempStart!!, finish = tempEnd!!)
+        println("Draft $draftStart $draftEnd $saveDraftRoute")
+        if ((draftStart != null || draftEnd != null) && !saveDraftRoute){
+            if (draftStart != null) startNode = draftStart!!
+            if (draftEnd != null) finishNode = draftEnd!!
+            mapConnector.updatePath(start = startNode, finish = finishNode)
+        }
         super.onDestroy()
     }
 
