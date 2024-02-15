@@ -453,6 +453,7 @@ class MapHelper(
      * @See [Navigation]
      */
     internal fun updatePath() {
+        if (startNode == finishNode) return
         var myMarker = Map.Dot(0f, 0f)
         var myFinishMarker = Map.Dot(0f, 0f)
         for (marker in dotList) {
@@ -497,7 +498,8 @@ class MapHelper(
 
     private fun calculatePath(): FloatArray {
         val finish = if(finishMarker.visibility == View.INVISIBLE) dotList[dotList.size-3].getId() else finishNode
-        val start = if(positionMarker.visibility == View.INVISIBLE) dotList[dotList.size-2].getId() else startNode
+        val start = if(positionMarker.visibility == View.INVISIBLE) dotList[dotList.size-10].getId() else startNode
+        Log.d("MyDataLog", "${start} $finish $levelNumber")
         val myPath = navigation.path(start, finish, levelNumber)
         if (myPath?.size!! > 3) {
             val x1 = myPath[0].toInt()

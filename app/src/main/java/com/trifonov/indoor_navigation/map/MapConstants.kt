@@ -28,7 +28,7 @@ object MapConstants {
     internal var rotation = 0F
     var dotList: ArrayList<Map.Dot> = ArrayList()
 
-    internal var startNode = 130
+    internal var startNode = 0
     internal var finishNode = 0
     internal var myPosition = 33
     /** Для сохранения временного маршрута*/
