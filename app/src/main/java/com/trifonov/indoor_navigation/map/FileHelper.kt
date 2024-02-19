@@ -174,7 +174,7 @@ class FileHelper(
      * @See [FileHelper.fileDownload]
      * */
     private fun convertUrl(id: String): String {
-        return "https://drive.google.com/uc?export=download&confirm=no_antivirus&id=$id"
+        return "http://redmine.rdcenter.ru:1777/location/$id"
     }
 
     /**
@@ -193,11 +193,11 @@ class FileHelper(
         } else {
             // TODO: ИЗМЕНИТЬ ССЫЛКУ В ЗАВИСИМОСТИ ОТ ЛОКАЦИИ КОГДА КАРТЫ БУДУТ ГОТОВЫ
             val url = when(location.id){
-                0 -> "1sfEBUv4amX3lMCfdNmwO-9WKSB_o9YOK"
-                1 -> "1L1SKHm-7ly8PzMWk03EPyRIDmN0575qA"
-                2 -> "1BO5pAiFnk8tkaXeDlOqlm69akazW9pA1"
-                3 -> "1WoSJEoXBKcEu5vht4JVsodQLLCzd4VsN"
-                else -> "1sfEBUv4amX3lMCfdNmwO-9WKSB_o9YOK"
+                0 -> "Korpus_G"
+                1 -> "Korpus_D"
+                2 -> "KIT"
+                3 -> "test"
+                else -> "Korpus_G"
             }
             return if (fileDownload(url)) File("$dataPath${location.dataUrl}/map.json").readText()
             else "empty location"
