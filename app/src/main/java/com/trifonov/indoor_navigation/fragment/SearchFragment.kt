@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
@@ -48,7 +47,7 @@ class SearchFragment: CustomFragment() {
             MapConstants.mapConnector.moveCameraToDot(dot)
             val bundle = Bundle()
             bundle.putInt("id", dot.getId())
-            findNavController().navigate(R.id.action_search_to_scan, bundle)
+            findNavController().navigate(R.id.action_search_to_audience, bundle)
         }
         RV.adapter = adapter
         search.addTextChangedListener {

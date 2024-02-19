@@ -123,7 +123,7 @@ class SelectedPointFragment: CustomFragment() {
             navigateToRoute = true
             mapConnector.updatePath(start = if (saveDraftRoute) startNode else myPosition, finish = finishNode)
             println("New draft $draftStart $draftEnd")
-            view.findNavController().navigate(R.id.action_scan_to_route, bundle)
+            view.findNavController().navigate(R.id.action_audience_to_route, bundle)
         }
         view.findViewById<CardView>(R.id.route_from).setOnClickListener {
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
@@ -134,7 +134,7 @@ class SelectedPointFragment: CustomFragment() {
             navigateToRoute = true
             mapConnector.updatePath(finish = finishNode, start = startNode)
             println("New draft $draftStart $draftEnd")
-            view.findNavController().navigate(R.id.action_scan_to_route, bundle)
+            view.findNavController().navigate(R.id.action_audience_to_route, bundle)
         }
         mBottomSheetBehavior.addBottomSheetCallback(
             object : BottomSheetCallback() {

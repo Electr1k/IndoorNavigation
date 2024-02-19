@@ -8,7 +8,6 @@ package com.trifonov.indoor_navigation.map
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -21,7 +20,6 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.map.MapConstants.cameraMarkerX
 import com.trifonov.indoor_navigation.map.MapConstants.cameraMarkerY
@@ -45,12 +43,10 @@ import ovh.plrapps.mapview.MapView
 import ovh.plrapps.mapview.MapViewConfiguration
 import ovh.plrapps.mapview.ReferentialData
 import ovh.plrapps.mapview.ReferentialListener
-import ovh.plrapps.mapview.api.addCallout
 import ovh.plrapps.mapview.api.addMarker
 import ovh.plrapps.mapview.api.moveMarker
 import ovh.plrapps.mapview.api.moveToMarker
 import ovh.plrapps.mapview.api.removeMarker
-import ovh.plrapps.mapview.api.setAngle
 import ovh.plrapps.mapview.api.setMarkerTapListener
 import ovh.plrapps.mapview.core.TileStreamProvider
 import ovh.plrapps.mapview.markers.MarkerTapListener
@@ -399,7 +395,7 @@ class MapHelper(
                         while (navController.currentDestination!!.id != R.id.head){
                             navController.popBackStack()
                         }
-                        navController.navigate(R.id.action_head_to_scan, bundle)
+                        navController.navigate(R.id.action_head_to_audience, bundle)
 //                        callout.setTitle(dot?.getName() ?: view.name)
 //                        callout.setSubTitle("position: ${view.x} , ${view.y}")
 //                        mapView.addCallout(callout, view.x, view.y, -0.5f, -1.2f, 0f, 0f)

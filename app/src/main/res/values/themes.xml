@@ -15,4 +15,7 @@
         <item name="android:dividerHeight">6dp</item>
     </style>
     <style name="Theme.IndoorNavigation" parent="Base.Theme.IndoorNavigation" />
+<!--    <style name="Theme.App.SplashScreen" parent="Theme.SplashScreen.IconBackground">-->
+
+<!--    </style>-->
 </resources>

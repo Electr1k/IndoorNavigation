@@ -26,8 +26,8 @@
             android:id="@+id/action_head_to_route"
             app:destination="@id/route" />
         <action
-            android:id="@+id/action_head_to_scan"
-            app:destination="@id/scan" />
+            android:id="@+id/action_head_to_audience"
+            app:destination="@id/about_audience" />
         <action
             android:id="@+id/action_head_to_search"
             app:destination="@id/search" />
@@ -42,8 +42,8 @@
         tools:layout="@layout/route_fragment">
 
         <action
-            android:id="@+id/action_route_to_scan"
-            app:destination="@+id/scan"
+            android:id="@+id/action_route_to_audience"
+            app:destination="@+id/about_audience"
             app:popUpTo="@id/route"
             app:popUpToInclusive="true"/>
     </fragment>
@@ -54,22 +54,27 @@
         android:label="@string/search"
         tools:layout="@layout/search_fragment">
         <action
-            android:id="@+id/action_search_to_scan"
-            app:destination="@+id/scan"
+            android:id="@+id/action_search_to_audience"
+            app:destination="@+id/about_audience"
             app:popUpTo="@id/search"
             app:popUpToInclusive="true"/>
     </fragment>
 
-    <fragment android:id="@+id/scan"
+    <fragment android:id="@+id/about_audience"
         android:name="com.trifonov.indoor_navigation.fragment.SelectedPointFragment"
-        android:label="@string/scan"
+        android:label="@string/about_audience"
         tools:layout="@layout/selected_point_fragment">
         <action
-            android:id="@+id/action_scan_to_route"
+            android:id="@+id/action_audience_to_route"
             app:destination="@id/route"
-            app:popUpTo="@id/scan"
+            app:popUpTo="@id/about_audience"
             app:popUpToInclusive="true"/>
     </fragment>
+
+    <fragment android:id="@+id/scan"
+        android:name="com.trifonov.indoor_navigation.fragment.ScanFragment"
+        android:label="@string/scan"
+        tools:layout="@layout/location_fragment"/>
 
     <fragment android:id="@+id/location"
         android:name="com.trifonov.indoor_navigation.fragment.LocationFragment"

@@ -7,22 +7,16 @@
 package com.trifonov.indoor_navigation.map
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.AnimationSet
-import android.view.animation.AnimationUtils
 import android.view.animation.OvershootInterpolator
 import android.view.animation.ScaleAnimation
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.trifonov.indoor_navigation.R
@@ -94,7 +88,7 @@ class MarkerCallout(
         while (navController.currentDestination!!.id != R.id.head){
             navController.popBackStack()
         }
-        navController.navigate(R.id.action_head_to_scan, bundle)
+        navController.navigate(R.id.action_head_to_audience, bundle)
     }
 
     /**
@@ -105,7 +99,7 @@ class MarkerCallout(
         super.onDetachedFromWindow()
         val navigation = activity.findNavController(R.id.nav_host_fragment_activity_bottom_navigation)
         println("Current destination ${navigation.currentDestination}")
-        if (navigation.currentDestination?.id == R.id.scan){
+        if (navigation.currentDestination?.id == R.id.about_audience){
             //: TODO: ИЗМЕНИТЬ SCAN НА selectedFragment, когда сканер будет готов
             BottomSheetBehavior.from(activity.findViewById<View>(R.id.bottom_sheet)).state = BottomSheetBehavior.STATE_HIDDEN
             navigation.popBackStack()
