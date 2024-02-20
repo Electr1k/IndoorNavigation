@@ -116,7 +116,9 @@ class RouteFragment: CustomFragment() {
         resultList = dotList.filter { (it.getType() in filterList || filterList.isEmpty()) && it.getName().isNotEmpty()  } as MutableList<Map.Dot>
         val dot = dotList.find { it.getId() == myPosition }!!.copy()
         dot.setName(myPositionName)
+        dot.setId(myPosition)
         resultList.add(0, dot)
+        println("My position $dot ${dot.getId()}")
         adapterResultDot = AudienceRouteAdapter(resultList) { dot ->
             val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(fragment.windowToken, 0)
@@ -157,7 +159,13 @@ class RouteFragment: CustomFragment() {
             val dotStart = getDotById(dotList, startNode)
             val endDot = getDotById(dotList, finishNode)
             pointA.setText(dotStart?.getName() ?: "")
+            if (dotStart?.getId() == myPosition){
+                pointA.setText(myPositionName)
+            }
             pointB.setText(endDot?.getName() ?: "")
+            if (endDot?.getId() == myPosition){
+                pointB.setText(myPositionName)
+            }
         }
 
         clearPointA.setOnClickListener { pointA.setText(""); pointA.requestFocus() }
@@ -185,22 +193,22 @@ class RouteFragment: CustomFragment() {
                     mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 }
                 else{
-
+                    println(resultList.find { it.getId() == myPosition })
                     var start = if (pointA.text.toString().equals(myPositionName, ignoreCase = true))  resultList.find { it.getId() == myPosition }
                      else resultList.find { it.getName().equals(pointA.text.toString(), ignoreCase = true) }
                     var end =
                         if (pointB.text.toString().equals(myPositionName, ignoreCase = true)) resultList.find { it.getId() == myPosition }
                         else resultList.find { it.getName()
                             .equals(pointB.text.toString(), ignoreCase = true) }
-
+                    println("Start $start $myPosition")
                     if (start == null || end == null){
                         if (start == null) (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.red)
                         if (end == null) (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.red)
                     }
                     else{
-                        /** Ищем оригинальное название "Моего местоположение, чтобы подставить название аудитории*/
-                        if (start.getId() == myPosition) start = getDotById(dotList, myPosition);
-                        if (end.getId() == myPosition) end = getDotById(dotList, myPosition);
+//                        /** Ищем оригинальное название "Моего местоположение, чтобы подставить название аудитории*/
+//                        if (start.getId() == myPosition) start = getDotById(dotList, myPosition);
+//                        if (end.getId() == myPosition) end = getDotById(dotList, myPosition);
 
                         pointA.setText(start!!.getName())
                         pointB.setText(end!!.getName())

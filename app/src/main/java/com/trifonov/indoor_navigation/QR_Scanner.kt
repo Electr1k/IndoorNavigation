@@ -74,6 +74,7 @@ class QR_Scanner : AppCompatActivity() {
             override fun receiveDetections(detections: Detector.Detections<Barcode?>) {
                 val qrcodes: SparseArray<Barcode?> = detections.detectedItems
                 val intent = Intent()
+
                 if (qrcodes.size() != 0) {
                     link = qrcodes.valueAt(0)?.rawValue
 

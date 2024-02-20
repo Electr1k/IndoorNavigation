@@ -34,6 +34,9 @@
         <action
             android:id="@+id/action_head_to_location"
             app:destination="@id/location" />
+        <action
+            android:id="@+id/action_head_to_scan"
+            app:destination="@id/scan" />
     </fragment>
 
     <fragment android:id="@+id/route"

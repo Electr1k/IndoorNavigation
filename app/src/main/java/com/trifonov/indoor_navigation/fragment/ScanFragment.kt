@@ -8,13 +8,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.QR_Scanner
+import com.trifonov.indoor_navigation.map.MapConstants.myPosition
 
 
 class ScanFragment: Fragment() {
@@ -48,11 +51,10 @@ class ScanFragment: Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == 3) {
             val link = data!!.getStringExtra("link")
-            saveText(Integer.parseInt(link))
+            myPosition = link?.let { Integer.parseInt(it) }!!
+            Toast.makeText(requireContext(), "Местоположение определено", Toast.LENGTH_SHORT).show();
         }
-        val bottomNavigationView =
-            requireActivity().findViewById<View>(R.id.bottomNavigationView) as BottomNavigationView
-        bottomNavigationView.selectedItemId = bottomNavigationView.menu.getItem(1).itemId
+        findNavController().popBackStack()
     }
 
     fun saveText(link: Int) {
