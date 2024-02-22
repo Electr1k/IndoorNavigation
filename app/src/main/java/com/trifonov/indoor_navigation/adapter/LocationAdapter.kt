@@ -8,13 +8,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.common.LocationEntity
+import com.trifonov.indoor_navigation.data.dto.Location
 
 class LocationAdapter(
-    private val locationList: List<LocationEntity>,
-    val click: (LocationEntity) -> Unit,
-    private val currentLocation: LocationEntity?
+    private val locationList: List<Location>,
+    val click: (Location) -> Unit,
+    private val currentLocation: Location?
 ): RecyclerView.Adapter<LocationAdapter.LocationViewHolder>() {
-    private var selectedLocation: LocationEntity? = currentLocation
+    private var selectedLocation: Location? = currentLocation
 
     override fun onCreateViewHolder(
         parent: ViewGroup,

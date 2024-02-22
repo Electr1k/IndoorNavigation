@@ -2,16 +2,24 @@ package com.trifonov.indoor_navigation.common
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import android.preference.PreferenceManager
+import androidx.annotation.RequiresApi
+import com.trifonov.indoor_navigation.data.dto.Location
 import org.json.JSONObject
 import org.json.JSONTokener
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.util.Date
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 class LocationData(
     private val cntx: Context?
 ) {
     var sp: SharedPreferences? = PreferenceManager.getDefaultSharedPreferences(cntx)
-    private val locationsList = mutableListOf<LocationEntity>()
+    private val locationsList = mutableListOf<Location>()
     init {
         val locationsAsString: String =
             cntx!!.assets.open("locations.json").bufferedReader().use { it.readText() }
@@ -20,13 +28,15 @@ class LocationData(
         for (i in 0 until locationsArray.length()) {
             val location = locationsArray.getJSONObject(i)
             locationsList.add(
-                LocationEntity(
+                Location(
                     id = location.getInt("id"),
                     name = location.getString("name"),
                     description = location.getString("description"),
                     address = location.getString("address"),
                     dataUrl = location.getString("dataUrl"),
-                    updateTime = location.getString("updateTime"),
+                    updateTime = java.util.Date
+                        .from(LocalDateTime.parse(location.getString("updateTime")).atZone(ZoneId.systemDefault())
+                            .toInstant()),
                     isVisible = location.getBoolean("isVisible"),
                     hashSum = location.getInt("hashSum")
                 )
@@ -40,11 +50,11 @@ class LocationData(
         sp!!.edit().putInt("locationId", locationId).apply()
     }
 
-    fun getAllLocations(): List<LocationEntity>{
+    fun getAllLocations(): List<Location>{
         return locationsList
     }
 
-    fun getLocationById(locationId: Int): LocationEntity?{
+    fun getLocationById(locationId: Int): Location?{
         return locationsList.find { locationId == it.id }
     }
 }

@@ -22,6 +22,7 @@ import android.widget.Toast
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.common.LocationEntity
+import com.trifonov.indoor_navigation.data.dto.Location
 import com.trifonov.indoor_navigation.map.MapConstants.dataPath
 import com.trifonov.indoor_navigation.map.MapConstants.unzipPath
 import net.lingala.zip4j.ZipFile
@@ -39,7 +40,7 @@ import kotlin.math.roundToInt
 class FileHelper(
     private val activity: Activity,
     private val downloadView: View? = null,
-    val location: LocationEntity,
+    val location: Location,
     private val dialog: AlertDialog? = null,
 ) {
 
@@ -182,7 +183,7 @@ class FileHelper(
      * @Param [name] название локации для отображения
      * @Return карта в строковом представлении
      */
-    internal fun getJsonMap(location: LocationEntity): String {
+    internal fun getJsonMap(location: Location): String {
         if (checkStorageLocation(location.dataUrl)) {
             return try {
                 return File("$dataPath${location.dataUrl}/map.json").readText()

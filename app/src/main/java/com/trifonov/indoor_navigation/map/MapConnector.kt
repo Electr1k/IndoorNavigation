@@ -12,6 +12,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.navigation.NavController
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.common.LocationEntity
+import com.trifonov.indoor_navigation.data.dto.Location
 import com.trifonov.indoor_navigation.map.MapConstants.dotList
 import com.trifonov.indoor_navigation.map.MapConstants.finishNode
 import com.trifonov.indoor_navigation.map.MapConstants.levelArray
@@ -109,7 +110,7 @@ class MapConnector(
      * @Param [dialog] - dialog, для закрытия диалога после загрузки
      * @return Boolean - успешная/безуспешная инициализация
      * */
-    internal fun setLocation(location: LocationEntity, downloadView: View? = null, dialog: AlertDialog? = null): Boolean {
+    internal fun setLocation(location: Location, downloadView: View? = null, dialog: AlertDialog? = null): Boolean {
         locationName = location.dataUrl
         isFromAssets = false
         fileHelper = FileHelper(activity, downloadView, location, dialog)

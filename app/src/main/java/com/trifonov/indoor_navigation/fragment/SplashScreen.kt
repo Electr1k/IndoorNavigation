@@ -8,10 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import com.trifonov.indoor_navigation.MainActivity
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.common.LocationData
+import com.trifonov.indoor_navigation.map.FileHelper.Companion.checkStorageLocation
 import com.trifonov.indoor_navigation.map.MapConnector
 import com.trifonov.indoor_navigation.map.MapConstants
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class SplashScreen : Fragment() {
     override fun onCreateView(
@@ -22,10 +26,23 @@ class SplashScreen : Fragment() {
             MapConstants.mapConnector = MapConnector(requireActivity(), findNavController())
             val locationData = LocationData(requireContext())
             val currentLocationId = locationData.getCurrentLocation()
-            if (currentLocationId != -1){
-                MapConstants.mapConnector.setLocation(locationData.getLocationById(currentLocationId)!!)
+            runBlocking {
+                launch {
+                    (requireActivity() as MainActivity).checkUpdateLocations()
+                }
+                if (currentLocationId != -1) {
+                    if (checkStorageLocation(locationData.getLocationById(currentLocationId)!!.dataUrl)) {
+                        MapConstants.mapConnector.setLocation(
+                            locationData.getLocationById(
+                                currentLocationId
+                            )!!
+                        )
+                    } else {
+                        locationData.setCurrentLocation(-1)
+                    };
+                }
+                findNavController().navigate(R.id.action_splash_to_head)
             }
-            findNavController().navigate(R.id.action_splash_to_head)
         }, 1500)
         return inflater.inflate(R.layout.splash_screen_fragment, container, false)
     }

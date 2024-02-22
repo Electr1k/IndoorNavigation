@@ -20,13 +20,22 @@ import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.LocationAdapter
 import com.trifonov.indoor_navigation.common.LocationData
 import com.trifonov.indoor_navigation.common.LocationEntity
+import com.trifonov.indoor_navigation.data.dto.Location
+import com.trifonov.indoor_navigation.data.dto.Locations
+import com.trifonov.indoor_navigation.di.ApiModule
 import com.trifonov.indoor_navigation.map.FileHelper
 import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlin.coroutines.suspendCoroutine
 
 
 class LocationFragment: CustomFragment() {
-    private var currentLocation: LocationEntity? = null
-    private var selectedLocation: LocationEntity? = null
+    private var currentLocation: Location? = null
+    private var selectedLocation: Location? = null
     private lateinit var locationRV: RecyclerView
     private lateinit var acceptButton: CardView
 
@@ -84,7 +93,23 @@ class LocationFragment: CustomFragment() {
                 }
             }
         }
-        locationRV.adapter = LocationAdapter(locationData.getAllLocations(), {selectedLocation = it}, currentLocation)
+
+        runBlocking {
+            var locations : List<Location>
+            launch {
+                try {
+                    locations = ApiModule.provideApi().getLocations().locations
+                    locationRV.adapter = LocationAdapter(locations, {selectedLocation = it}, currentLocation)
+                }
+                catch (e: Exception){
+                    locationData.getAllLocations()
+                    locationRV.adapter = LocationAdapter(locationData.getAllLocations(), {selectedLocation = it}, currentLocation)
+
+                }
+            }.join()
+
+
+        }
     }
 
     override fun onStart() {

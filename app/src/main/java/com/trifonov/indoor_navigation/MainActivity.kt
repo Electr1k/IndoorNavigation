@@ -1,39 +1,52 @@
 package com.trifonov.indoor_navigation
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.DownloadManager
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
-import android.content.DialogInterface
+import android.content.Context
 import android.content.pm.PackageManager
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.button.MaterialButton
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trifonov.indoor_navigation.common.LocationData
 import com.trifonov.indoor_navigation.common.LocationEntity
+import com.trifonov.indoor_navigation.data.dto.Location
+import com.trifonov.indoor_navigation.data.dto.Locations
 import com.trifonov.indoor_navigation.databinding.ActivityMainBinding
+import com.trifonov.indoor_navigation.di.ApiModule
 import com.trifonov.indoor_navigation.map.FileHelper.Companion.checkStorageLocation
+import com.trifonov.indoor_navigation.map.MapConstants
+import com.trifonov.indoor_navigation.map.MapConstants.dataPath
 import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
-import com.trifonov.indoor_navigation.map.MapConstants.startNode
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import net.lingala.zip4j.ZipFile
+import java.io.File
+import java.lang.Float
+import java.util.Date
+import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
 
@@ -61,7 +74,6 @@ class MainActivity : AppCompatActivity() {
 
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
-
         val navView: BottomNavigationView = mBinding.bottomNavigationView
         mNavController = findNavController(R.id.nav_host_fragment_activity_bottom_navigation)
         navView.setupWithNavController(mNavController)
@@ -143,7 +155,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * Инициализирует и запускает Alert Dialog с загрузкой локации
      * */
-    internal fun initialAlertDialog(location: LocationEntity, locationData: LocationData){
+    internal fun initialAlertDialog(location: Location, locationData: LocationData){
         if(!isDialogEnable){
             val builder = AlertDialog.Builder(this)
             val dialog = builder
@@ -183,4 +195,85 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    internal suspend fun checkUpdateLocations(){
+        val locations: Locations
+        try {
+            locations = ApiModule.provideApi().getLocations()
+        }
+        catch (e : Exception){
+            Log.e("error", e.message.toString())
+            return
+        }
+        val ld = LocationData(this@MainActivity)
+        val currentLocation = ld.getCurrentLocation()
+        for (location in locations.locations ){
+            if (checkStorageLocation(location.dataUrl)){
+                val jsonFile = File("${MapConstants.unzipPath}/${location.dataUrl}/map.json")
+                val date = Date(jsonFile.lastModified())
+                println("Date install $date")
+                if (date < location.updateTime){
+                    println("Reinstall location ${location.dataUrl}")
+                    jsonFile.parentFile?.deleteRecursively()
+                    if (silentInstall(location) && currentLocation == location.id){
+                        runOnUiThread {
+                            Toast.makeText(this@MainActivity, "Текущая локация была обновлена", Toast.LENGTH_SHORT).show()
+                            mapConnector.setLocation(ld.getLocationById(currentLocation)!!)
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    @SuppressLint("Range")
+    private fun silentInstall(location: Location): Boolean{
+
+        val url = Uri.parse("http://redmine.rdcenter.ru:1777/location/${location.dataUrl}")
+        val request = DownloadManager.Request(url)
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
+            .setDestinationInExternalFilesDir(
+                this,
+                "locations/${location.dataUrl}",
+                "${location.dataUrl}.zip"
+            )
+            .setAllowedOverMetered(true)
+            .setAllowedOverRoaming(true)
+        val downloadManager =
+            this.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val downloadId = downloadManager.enqueue(request)
+
+        val query = DownloadManager.Query().setFilterById(downloadId)
+        println("start download")
+        var downloading = true;
+        while (downloading) {
+            val cursor = downloadManager.query(query)
+            cursor.moveToFirst()
+            try {
+                if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
+                    val unzipFlag = try {
+                        println("Unzip")
+                        val zipFile = ZipFile("${dataPath+location.dataUrl}/${location.dataUrl}.zip")
+                        zipFile.extractAll(dataPath+location.dataUrl)
+                        File("${dataPath+location.dataUrl}/${location.dataUrl}.zip").delete()
+                        downloading = false
+                        println("success")
+                        true
+                    } catch (e: Exception) {
+                        false
+                    }
+
+                    if (unzipFlag) {
+                        cursor.close()
+                        return true
+                    }
+                }
+            }
+            catch (e: Exception){
+                downloadManager.remove(downloadId)
+            }
+            cursor.close()
+        }
+        return false
+    }
 }
