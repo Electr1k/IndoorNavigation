@@ -71,8 +71,7 @@ class LocationFragment: CustomFragment() {
         val locationData = LocationData(requireContext())
 
         val currentLocationId = locationData.getCurrentLocation()
-
-        currentLocation = if (currentLocationId != -1) locationData.getLocationById(currentLocationId!!) else null
+        currentLocation = if (currentLocationId != -1) locationData.getLocationById(currentLocationId) else null
         selectedLocation = currentLocation
         acceptButton.setOnClickListener{
             if (selectedLocation != null) {
@@ -99,15 +98,16 @@ class LocationFragment: CustomFragment() {
             launch {
                 try {
                     locations = ApiModule.provideApi().getLocations().locations
+                    locationData.setLocations(locations)
+                    currentLocation = if (currentLocationId != -1) locationData.getLocationById(currentLocationId) else null
+                    selectedLocation = currentLocation
                     locationRV.adapter = LocationAdapter(locations, {selectedLocation = it}, currentLocation)
                 }
                 catch (e: Exception){
                     locationData.getAllLocations()
                     locationRV.adapter = LocationAdapter(locationData.getAllLocations(), {selectedLocation = it}, currentLocation)
-
                 }
             }.join()
-
 
         }
     }
