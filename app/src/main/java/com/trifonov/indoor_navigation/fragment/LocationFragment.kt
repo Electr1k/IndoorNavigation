@@ -2,35 +2,30 @@ package com.trifonov.indoor_navigation.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.TextView
+import android.widget.LinearLayout
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.cardview.widget.CardView
 import androidx.core.view.doOnLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.trifonov.indoor_navigation.MainActivity
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.LocationAdapter
 import com.trifonov.indoor_navigation.common.LocationData
-import com.trifonov.indoor_navigation.common.LocationEntity
 import com.trifonov.indoor_navigation.data.dto.Location
-import com.trifonov.indoor_navigation.data.dto.Locations
 import com.trifonov.indoor_navigation.di.ApiModule
 import com.trifonov.indoor_navigation.map.FileHelper
 import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.withContext
 
 
 class LocationFragment: CustomFragment() {
@@ -38,6 +33,8 @@ class LocationFragment: CustomFragment() {
     private var selectedLocation: Location? = null
     private lateinit var locationRV: RecyclerView
     private lateinit var acceptButton: CardView
+    private lateinit var loadingContainer: LinearLayout
+    private lateinit var locationData: LocationData
 
     @Nullable
     @MainThread
@@ -57,6 +54,7 @@ class LocationFragment: CustomFragment() {
         super.onViewCreated(view, savedInstanceState)
         locationRV = view.findViewById(R.id.location_list)
         acceptButton = view.findViewById(R.id.accept_button)
+        loadingContainer = view.findViewById(R.id.loading_container)
         mBottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {}
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -68,8 +66,7 @@ class LocationFragment: CustomFragment() {
                 acceptButton.translationY = width * (1 - slideOffset)
             }
         })
-        val locationData = LocationData(requireContext())
-
+        locationData = LocationData(requireContext())
         val currentLocationId = locationData.getCurrentLocation()
         currentLocation = if (currentLocationId != -1) locationData.getLocationById(currentLocationId) else null
         selectedLocation = currentLocation
@@ -92,23 +89,34 @@ class LocationFragment: CustomFragment() {
                 }
             }
         }
-
-        runBlocking {
-            var locations : List<Location>
-            launch {
-                try {
-                    locations = ApiModule.provideApi().getLocations().locations
-                    locationData.setLocations(locations)
-                    currentLocation = if (currentLocationId != -1) locationData.getLocationById(currentLocationId) else null
-                    selectedLocation = currentLocation
-                    locationRV.adapter = LocationAdapter(locations, {selectedLocation = it}, currentLocation)
+        lifecycleScope.launch {
+            repeat(3) {
+                loadingContainer.addView(
+                    layoutInflater.inflate(
+                        R.layout.loading_location_item,
+                        null
+                    )
+                )
+            }
+            try {
+                val locations: List<Location> = withContext(Dispatchers.IO) {
+                    ApiModule.provideApi().getLocations().locations
                 }
-                catch (e: Exception){
-                    locationData.getAllLocations()
-                    locationRV.adapter = LocationAdapter(locationData.getAllLocations(), {selectedLocation = it}, currentLocation)
-                }
-            }.join()
+                locationData.setLocations(locations)
+                currentLocation = if (currentLocationId != -1) locationData.getLocationById(currentLocationId) else null
+                selectedLocation = currentLocation
+                locationRV.adapter = LocationAdapter(locations, {selectedLocation = it}, currentLocation)
 
+            } catch (e: Exception) {
+                locationData.getAllLocations()
+                locationRV.adapter = LocationAdapter(
+                    locationData.getAllLocations(),
+                    { selectedLocation = it },
+                    currentLocation
+                )
+            } finally {
+                loadingContainer.removeAllViews()
+            }
         }
     }
 
