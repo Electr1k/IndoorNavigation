@@ -28,7 +28,8 @@ class SplashScreen : Fragment() {
             val locationData = LocationData(requireContext())
             val currentLocationId = locationData.getCurrentLocation()
             if (currentLocationId != -1) {
-                if (checkStorageLocation(locationData.getLocationById(currentLocationId)!!.dataUrl)) {
+                val locName = locationData.getLocationById(currentLocationId)?.dataUrl
+                if (locName != null && checkStorageLocation(locName)) {
                     MapConstants.mapConnector.setLocation(
                         locationData.getLocationById(
                             currentLocationId

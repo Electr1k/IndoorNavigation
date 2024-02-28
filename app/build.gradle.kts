@@ -67,4 +67,7 @@ dependencies {
 
     implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.2")
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2")
+
+    // Gson for string to json
+    implementation("com.google.code.gson:gson:2.10.1")
 }

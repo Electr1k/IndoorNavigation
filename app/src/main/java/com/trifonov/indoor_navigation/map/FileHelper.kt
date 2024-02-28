@@ -20,8 +20,10 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.gson.Gson
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.data.dto.Location
+import com.trifonov.indoor_navigation.data.dto.Locations
 import com.trifonov.indoor_navigation.map.MapConstants.dataPath
 import com.trifonov.indoor_navigation.map.MapConstants.unzipPath
 import net.lingala.zip4j.ZipFile
@@ -57,13 +59,13 @@ class FileHelper(
 
 
     @SuppressLint("Range")
-    internal fun fileDownload(uRl: String): Boolean {
+    internal fun fileDownload(location: Location): Boolean {
         println("Download")
         var returning = false
         dataPathTmp += "${location.dataUrl}/"
         unzipPathTmp += "${location.dataUrl}/"
         startThreadConnection()
-        val url = Uri.parse(convertUrl(uRl))
+        val url = Uri.parse(convertUrl(location.dataUrl))
         println(url)
         val request = DownloadManager.Request(url)
             .setTitle("${location.dataUrl}.zip")
@@ -124,6 +126,18 @@ class FileHelper(
                 }
                 checkConnectionFlag = false
                 if (unzip(location.dataUrl) == true){
+                    val locationsFile = File("$dataPath/locations.json")
+                    val gson = Gson()
+                    if (locationsFile.exists()){
+                        val locations = gson.fromJson(locationsFile.readText(), Locations::class.java)
+                        locations.locations.add(location)
+                        locationsFile.writeText(gson.toJson(locations))
+                    }
+                    else{
+                        locationsFile.writeText(gson.toJson(Locations(mutableListOf(location))))
+                    }
+                    println("LocationsFile")
+                    println(locationsFile.readText())
                     activity.runOnUiThread {
                         downloadView?.findViewById<TextView>(R.id.progress)?.text = "100%"
                         downloadView?.findViewById<LinearProgressIndicator>(R.id.progressBar)?.progress = 100
@@ -192,14 +206,7 @@ class FileHelper(
             }
         } else {
             // TODO: ИЗМЕНИТЬ ССЫЛКУ В ЗАВИСИМОСТИ ОТ ЛОКАЦИИ КОГДА КАРТЫ БУДУТ ГОТОВЫ
-            val url = when(location.id){
-                0 -> "Korpus_G"
-                1 -> "Korpus_D"
-                2 -> "KIT"
-                3 -> "test"
-                else -> "Korpus_G"
-            }
-            return if (fileDownload(url)) File("$dataPath${location.dataUrl}/map.json").readText()
+            return if (fileDownload(location)) File("$dataPath${location.dataUrl}/map.json").readText()
             else "empty location"
         }
         return "empty location"
@@ -247,13 +254,13 @@ class FileHelper(
         internal fun checkStorageLocation(locationName: String): Boolean {
             try {
                 for (file in File("$unzipPath/$locationName/").listFiles()!!) {
-                    println("File ${file.name}")
                     if (file.name == "map.json") {
+                        println("$locationName is found")
                         return true
                     }
                 }
             } catch (e: Exception) {
-                println("Location not found")
+                println("$locationName not found")
             }
             return false
         }

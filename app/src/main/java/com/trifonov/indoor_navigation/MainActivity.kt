@@ -197,7 +197,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    internal suspend fun checkUpdateLocations(){
+    private suspend fun checkUpdateLocations(){
         val locations: Locations
         try {
             locations = ApiModule.provideApi().getLocations()
@@ -213,7 +213,7 @@ class MainActivity : AppCompatActivity() {
                 val jsonFile = File("${MapConstants.unzipPath}/${location.dataUrl}/map.json")
                 val date = Date(jsonFile.lastModified())
                 println("Date install $date")
-                if (true){
+                if (date < location.updateTime){
                     println("Reinstall location ${location.dataUrl}")
                     jsonFile.parentFile?.deleteRecursively()
                     if (silentInstall(location) && currentLocation == location.id){
