@@ -15,6 +15,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -24,13 +25,12 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trifonov.indoor_navigation.common.LocationData
-import com.trifonov.indoor_navigation.common.LocationEntity
 import com.trifonov.indoor_navigation.data.dto.Location
 import com.trifonov.indoor_navigation.data.dto.Locations
 import com.trifonov.indoor_navigation.databinding.ActivityMainBinding
@@ -39,14 +39,13 @@ import com.trifonov.indoor_navigation.map.FileHelper.Companion.checkStorageLocat
 import com.trifonov.indoor_navigation.map.MapConstants
 import com.trifonov.indoor_navigation.map.MapConstants.dataPath
 import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import net.lingala.zip4j.ZipFile
 import java.io.File
-import java.lang.Float
 import java.util.Date
-import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
 
@@ -69,26 +68,29 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mNavController: NavController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
         val navView: BottomNavigationView = mBinding.bottomNavigationView
+
+        CoroutineScope(Dispatchers.IO).launch {
+            this@MainActivity.checkUpdateLocations()
+        }
         mNavController = findNavController(R.id.nav_host_fragment_activity_bottom_navigation)
         navView.setupWithNavController(mNavController)
         mNavController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id != R.id.head) findViewById<CardView>(R.id.cardNav).visibility = View.INVISIBLE
             else findViewById<CardView>(R.id.cardNav).visibility = View.VISIBLE
         }
-        //val locationData = LocationData(this)
 
         if (!hasPermissions()) {
             requestPermissions()
         } else {
             startBluetoothScanning()
         }
-        //Handler(Looper.getMainLooper()).postDelayed({initialAlertDialog(locationData.getLocationById(0)!!)}, 2000)
     }
 
     private fun findCurrentLocation(macAddress: String) {
@@ -211,7 +213,7 @@ class MainActivity : AppCompatActivity() {
                 val jsonFile = File("${MapConstants.unzipPath}/${location.dataUrl}/map.json")
                 val date = Date(jsonFile.lastModified())
                 println("Date install $date")
-                if (date < location.updateTime){
+                if (true){
                     println("Reinstall location ${location.dataUrl}")
                     jsonFile.parentFile?.deleteRecursively()
                     if (silentInstall(location) && currentLocation == location.id){

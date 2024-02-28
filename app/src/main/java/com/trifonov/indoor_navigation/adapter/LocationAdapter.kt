@@ -8,7 +8,6 @@ import android.widget.RadioButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.trifonov.indoor_navigation.R
-import com.trifonov.indoor_navigation.common.LocationEntity
 import com.trifonov.indoor_navigation.data.dto.Location
 import com.trifonov.indoor_navigation.map.FileHelper.Companion.checkStorageLocation
 

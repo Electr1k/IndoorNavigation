@@ -21,7 +21,6 @@ import android.widget.TextView
 import android.widget.Toast
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trifonov.indoor_navigation.R
-import com.trifonov.indoor_navigation.common.LocationEntity
 import com.trifonov.indoor_navigation.data.dto.Location
 import com.trifonov.indoor_navigation.map.MapConstants.dataPath
 import com.trifonov.indoor_navigation.map.MapConstants.unzipPath

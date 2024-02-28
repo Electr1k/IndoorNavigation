@@ -22,6 +22,7 @@ class HeadFragment: Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        println("Head")
         val view = inflater.inflate(R.layout.head_fragment, container, false)
         return view
     }

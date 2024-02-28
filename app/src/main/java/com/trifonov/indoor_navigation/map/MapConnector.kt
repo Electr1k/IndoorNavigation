@@ -11,7 +11,6 @@ import android.widget.NumberPicker
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.navigation.NavController
 import com.trifonov.indoor_navigation.R
-import com.trifonov.indoor_navigation.common.LocationEntity
 import com.trifonov.indoor_navigation.data.dto.Location
 import com.trifonov.indoor_navigation.map.MapConstants.dotList
 import com.trifonov.indoor_navigation.map.MapConstants.finishNode
