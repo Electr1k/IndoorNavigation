@@ -83,6 +83,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"/>
+            <TextView
+                android:layout_marginTop="15dp"
+                android:id="@+id/empty_list_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/is_empty"
+                android:textAlignment="center"
+                android:textColor="@color/dark_blue"
+                android:textSize="22sp"
+                android:visibility="gone" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

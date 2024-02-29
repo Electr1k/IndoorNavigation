@@ -20,4 +20,5 @@
     <string name="yes">"Да"</string>
     <string name="no">"Нет"</string>
     <string name="go">Пройти</string>
+    <string name="is_empty">"Кажется, тут пусто"</string>
 </resources>

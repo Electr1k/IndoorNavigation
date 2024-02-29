@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
@@ -14,6 +15,8 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.doOnLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.shimmer.Shimmer
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.trifonov.indoor_navigation.MainActivity
 import com.trifonov.indoor_navigation.R
@@ -35,6 +38,7 @@ class LocationFragment: CustomFragment() {
     private lateinit var acceptButton: CardView
     private lateinit var loadingContainer: LinearLayout
     private lateinit var locationData: LocationData
+    private lateinit var emptyListText: TextView
 
     @Nullable
     @MainThread
@@ -49,12 +53,13 @@ class LocationFragment: CustomFragment() {
     }
 
     @MainThread
-    @SuppressLint("KotlinNullnessAnnotation")
+    @SuppressLint("KotlinNullnessAnnotation", "MissingInflatedId")
     override fun onViewCreated(@NonNull view: View, @Nullable savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         locationRV = view.findViewById(R.id.location_list)
         acceptButton = view.findViewById(R.id.accept_button)
         loadingContainer = view.findViewById(R.id.loading_container)
+        emptyListText = view.findViewById(R.id.empty_list_text)
         mBottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {}
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -91,15 +96,18 @@ class LocationFragment: CustomFragment() {
         }
         lifecycleScope.launch {
             repeat(3) {
+                val item = layoutInflater.inflate(
+                    R.layout.loading_location_item,
+                    null
+                )
+                item.findViewById<ShimmerFrameLayout>(R.id.shimmer).startShimmer()
                 loadingContainer.addView(
-                    layoutInflater.inflate(
-                        R.layout.loading_location_item,
-                        null
-                    )
+                    item
                 )
             }
+            var locations: List<Location>? = null
             try {
-                val locations: List<Location> = withContext(Dispatchers.IO) {
+                locations = withContext(Dispatchers.IO) {
                     ApiModule.provideApi().getLocations().locations
                 }
                 locationData.setLocations(locations)
@@ -108,14 +116,17 @@ class LocationFragment: CustomFragment() {
                 locationRV.adapter = LocationAdapter(locations, {selectedLocation = it}, currentLocation)
 
             } catch (e: Exception) {
-                locationData.getAllLocations()
+                locations = locationData.getAllLocations()
                 locationRV.adapter = LocationAdapter(
-                    locationData.getAllLocations(),
+                    locations,
                     { selectedLocation = it },
                     currentLocation
                 )
             } finally {
                 loadingContainer.removeAllViews()
+                if (locations!!.isEmpty()){
+                    emptyListText.visibility = View.VISIBLE
+                }
             }
         }
     }

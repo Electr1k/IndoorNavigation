@@ -13,6 +13,7 @@
     <color name="dark_grey">#FF686868</color>
     <color name="light_gray">#FFF0F0F0</color>
     <color name="grey">#7A7A7A</color>
+    <color name="grey70">#B3BCBBBB</color>
     <color name="grey_main">#EFEFEF</color>
     <color name="orange">#FFB75301</color>
     <color name="brand">#0060ff</color>
