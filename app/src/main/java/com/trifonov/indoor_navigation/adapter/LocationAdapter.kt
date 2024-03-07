@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.data.dto.Location
-import com.trifonov.indoor_navigation.map.FileHelper.Companion.checkStorageLocation
+import com.trifonov.indoor_navigation.mapView.FileHelper.Companion.checkStorageLocation
 
 class LocationAdapter(
     private val locationList: List<Location>,

@@ -15,20 +15,21 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.doOnLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.trifonov.indoor_navigation.MainActivity
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.LocationAdapter
 import com.trifonov.indoor_navigation.common.LocationData
+import com.trifonov.indoor_navigation.common.getTitleStreamProvider
+import com.trifonov.indoor_navigation.common.loadFromString
 import com.trifonov.indoor_navigation.data.dto.Location
 import com.trifonov.indoor_navigation.di.ApiModule
-import com.trifonov.indoor_navigation.map.FileHelper
-import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
+import com.trifonov.indoor_navigation.mapView.FileHelper
+import com.trifonov.indoor_navigation.mapView.MapConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 
 
 class LocationFragment: CustomFragment() {
@@ -79,14 +80,20 @@ class LocationFragment: CustomFragment() {
             if (selectedLocation != null) {
                 if (FileHelper.checkStorageLocation(selectedLocation!!.dataUrl)) {
                     Thread {
-                        mapConnector.setLocation(selectedLocation!!)
+                        baseActivity.mapData = loadFromString(
+                            zoomLevelCount = (File("${MapConstants.dataPath}${selectedLocation!!.dataUrl}/tiles1").listFiles()?.size ?: 0) - 1,
+                            json = File("${MapConstants.dataPath}${selectedLocation!!.dataUrl}/map.json").readText(),
+                            applicationContext = requireContext(),
+                            getTileStream = getTitleStreamProvider(selectedLocation!!.dataUrl, baseActivity.levelNumber)
+                        )
                         requireActivity().runOnUiThread {
+                            baseActivity.mapView.setMap(baseActivity.mapData, needDestroy = true)
                             locationData.setCurrentLocation(selectedLocation!!.id)
                             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                         }
                     }.start()
                 } else {
-                    (requireActivity() as MainActivity).initialAlertDialog(
+                    baseActivity.initialAlertDialog(
                         selectedLocation!!,
                         locationData
                     )

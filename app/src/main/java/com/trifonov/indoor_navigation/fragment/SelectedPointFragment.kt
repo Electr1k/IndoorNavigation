@@ -23,15 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.ImagePagerAdapter
-import com.trifonov.indoor_navigation.map.Map
-import com.trifonov.indoor_navigation.map.MapConstants.dotList
-import com.trifonov.indoor_navigation.map.MapConstants.finishNode
-import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
-import com.trifonov.indoor_navigation.map.MapConstants.myPosition
-import com.trifonov.indoor_navigation.map.MapConstants.startNode
-import com.trifonov.indoor_navigation.map.MapConstants.draftEnd
-import com.trifonov.indoor_navigation.map.MapConstants.draftStart
-import com.trifonov.indoor_navigation.map.MapConstants.saveDraftRoute
+import com.trifonov.indoor_navigation.mapView.Dot
 import java.lang.Float.max
 import kotlin.math.abs
 
@@ -50,7 +42,7 @@ class SelectedPointFragment: CustomFragment() {
     private lateinit var description: TextView
     private var heightNavigationMenu: Int = 0
     private var progress = 0f
-    private lateinit var selectedPoint: Map.Dot
+    private lateinit var selectedPoint: Dot
     private lateinit var markerView: AppCompatImageView
     private var navigateToRoute = false
 
@@ -69,7 +61,7 @@ class SelectedPointFragment: CustomFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val id = arguments?.getInt("id", -1)
-        selectedPoint = dotList.find { id == it.getId() }!!
+        selectedPoint = baseActivity.mapData.dotList.find { id == it.getId() }!!
         collapseContent = view.findViewById(R.id.collapse_content)
         countImages = view.findViewById(R.id.countImages)
         cardView = view.findViewById(R.id.card)
@@ -82,7 +74,7 @@ class SelectedPointFragment: CustomFragment() {
         markerView = AppCompatImageView(requireActivity()).apply {
             setImageResource(R.drawable.marker)
         }
-        mapConnector.setMarker(markerView, selectedPoint.getX().toDouble(), selectedPoint.getY().toDouble())
+//        mapConnector.setMarker(markerView, selectedPoint.getX().toDouble(), selectedPoint.getY().toDouble())
         initBottomSheet(view)
 
         initPager()
@@ -115,25 +107,21 @@ class SelectedPointFragment: CustomFragment() {
         description.text = selectedPoint.getDescription()
         view.findViewById<CardView>(R.id.route_to).setOnClickListener {
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            if (draftEnd==null) draftEnd = finishNode
-            if (draftStart==null) draftStart = startNode
-            finishNode = selectedPoint.getId()
+            if (baseActivity.mapView.getDraftEnd() == null) baseActivity.mapView.setDraftEnd(baseActivity.mapView.getFinishPosition())
+            if (baseActivity.mapView.getDraftStart() == null) baseActivity.mapView.setDraftStart(baseActivity.mapView.getStartPosition())
             val bundle = Bundle()
             bundle.putBoolean("isFromPoint", true)
             navigateToRoute = true
-            mapConnector.updatePath(start = if (saveDraftRoute) startNode else myPosition, finish = finishNode)
-            println("New draft $draftStart $draftEnd")
+            baseActivity.mapView.drawPath(if (baseActivity.mapView.getSaveDraftRoute()) baseActivity.mapView.getStartPosition() else baseActivity.mapView.getMyPosition(), selectedPoint.getId())
             view.findNavController().navigate(R.id.action_audience_to_route, bundle)
         }
         view.findViewById<CardView>(R.id.route_from).setOnClickListener {
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            if (draftStart==null) draftStart = startNode
-            startNode = selectedPoint.getId()
+            if (baseActivity.mapView.getDraftStart() == null) baseActivity.mapView.setDraftStart(baseActivity.mapView.getStartPosition())
             val bundle = Bundle()
             bundle.putBoolean("isFromPoint", true)
             navigateToRoute = true
-            mapConnector.updatePath(finish = finishNode, start = startNode)
-            println("New draft $draftStart $draftEnd")
+            baseActivity.mapView.drawPath(selectedPoint.getId(), baseActivity.mapView.getFinishPosition())
             view.findNavController().navigate(R.id.action_audience_to_route, bundle)
         }
         mBottomSheetBehavior.addBottomSheetCallback(
@@ -344,14 +332,14 @@ class SelectedPointFragment: CustomFragment() {
      */
     override fun onDestroy() {
         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        mapConnector.removeMarker(markerView)
-        if ((!navigateToRoute || !saveDraftRoute) && !(navigateToRoute && !saveDraftRoute)) {
+//        mapConnector.removeMarker(markerView)
+        if ((!navigateToRoute || !baseActivity.mapView.getSaveDraftRoute()) && !(navigateToRoute && !baseActivity.mapView.getSaveDraftRoute())) {
             // Возвращаем старый маршрут
-            if (draftStart != null) startNode = draftStart!!
-            if (draftEnd != null) finishNode = draftEnd!!
-            mapConnector.updatePath(start = startNode, finish = finishNode)
+            if (baseActivity.mapView.getDraftStart() == null) baseActivity.mapView.setDraftStart(baseActivity.mapView.getStartPosition())
+            if (baseActivity.mapView.getDraftEnd() == null) baseActivity.mapView.setDraftEnd(baseActivity.mapView.getFinishPosition())
+            baseActivity.mapView.drawPath(baseActivity.mapView.getDraftStart()!!, baseActivity.mapView.getDraftEnd()!!)
         }
-        saveDraftRoute = false
+        baseActivity.mapView.setSaveDraftRoute(false)
         super.onDestroy()
         val marker = requireActivity().findViewById<RelativeLayout>(R.id.marker)
         (marker?.parent as ViewGroup?)?.removeView(marker)

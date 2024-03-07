@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EDEDED">
+
+    <ovh.plrapps.mapview.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageButton
+        android:id="@+id/btn_zoomIn"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="right|center"
+        android:layout_marginBottom="35dp"
+        android:background="@drawable/plus"/>
+
+    <ImageButton
+        android:id="@+id/btn_zoomOut"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="35dp"
+        android:layout_gravity="right|center"
+        android:background="@drawable/minus"/>
+
+    <ImageButton
+        android:id="@+id/btn_position"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="80dp"
+        android:layout_gravity="right|bottom"
+        android:background="@drawable/mest"/>
+
+    <NumberPicker
+        android:id="@+id/picker"
+        android:layout_width="50dp"
+        android:layout_height="160dp"
+        android:layout_gravity="center|left"
+        android:layout_margin="14dp"
+        android:background="@drawable/level_border"
+        android:descendantFocusability="blocksDescendants"
+        android:theme="@style/AppTheme.Picker" />
+
+</FrameLayout>

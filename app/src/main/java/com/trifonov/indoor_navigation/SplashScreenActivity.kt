@@ -8,11 +8,8 @@ import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
 import android.widget.ImageView
-import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import com.trifonov.indoor_navigation.common.LocationData
-import com.trifonov.indoor_navigation.map.MapConnector
-import com.trifonov.indoor_navigation.map.MapConstants
+
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreenActivity : AppCompatActivity() {
@@ -34,11 +31,11 @@ class SplashScreenActivity : AppCompatActivity() {
             val i = Intent(this, MainActivity::class.java)
             startActivity(i)
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-            MapConstants.mapConnector = MapConnector(this, findNavController(R.id.nav_host_fragment_activity_bottom_navigation))
+//            MapConstants.mapConnector = MapConnector(this, findNavController(R.id.nav_host_fragment_activity_bottom_navigation))
             val locationData = LocationData(this)
             val currentLocationId = locationData.getCurrentLocation()
             if (currentLocationId != -1){
-                MapConstants.mapConnector.setLocation(locationData.getLocationById(currentLocationId)!!)
+//                MapConstants.mapConnector.setLocation(locationData.getLocationById(currentLocationId)!!)
             }
             finish()
         }

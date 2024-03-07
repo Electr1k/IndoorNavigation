@@ -6,7 +6,7 @@ import android.preference.PreferenceManager
 import com.google.gson.Gson
 import com.trifonov.indoor_navigation.data.dto.Location
 import com.trifonov.indoor_navigation.data.dto.Locations
-import com.trifonov.indoor_navigation.map.MapConstants
+import com.trifonov.indoor_navigation.mapView.MapConstants
 import java.io.File
 
 

@@ -15,7 +15,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -25,34 +24,42 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.trifonov.indoor_navigation.common.LocationData
+import com.trifonov.indoor_navigation.common.getTitleStreamProvider
+import com.trifonov.indoor_navigation.common.getTitleStreamProviderFromAssets
+import com.trifonov.indoor_navigation.common.loadFromString
 import com.trifonov.indoor_navigation.data.dto.Location
 import com.trifonov.indoor_navigation.data.dto.Locations
 import com.trifonov.indoor_navigation.databinding.ActivityMainBinding
 import com.trifonov.indoor_navigation.di.ApiModule
-import com.trifonov.indoor_navigation.map.FileHelper.Companion.checkStorageLocation
-import com.trifonov.indoor_navigation.map.MapConstants
-import com.trifonov.indoor_navigation.map.MapConstants.dataPath
-import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
+import com.trifonov.indoor_navigation.mapView.FileHelper
+import com.trifonov.indoor_navigation.mapView.FileHelper.Companion.checkStorageLocation
+import com.trifonov.indoor_navigation.mapView.MapConstants
+import com.trifonov.indoor_navigation.mapView.MapConstants.dataPath
+import com.trifonov.indoor_navigation.mapView.CustomMap
+import com.trifonov.indoor_navigation.mapView.CustomViewListener
+import com.trifonov.indoor_navigation.mapView.MapData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import net.lingala.zip4j.ZipFile
 import java.io.File
 import java.util.Date
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CustomViewListener {
 
     private val bluetoothAdapter: BluetoothAdapter? by lazy { BluetoothAdapter.getDefaultAdapter() }
     private val scanFilters: List<ScanFilter> = listOf(ScanFilter.Builder().setDeviceName("SFedU Beacon").build())
     private val scanSettings: ScanSettings = ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build()
 
+    lateinit var mapView: CustomMap
+    lateinit var mapData: MapData
+    var levelNumber = "1"
+    var streamFromAssets = false
 
     private val permissions = arrayOf(
         Manifest.permission.BLUETOOTH,
@@ -74,8 +81,9 @@ class MainActivity : AppCompatActivity() {
 
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
+        mapView = findViewById(R.id.mapView)
+        mapView.setListener(this)
         val navView: BottomNavigationView = mBinding.bottomNavigationView
-
         CoroutineScope(Dispatchers.IO).launch {
             this@MainActivity.checkUpdateLocations()
         }
@@ -178,9 +186,17 @@ class MainActivity : AppCompatActivity() {
                 }
                 Thread {
                     isDialogEnable = false
-                    if (mapConnector.setLocation(location, downloadView, dialog)) {
-                        //startNode++
-                        this.runOnUiThread {
+                    val fh = FileHelper(this, location, downloadView, dialog)
+                    val json = fh.getJsonMap(location)
+                    if (json != "empty location") {
+                        mapData = loadFromString(
+                            zoomLevelCount = (File("${dataPath}${location.dataUrl}/tiles1").listFiles()?.size ?: 0) - 1,
+                            json = File("${dataPath}${location.dataUrl}/map.json").readText(),
+                            applicationContext = applicationContext,
+                            getTileStream = getTitleStreamProvider(location.dataUrl, levelNumber)
+                        )
+                        runOnUiThread {
+                            mapView.setMap(mapData, needDestroy = true)
                             dialog.cancel()
                             locationData.setCurrentLocation(location.id)
                         }
@@ -219,7 +235,15 @@ class MainActivity : AppCompatActivity() {
                     if (silentInstall(location) && currentLocation == location.id){
                         runOnUiThread {
                             Toast.makeText(this@MainActivity, "Текущая локация была обновлена", Toast.LENGTH_SHORT).show()
-                            mapConnector.setLocation(ld.getLocationById(currentLocation)!!)
+                            mapView.setMap(
+                                loadFromString(
+                                    zoomLevelCount = (File("${dataPath}${location.dataUrl}/tiles1").listFiles()?.size ?: 0) -1,
+                                    json = File("${dataPath}${location.dataUrl}/map.json").readText(),
+                                    applicationContext = applicationContext,
+                                    getTileStream = getTitleStreamProvider(location.dataUrl, levelNumber)
+                                ),
+                                 true
+                            )
                         }
                     }
                 }
@@ -277,5 +301,18 @@ class MainActivity : AppCompatActivity() {
             cursor.close()
         }
         return false
+    }
+
+    private fun configureMap() {
+        mapData.tileStreamProvider = if (streamFromAssets) getTitleStreamProviderFromAssets(this, levelNumber) else {
+            val locationData = LocationData(this)
+            getTitleStreamProvider(locationData.getLocationById(locationData.getCurrentLocation())!!.dataUrl, levelNumber)
+        }
+        mapView.setMap(mapData = mapData, true, levelNumber = levelNumber)
+    }
+
+    override fun onLevelChanged(newValue: String) {
+        levelNumber = newValue
+        configureMap()
     }
 }

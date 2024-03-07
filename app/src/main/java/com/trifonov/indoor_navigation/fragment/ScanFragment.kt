@@ -14,10 +14,9 @@ import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.trifonov.indoor_navigation.MainActivity
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.QR_Scanner
-import com.trifonov.indoor_navigation.map.MapConstants.myPosition
 
 
 class ScanFragment: Fragment() {
@@ -51,7 +50,8 @@ class ScanFragment: Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == 3) {
             val link = data!!.getStringExtra("link")
-            myPosition = link?.let { Integer.parseInt(it) }!!
+
+           (requireActivity() as MainActivity).mapView.setMyPosition(link?.let { Integer.parseInt(it) }!!)
             Toast.makeText(requireContext(), "Местоположение определено", Toast.LENGTH_SHORT).show();
         }
         findNavController().popBackStack()

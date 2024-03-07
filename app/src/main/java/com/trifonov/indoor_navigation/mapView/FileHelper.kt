@@ -4,14 +4,13 @@
  * @Since 01.06.2023
  * @Version 1.0
  * */
-package com.trifonov.indoor_navigation.map
+package com.trifonov.indoor_navigation.mapView
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.DownloadManager
 import android.content.Context
-
 import android.net.Uri
 import android.view.View
 import android.view.View.INVISIBLE
@@ -24,8 +23,8 @@ import com.google.gson.Gson
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.data.dto.Location
 import com.trifonov.indoor_navigation.data.dto.Locations
-import com.trifonov.indoor_navigation.map.MapConstants.dataPath
-import com.trifonov.indoor_navigation.map.MapConstants.unzipPath
+import com.trifonov.indoor_navigation.mapView.MapConstants.dataPath
+import com.trifonov.indoor_navigation.mapView.MapConstants.unzipPath
 import net.lingala.zip4j.ZipFile
 import java.io.File
 import java.lang.Float.max
@@ -40,8 +39,8 @@ import kotlin.math.roundToInt
  */
 class FileHelper(
     private val activity: Activity,
-    private val downloadView: View? = null,
     val location: Location,
+    private val downloadView: View? = null,
     private val dialog: AlertDialog? = null,
 ) {
 
@@ -235,21 +234,12 @@ class FileHelper(
         }
     }
 
+
     /**
-     * Получение количество уровней приближения карты по количеству папок в директории
-     * @Param [fileName] название локации для карты
-     * @Return количество уровней приближения
-     */
-    internal fun getLevelCount(fileName: String): Int {
-        val directory = File("$unzipPath${location.dataUrl}/$fileName")
-        val files = directory.listFiles()
-        return files?.size ?: 0
-    }
-        /**
-         * Статический метод для проверки наличия локации в файлах устройства
-         * @Param [locationName] название локации для карты
-         * @Return true при наличии файла в памяти
-         * */
+     * Статический метод для проверки наличия локации в файлах устройства
+     * @Param [locationName] название локации для карты
+     * @Return true при наличии файла в памяти
+     * */
     companion object {
         internal fun checkStorageLocation(locationName: String): Boolean {
             try {

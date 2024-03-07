@@ -16,8 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.AudienceSearchAdapter
-import com.trifonov.indoor_navigation.map.MapConstants
-import com.trifonov.indoor_navigation.map.MapConstants.dotList
 
 class SearchFragment: CustomFragment() {
     private lateinit var search: EditText
@@ -41,10 +39,11 @@ class SearchFragment: CustomFragment() {
         super.onViewCreated(view, savedInstanceState)
         RV = view.findViewById(R.id.list_item)
         search = view.findViewById(R.id.search_input)
+        val dotList = baseActivity.mapData.dotList
         val list = dotList.filter { it.getName().isNotEmpty() }
         adapter = AudienceSearchAdapter(list) { dot ->
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            MapConstants.mapConnector.moveCameraToDot(dot)
+            baseActivity.mapView.moveCameraToDot(dot)
             val bundle = Bundle()
             bundle.putInt("id", dot.getId())
             findNavController().navigate(R.id.action_search_to_audience, bundle)

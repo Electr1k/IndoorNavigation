@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.trifonov.indoor_navigation.R
-import com.trifonov.indoor_navigation.map.Map
+import com.trifonov.indoor_navigation.mapView.Dot
 
 class AudienceSearchAdapter(
-    private var audienceList: List<Map.Dot>,
-    private val action: (Map.Dot) -> Unit
+    private var audienceList: List<Dot>,
+    private val action: (Dot) -> Unit
 ): RecyclerView.Adapter<AudienceSearchAdapter.AudienceSearchViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -30,7 +30,7 @@ class AudienceSearchAdapter(
         }
     }
 
-    internal fun updateList(newList: List<Map.Dot>){
+    internal fun updateList(newList: List<Dot>){
         audienceList = newList
         notifyDataSetChanged()
     }

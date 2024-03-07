@@ -24,16 +24,7 @@ import com.google.android.material.card.MaterialCardView
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.AudienceRouteAdapter
 import com.trifonov.indoor_navigation.adapter.AudienceTypeAdapter
-import com.trifonov.indoor_navigation.map.Map
-import com.trifonov.indoor_navigation.map.MapConstants.dotList
-import com.trifonov.indoor_navigation.map.MapConstants.finishNode
-import com.trifonov.indoor_navigation.map.MapConstants.mapConnector
-import com.trifonov.indoor_navigation.map.MapConstants.myPosition
-import com.trifonov.indoor_navigation.map.MapConstants.saveRoute
-import com.trifonov.indoor_navigation.map.MapConstants.startNode
-import com.trifonov.indoor_navigation.map.MapConstants.draftEnd
-import com.trifonov.indoor_navigation.map.MapConstants.draftStart
-import com.trifonov.indoor_navigation.map.MapConstants.saveDraftRoute
+import com.trifonov.indoor_navigation.mapView.Dot
 import kotlin.math.abs
 
 class RouteFragment: CustomFragment() {
@@ -52,7 +43,7 @@ class RouteFragment: CustomFragment() {
     private var btnHeight = 0
     private val myPositionName = "Моё местоположение"
     private val filterList = mutableListOf<String>()
-    private var resultList = mutableListOf<Map.Dot>()
+    private var resultList = mutableListOf<Dot>()
     private var currentState = BottomSheetBehavior.STATE_EXPANDED
     private lateinit var adapterResultDot: AudienceRouteAdapter
 
@@ -113,10 +104,10 @@ class RouteFragment: CustomFragment() {
             view.layoutParams = LinearLayout.LayoutParams(0, btnContainer.height + 40)
             resultSearchLinearLayout.addView(view)
         }
-        resultList = dotList.filter { (it.getType() in filterList || filterList.isEmpty()) && it.getName().isNotEmpty()  } as MutableList<Map.Dot>
-        val dot = dotList.find { it.getId() == myPosition }!!.copy()
+        resultList = baseActivity.mapData.dotList.filter { (it.getType() in filterList || filterList.isEmpty()) && it.getName().isNotEmpty()  } as MutableList<Dot>
+        val dot = baseActivity.mapData.dotList.find { it.getId() == baseActivity.mapView.getMyPosition() }!!.copy()
         dot.setName(myPositionName)
-        dot.setId(myPosition)
+        dot.setId(baseActivity.mapView.getMyPosition())
         resultList.add(0, dot)
         println("My position $dot ${dot.getId()}")
         adapterResultDot = AudienceRouteAdapter(resultList) { dot ->
@@ -145,7 +136,7 @@ class RouteFragment: CustomFragment() {
         pointA.setOnFocusChangeListener { _, focus -> if (focus){ openBottomSheet(); adapterResultDot.updateList(resultList)} }
     }
 
-    private fun getDotById(list: List<Map.Dot>, id: Int): Map.Dot?{
+    private fun getDotById(list: List<Dot>, id: Int): Dot?{
         return list.find { id == it.getId() }
     }
 
@@ -155,15 +146,15 @@ class RouteFragment: CustomFragment() {
      */
     private fun initBottomSheet(view: View){
         mBottomSheetBehavior.skipCollapsed = false
-        if (saveRoute || arguments?.getBoolean("isFromPoint", false) == true) {
-            val dotStart = getDotById(dotList, startNode)
-            val endDot = getDotById(dotList, finishNode)
+        if (baseActivity.mapView.getSaveRoute() || arguments?.getBoolean("isFromPoint", false) == true) {
+            val dotStart = getDotById(baseActivity.mapData.dotList, baseActivity.mapView.getStartPosition())
+            val endDot = getDotById(baseActivity.mapData.dotList, baseActivity.mapView.getFinishPosition())
             pointA.setText(dotStart?.getName() ?: "")
-            if (dotStart?.getId() == myPosition){
+            if (dotStart?.getId() == baseActivity.mapView.getMyPosition()){
                 pointA.setText(myPositionName)
             }
             pointB.setText(endDot?.getName() ?: "")
-            if (endDot?.getId() == myPosition){
+            if (endDot?.getId() == baseActivity.mapView.getMyPosition()){
                 pointB.setText(myPositionName)
             }
         }
@@ -184,23 +175,23 @@ class RouteFragment: CustomFragment() {
         view.findViewById<CardView>(R.id.build_route).setOnClickListener {
             try{
                 if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    saveRoute = true
-                    draftStart = null
-                    draftEnd = null
+                    baseActivity.mapView.setSaveRoute(true)
+                    baseActivity.mapView.setDraftStart(null)
+                    baseActivity.mapView.setDraftEnd(null)
 
-                    mapConnector.updatePath(start = startNode, finish = finishNode)
+                    baseActivity.mapView.drawPath(baseActivity.mapView.getStartPosition(), baseActivity.mapView.getFinishPosition())
 
                     mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 }
                 else{
-                    println(resultList.find { it.getId() == myPosition })
-                    var start = if (pointA.text.toString().equals(myPositionName, ignoreCase = true))  resultList.find { it.getId() == myPosition }
+                    println(resultList.find { it.getId() == baseActivity.mapView.getMyPosition() })
+                    var start = if (pointA.text.toString().equals(myPositionName, ignoreCase = true)) resultList.find { it.getId() == baseActivity.mapView.getMyPosition() }
                      else resultList.find { it.getName().equals(pointA.text.toString(), ignoreCase = true) }
                     var end =
-                        if (pointB.text.toString().equals(myPositionName, ignoreCase = true)) resultList.find { it.getId() == myPosition }
+                        if (pointB.text.toString().equals(myPositionName, ignoreCase = true)) resultList.find { it.getId() == baseActivity.mapView.getMyPosition() }
                         else resultList.find { it.getName()
                             .equals(pointB.text.toString(), ignoreCase = true) }
-                    println("Start $start $myPosition")
+                    println("Start $start ${baseActivity.mapView.getMyPosition()}")
                     if (start == null || end == null){
                         if (start == null) (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.red)
                         if (end == null) (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.red)
@@ -209,16 +200,14 @@ class RouteFragment: CustomFragment() {
 //                        /** Ищем оригинальное название "Моего местоположение, чтобы подставить название аудитории*/
 //                        if (start.getId() == myPosition) start = getDotById(dotList, myPosition);
 //                        if (end.getId() == myPosition) end = getDotById(dotList, myPosition);
+                        println("tut")
+                        pointA.setText(start.getName())
+                        pointB.setText(end.getName())
+                        baseActivity.mapView.setDraftStart(baseActivity.mapView.getStartPosition())
+                        baseActivity.mapView.setDraftEnd(baseActivity.mapView.getFinishPosition())
 
-                        pointA.setText(start!!.getName())
-                        pointB.setText(end!!.getName())
-
-                        draftStart = startNode
-                        draftEnd = finishNode
-
-                        mapConnector.updatePath(start = start.getId(), finish = end.getId())
-                        mapConnector.moveCameraToDot(getDotById(resultList, startNode)!!)
-
+                        baseActivity.mapView.drawPath(start.getId(), end.getId())
+                        baseActivity.mapView.moveCameraToDot(start)
                         (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
                         (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
                         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -277,8 +266,8 @@ class RouteFragment: CustomFragment() {
                 filterList.add(type)
                 view.setCardBackgroundColor(resources.getColor(R.color.lighting_blue))
             }
-            resultList = dotList.filter { (it.getType() in filterList || filterList.isEmpty()) && it.getName().isNotEmpty()  } as MutableList<Map.Dot>
-            val dot = getDotById(dotList, myPosition)!!.copy()
+            resultList = baseActivity.mapData.dotList.filter { (it.getType() in filterList || filterList.isEmpty()) && it.getName().isNotEmpty()  } as MutableList<Dot>
+            val dot = getDotById(baseActivity.mapData.dotList, baseActivity.mapView.getMyPosition())!!.copy()
             dot.setName(myPositionName)
             resultList.add(0, dot)
             adapterResultDot.updateList( resultList )
@@ -286,11 +275,11 @@ class RouteFragment: CustomFragment() {
     }
 
     override fun onDestroy() {
-        println("Draft $draftStart $draftEnd $saveDraftRoute")
-        if ((draftStart != null || draftEnd != null) && !saveDraftRoute){
-            if (draftStart != null) startNode = draftStart!!
-            if (draftEnd != null) finishNode = draftEnd!!
-            mapConnector.updatePath(start = startNode, finish = finishNode)
+        if ((baseActivity.mapView.getDraftStart() != null || baseActivity.mapView.getDraftEnd() != null) && !baseActivity.mapView.getSaveDraftRoute()){
+            if (baseActivity.mapView.getDraftStart() == null) baseActivity.mapView.setDraftStart( baseActivity.mapView.getStartPosition())
+            if (baseActivity.mapView.getDraftEnd() == null) baseActivity.mapView.setDraftEnd(baseActivity.mapView.getFinishPosition())
+
+            baseActivity.mapView.drawPath(baseActivity.mapView.getDraftStart()!!, baseActivity.mapView.getDraftEnd()!!)
         }
         super.onDestroy()
     }

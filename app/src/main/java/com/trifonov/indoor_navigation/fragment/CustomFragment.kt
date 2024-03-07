@@ -15,11 +15,13 @@ import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.trifonov.indoor_navigation.MainActivity
 import com.trifonov.indoor_navigation.R
 
 open class CustomFragment: Fragment() {
     protected lateinit var mBottomSheet: View
     protected lateinit var mBottomSheetBehavior: BottomSheetBehavior<View>
+    protected lateinit var baseActivity: MainActivity
     private lateinit var translateYAnimator: ObjectAnimator
     private lateinit var fragment: View
 
@@ -27,6 +29,7 @@ open class CustomFragment: Fragment() {
     @SuppressLint("KotlinNullnessAnnotation")
     override fun onViewCreated(@NonNull view: View, @Nullable savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        baseActivity = requireActivity() as MainActivity
         fragment = view
         mBottomSheet = view.findViewById(R.id.bottom_sheet)
         mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheet)
