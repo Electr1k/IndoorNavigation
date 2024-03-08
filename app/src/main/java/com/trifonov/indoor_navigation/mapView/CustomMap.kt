@@ -60,6 +60,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     private var levelNumber: Int = 1
     private var startNode = 0
     private var finishNode = 0
+    private var myPosition = 0
 
     private lateinit var mapData: MapData
     private var minPathWidth = 0f
@@ -67,12 +68,6 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     private var minScale = 0f
     private var maxPathWidth = 0f
     private var lastPath = FloatArray(0)
-
-    private var myPosition = 0
-    private var draftStart: Int? = null
-    private var draftEnd: Int? = null
-    private var saveDraftRoute = false
-    private var saveRoute = false
 
 
     init {
@@ -90,9 +85,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     }
 
     private fun setLevelNumber(level: String) {
-        println("new level $level")
         numberPicker.value = level.toInt()
-        println("new level number picker ${ mapData.levelArray.size + 1 - level.toInt()}")
         levelNumber = level.toInt()
     }
 
@@ -118,8 +111,8 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     }
 
     /**
-         * Метод для перемещения камеры к точке
-         * */
+     * Метод для перемещения камеры к точке
+     * */
     internal fun moveCameraToDot(dot: Dot){
         mapView.moveMarker(centerMarker, dot.getX().toDouble(), dot.getY().toDouble())
         mapView.setScaleFromCenter(1.3f)
@@ -150,38 +143,6 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
 
     fun setMyPosition(position: Int) {
         myPosition = position
-    }
-
-    fun getDraftStart(): Int? {
-        return draftStart
-    }
-
-    fun setDraftStart(start: Int?) {
-        draftStart = start
-    }
-
-    fun getDraftEnd(): Int? {
-        return draftEnd
-    }
-
-    fun setDraftEnd(end: Int?) {
-        draftEnd = end
-    }
-
-    fun getSaveDraftRoute(): Boolean {
-        return saveDraftRoute
-    }
-
-    fun setSaveDraftRoute(save: Boolean) {
-        saveDraftRoute = save
-    }
-
-    fun getSaveRoute(): Boolean {
-        return saveRoute
-    }
-
-    fun setSaveRoute(save: Boolean) {
-        saveRoute = save
     }
 
     private fun moveStartMarker() {

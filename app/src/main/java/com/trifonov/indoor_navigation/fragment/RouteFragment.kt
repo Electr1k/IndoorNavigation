@@ -146,7 +146,7 @@ class RouteFragment: CustomFragment() {
      */
     private fun initBottomSheet(view: View){
         mBottomSheetBehavior.skipCollapsed = false
-        if (baseActivity.mapView.getSaveRoute() || arguments?.getBoolean("isFromPoint", false) == true) {
+        if (baseActivity.getSaveRoute() || arguments?.getBoolean("isFromPoint", false) == true) {
             val dotStart = getDotById(baseActivity.mapData.dotList, baseActivity.mapView.getStartPosition())
             val endDot = getDotById(baseActivity.mapData.dotList, baseActivity.mapView.getFinishPosition())
             pointA.setText(dotStart?.getName() ?: "")
@@ -165,19 +165,19 @@ class RouteFragment: CustomFragment() {
         pointB.clearFocus()
         pointA.addTextChangedListener{
             (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
-            adapterResultDot.updateList(resultList.filter { pointA.text.toString().trim().toLowerCase() in it.getName().trim().toLowerCase() })
+            adapterResultDot.updateList(resultList.filter { pointA.text.toString().trim().lowercase() in it.getName().trim().lowercase() })
         }
         pointB.addTextChangedListener{
             (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
-            adapterResultDot.updateList(resultList.filter { pointB.text.toString().trim().toLowerCase() in it.getName().trim().toLowerCase() })
+            adapterResultDot.updateList(resultList.filter { pointB.text.toString().trim().lowercase() in it.getName().trim().lowercase() })
         }
 
         view.findViewById<CardView>(R.id.build_route).setOnClickListener {
             try{
                 if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    baseActivity.mapView.setSaveRoute(true)
-                    baseActivity.mapView.setDraftStart(null)
-                    baseActivity.mapView.setDraftEnd(null)
+                    baseActivity.setSaveRoute(true)
+                    baseActivity.setDraftStart(null)
+                    baseActivity.setDraftEnd(null)
 
                     baseActivity.mapView.drawPath(baseActivity.mapView.getStartPosition(), baseActivity.mapView.getFinishPosition())
 
@@ -203,8 +203,8 @@ class RouteFragment: CustomFragment() {
                         println("tut")
                         pointA.setText(start.getName())
                         pointB.setText(end.getName())
-                        baseActivity.mapView.setDraftStart(baseActivity.mapView.getStartPosition())
-                        baseActivity.mapView.setDraftEnd(baseActivity.mapView.getFinishPosition())
+                        baseActivity.setDraftStart(baseActivity.mapView.getStartPosition())
+                        baseActivity.setDraftEnd(baseActivity.mapView.getFinishPosition())
 
                         baseActivity.mapView.drawPath(start.getId(), end.getId())
                         baseActivity.mapView.moveCameraToDot(start)
@@ -275,11 +275,11 @@ class RouteFragment: CustomFragment() {
     }
 
     override fun onDestroy() {
-        if ((baseActivity.mapView.getDraftStart() != null || baseActivity.mapView.getDraftEnd() != null) && !baseActivity.mapView.getSaveDraftRoute()){
-            if (baseActivity.mapView.getDraftStart() == null) baseActivity.mapView.setDraftStart( baseActivity.mapView.getStartPosition())
-            if (baseActivity.mapView.getDraftEnd() == null) baseActivity.mapView.setDraftEnd(baseActivity.mapView.getFinishPosition())
+        if ((baseActivity.getDraftStart() != null || baseActivity.getDraftEnd() != null) && !baseActivity.getSaveDraftRoute()){
+            if (baseActivity.getDraftStart() == null) baseActivity.setDraftStart( baseActivity.mapView.getStartPosition())
+            if (baseActivity.getDraftEnd() == null) baseActivity.setDraftEnd(baseActivity.mapView.getFinishPosition())
 
-            baseActivity.mapView.drawPath(baseActivity.mapView.getDraftStart()!!, baseActivity.mapView.getDraftEnd()!!)
+            baseActivity.mapView.drawPath(baseActivity.getDraftStart()!!, baseActivity.getDraftEnd()!!)
         }
         super.onDestroy()
     }

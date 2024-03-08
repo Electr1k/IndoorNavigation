@@ -107,17 +107,17 @@ class SelectedPointFragment: CustomFragment() {
         description.text = selectedPoint.getDescription()
         view.findViewById<CardView>(R.id.route_to).setOnClickListener {
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            if (baseActivity.mapView.getDraftEnd() == null) baseActivity.mapView.setDraftEnd(baseActivity.mapView.getFinishPosition())
-            if (baseActivity.mapView.getDraftStart() == null) baseActivity.mapView.setDraftStart(baseActivity.mapView.getStartPosition())
+            if (baseActivity.getDraftEnd() == null) baseActivity.setDraftEnd(baseActivity.mapView.getFinishPosition())
+            if (baseActivity.getDraftStart() == null) baseActivity.setDraftStart(baseActivity.mapView.getStartPosition())
             val bundle = Bundle()
             bundle.putBoolean("isFromPoint", true)
             navigateToRoute = true
-            baseActivity.mapView.drawPath(if (baseActivity.mapView.getSaveDraftRoute()) baseActivity.mapView.getStartPosition() else baseActivity.mapView.getMyPosition(), selectedPoint.getId())
+            baseActivity.mapView.drawPath(if (baseActivity.getSaveDraftRoute()) baseActivity.mapView.getStartPosition() else baseActivity.mapView.getMyPosition(), selectedPoint.getId())
             view.findNavController().navigate(R.id.action_audience_to_route, bundle)
         }
         view.findViewById<CardView>(R.id.route_from).setOnClickListener {
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            if (baseActivity.mapView.getDraftStart() == null) baseActivity.mapView.setDraftStart(baseActivity.mapView.getStartPosition())
+            if (baseActivity.getDraftStart() == null) baseActivity.setDraftStart(baseActivity.mapView.getStartPosition())
             val bundle = Bundle()
             bundle.putBoolean("isFromPoint", true)
             navigateToRoute = true
@@ -333,13 +333,13 @@ class SelectedPointFragment: CustomFragment() {
     override fun onDestroy() {
         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 //        mapConnector.removeMarker(markerView)
-        if ((!navigateToRoute || !baseActivity.mapView.getSaveDraftRoute()) && !(navigateToRoute && !baseActivity.mapView.getSaveDraftRoute())) {
+        if ((!navigateToRoute || !baseActivity.getSaveDraftRoute()) && !(navigateToRoute && !baseActivity.getSaveDraftRoute())) {
             // Возвращаем старый маршрут
-            if (baseActivity.mapView.getDraftStart() == null) baseActivity.mapView.setDraftStart(baseActivity.mapView.getStartPosition())
-            if (baseActivity.mapView.getDraftEnd() == null) baseActivity.mapView.setDraftEnd(baseActivity.mapView.getFinishPosition())
-            baseActivity.mapView.drawPath(baseActivity.mapView.getDraftStart()!!, baseActivity.mapView.getDraftEnd()!!)
+            if (baseActivity.getDraftStart() == null) baseActivity.setDraftStart(baseActivity.mapView.getStartPosition())
+            if (baseActivity.getDraftEnd() == null) baseActivity.setDraftEnd(baseActivity.mapView.getFinishPosition())
+            baseActivity.mapView.drawPath(baseActivity.getDraftStart()!!, baseActivity.getDraftEnd()!!)
         }
-        baseActivity.mapView.setSaveDraftRoute(false)
+        baseActivity.setSaveDraftRoute(false)
         super.onDestroy()
         val marker = requireActivity().findViewById<RelativeLayout>(R.id.marker)
         (marker?.parent as ViewGroup?)?.removeView(marker)

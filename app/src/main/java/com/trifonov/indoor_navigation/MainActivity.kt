@@ -76,6 +76,11 @@ class MainActivity : AppCompatActivity(), CustomViewListener {
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mNavController: NavController
 
+    private var draftStart: Int? = null
+    private var draftEnd: Int? = null
+    private var saveDraftRoute = false
+    private var saveRoute = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -315,4 +320,37 @@ class MainActivity : AppCompatActivity(), CustomViewListener {
         levelNumber = newValue
         configureMap()
     }
+
+    fun getDraftStart(): Int? {
+        return draftStart
+    }
+
+    fun setDraftStart(start: Int?) {
+        draftStart = start
+    }
+
+    fun getDraftEnd(): Int? {
+        return draftEnd
+    }
+
+    fun setDraftEnd(end: Int?) {
+        draftEnd = end
+    }
+
+    fun getSaveDraftRoute(): Boolean {
+        return saveDraftRoute
+    }
+
+    fun setSaveDraftRoute(save: Boolean) {
+        saveDraftRoute = save
+    }
+
+    fun getSaveRoute(): Boolean {
+        return saveRoute
+    }
+
+    fun setSaveRoute(save: Boolean) {
+        saveRoute = save
+    }
+
 }
