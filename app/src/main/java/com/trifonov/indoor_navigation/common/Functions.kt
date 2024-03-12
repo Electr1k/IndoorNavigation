@@ -2,7 +2,6 @@ package com.trifonov.indoor_navigation.common
 
 import android.app.Activity
 import android.content.Context
-import com.trifonov.indoor_navigation.mapView.MapConstants
 import com.trifonov.indoor_navigation.mapView.MapConstants.unzipPath
 import com.trifonov.indoor_navigation.mapView.Dot
 import com.trifonov.indoor_navigation.mapView.MapData
@@ -64,8 +63,8 @@ fun parseFromDot(list: ArrayList<Dot>, applicationContext: Context): ArrayList<M
     for (dot in list) {
         mapMarkerList.add(
             MapMarker(
-                applicationContext, dot.getX().toDouble(),
-                dot.getY().toDouble(), dot.getId().toString()
+                context = applicationContext, x = dot.getX().toDouble(),
+                y = dot.getY().toDouble(), name = dot.getName(), level = dot.getLevel(), dotId = dot.getId()
             )
         )
     }

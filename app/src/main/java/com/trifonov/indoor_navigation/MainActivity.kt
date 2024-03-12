@@ -43,6 +43,7 @@ import com.trifonov.indoor_navigation.mapView.MapConstants.dataPath
 import com.trifonov.indoor_navigation.mapView.CustomMap
 import com.trifonov.indoor_navigation.mapView.CustomViewListener
 import com.trifonov.indoor_navigation.mapView.MapData
+import com.trifonov.indoor_navigation.mapView.MapMarker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,7 +51,7 @@ import net.lingala.zip4j.ZipFile
 import java.io.File
 import java.util.Date
 
-class MainActivity : AppCompatActivity(), CustomViewListener {
+class MainActivity : AppCompatActivity() {
 
     private val bluetoothAdapter: BluetoothAdapter? by lazy { BluetoothAdapter.getDefaultAdapter() }
     private val scanFilters: List<ScanFilter> = listOf(ScanFilter.Builder().setDeviceName("SFedU Beacon").build())
@@ -87,7 +88,6 @@ class MainActivity : AppCompatActivity(), CustomViewListener {
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
         mapView = findViewById(R.id.mapView)
-        mapView.setListener(this)
         val navView: BottomNavigationView = mBinding.bottomNavigationView
         CoroutineScope(Dispatchers.IO).launch {
             this@MainActivity.checkUpdateLocations()
@@ -98,6 +98,27 @@ class MainActivity : AppCompatActivity(), CustomViewListener {
             if (destination.id != R.id.head) findViewById<CardView>(R.id.cardNav).visibility = View.INVISIBLE
             else findViewById<CardView>(R.id.cardNav).visibility = View.VISIBLE
         }
+        mapView.setListener(object: CustomViewListener{
+            override fun onLevelChanged(newValue: String) {
+                levelNumber = newValue
+                configureMap()
+            }
+
+            override fun onTap(view: View, x: Int, y: Int) {
+                if (view is MapMarker) {
+                    val dot = mapData.dotList.find { view.dotId == it.getId() }
+                    if (dot?.getName() != "") {
+                        val bundle = Bundle()
+                        bundle.putInt("id", dot?.getId() ?: -1)
+                        saveDraftRoute = mNavController.currentDestination!!.id == R.id.route
+                        while (mNavController.currentDestination!!.id != R.id.head){
+                            mNavController.popBackStack()
+                        }
+                        mNavController.navigate(R.id.action_head_to_audience, bundle)
+                    }
+                }
+            }
+        })
 
         if (!hasPermissions()) {
             requestPermissions()
@@ -316,10 +337,6 @@ class MainActivity : AppCompatActivity(), CustomViewListener {
         mapView.setMap(mapData = mapData, true, levelNumber = levelNumber)
     }
 
-    override fun onLevelChanged(newValue: String) {
-        levelNumber = newValue
-        configureMap()
-    }
 
     fun getDraftStart(): Int? {
         return draftStart

@@ -1,7 +1,12 @@
 package com.trifonov.indoor_navigation.mapView
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Typeface
+import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -22,13 +27,15 @@ import ovh.plrapps.mapview.api.addMarker
 import ovh.plrapps.mapview.api.moveMarker
 import ovh.plrapps.mapview.api.moveToMarker
 import ovh.plrapps.mapview.api.removeMarker
+import ovh.plrapps.mapview.api.setMarkerTapListener
+import ovh.plrapps.mapview.markers.MarkerTapListener
 import ovh.plrapps.mapview.paths.PathView
 import ovh.plrapps.mapview.paths.addPathView
 import ovh.plrapps.mapview.paths.removePathView
 import kotlin.math.atan
 
 class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
-    FrameLayout(context, attrs),
+    FrameLayout(context, attrs), MarkerTapListener,
     OnValueChangeListener, OnClickListener {
 
     private val numberPicker: NumberPicker
@@ -69,7 +76,6 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     private var maxPathWidth = 0f
     private var lastPath = FloatArray(0)
 
-
     init {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         inflater.inflate(R.layout.map_layout, this, true)
@@ -108,6 +114,56 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         addStartMarker()
         addCenterScreenMarker()
         updatePath()
+        for (marker in markerList) {
+            addMarker(marker)
+        }
+        setChangeListeners()
+    }
+    private fun addMarker(marker: MapMarker){
+        marker.apply {
+            if (marker.name.isNotEmpty()) setImageDrawable(BitmapDrawable(resources, drawText("$name ")))
+        }
+        marker.rotation = 0f
+        if (levelNumber == marker.level && marker.name.isNotEmpty()) mapView.addMarker(marker, marker.x, marker.y)
+    }
+
+    /**
+     * Функция отрисовки текста на карте
+     * @Param [text] - отображаемый текст
+     * @Param [textColor] - цвет отображаемого текста
+     * @Param [textSize] - размер шрифта текста
+     * @Param [typeface] - семейство шрифтов
+     * @Param [style] - стиль шрифта
+     * @Param [isUnderline] - наличие подчеркивания
+     * @Return возвращает карту с отрисованным на ней текстом
+     * */
+    private fun drawText(
+        text: String = "Г-320",
+        textColor: Int = Color.WHITE,
+        textSize: Float = 18F * 2,
+        typeface: Typeface = Typeface.SERIF,
+        style: Int = Typeface.BOLD,
+        isUnderline: Boolean = false,
+    ): Bitmap {
+        val bitmap = Bitmap.createBitmap(
+            (textSize.toInt() * text.length / 1.6).toInt(),
+            textSize.toInt(),
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap).apply {}
+
+        val paint = Paint().apply {
+            isAntiAlias = true
+            color = textColor
+            this.textSize = textSize
+            this.typeface = typeface
+            setTypeface(Typeface.create(typeface, style))
+            if (isUnderline) {
+                flags = Paint.UNDERLINE_TEXT_FLAG
+            }
+        }
+        canvas.drawText(text, 10F, canvas.height.toFloat(), paint)
+        return bitmap
     }
 
     /**
@@ -147,7 +203,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
 
     private fun moveStartMarker() {
         for (marker in markerList) {
-            if (marker.name == startNode.toString()) {
+            if (marker.dotId == startNode) {
                 startMarker.visibility = View.VISIBLE
                 mapView.moveMarker(startMarker, marker.x, marker.y)
                 break
@@ -157,7 +213,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
 
     private fun moveFinishMarker() {
         for (marker in markerList) {
-            if (marker.name == finishNode.toString()) {
+            if (marker.dotId == finishNode) {
                 finishMarker.visibility = View.VISIBLE
                 mapView.moveMarker(finishMarker, marker.x, marker.y)
                 break
@@ -187,6 +243,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     private fun destroyMapView() {
         val parent = mapView.parent as ViewGroup
         val index = removePath()
+        for(marker in markerList) {if (marker.name.isNotEmpty()) mapView.removeMarker(marker)}
         mapView.removeMarker(centerMarker)
         parent.removeView(mapView)
         mapView = MapView(context)
@@ -198,6 +255,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         plusButton.setOnClickListener(this)
         minusButton.setOnClickListener(this)
         positionButton.setOnClickListener(this)
+        mapView.setMarkerTapListener(this)
     }
 
     private fun configureLevelPicker() {
@@ -214,6 +272,10 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         p.maxValue = max
         p.value = max
         p.displayedValues = levels
+    }
+
+    override fun onMarkerTap(view: View, x: Int, y: Int) {
+        listener?.onTap(view, x, y)
     }
 
     override fun onValueChange(picker: NumberPicker?, oldVal: Int, newVal: Int) {
@@ -268,7 +330,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
             setPositionMarkerRotation(refData.angle)
             referentialData = refData
             for (mapMarker in markerList) {
-                setMarkerScale(refData.scale, mapMarker)
+                if (mapMarker.name.isNotEmpty()) setMarkerScale(refData.scale, mapMarker)
             }
             newScale = refData.scale
         }

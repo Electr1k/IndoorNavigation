@@ -9,7 +9,7 @@ package com.trifonov.indoor_navigation.mapView
 import android.content.Context
 import androidx.appcompat.widget.AppCompatImageView
 
-class MapMarker(context: Context, val x: Double, val y: Double, val name: String) :
+class MapMarker(context: Context, val x: Double, val y: Double, val name: String, val level: Int, val dotId: Int) :
     AppCompatImageView(context) {
 
     override fun toString(): String {

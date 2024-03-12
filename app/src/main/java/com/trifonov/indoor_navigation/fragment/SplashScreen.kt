@@ -38,7 +38,6 @@ class SplashScreen : Fragment() {
                     getTileStream = getTitleStreamProvider(locName, baseActivity.levelNumber)
                 )
                 baseActivity.mapView.setMap(baseActivity.mapData)
-                baseActivity.mapView.drawPath(21,68)
             }
             else {
                 // Если нет текущей локации, то ставим дефолтную карту
