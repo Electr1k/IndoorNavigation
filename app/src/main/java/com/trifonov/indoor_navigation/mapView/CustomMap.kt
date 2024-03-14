@@ -224,11 +224,9 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     internal fun removePath(needFullDrop: Boolean = false): Int {
         mapView.removePathView(pathView)
         mapView.removeView(pathView)
-        mapView.removeMarker(startMarker)
-        mapView.removeMarker(finishMarker)
         val parent = mapView.parent as ViewGroup
-        parent.removeView(startMarker)
-        parent.removeView(finishMarker)
+        startMarker.visibility = INVISIBLE
+        finishMarker.visibility = INVISIBLE
         if(needFullDrop){
             startNode = 0
             finishNode = 0
@@ -242,6 +240,10 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
 
     private fun destroyMapView() {
         val parent = mapView.parent as ViewGroup
+        mapView.removeMarker(startMarker)
+        mapView.removeMarker(finishMarker)
+        parent.removeView(startMarker)
+        parent.removeView(finishMarker)
         val index = removePath()
         for(marker in markerList) {if (marker.name.isNotEmpty()) mapView.removeMarker(marker)}
         mapView.removeMarker(centerMarker)

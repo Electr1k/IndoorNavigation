@@ -191,7 +191,6 @@ class RouteFragment: CustomFragment() {
                         if (pointB.text.toString().equals(myPositionName, ignoreCase = true)) resultList.find { it.getId() == baseActivity.mapView.getMyPosition() }
                         else resultList.find { it.getName()
                             .equals(pointB.text.toString(), ignoreCase = true) }
-                    println("Start $start ${baseActivity.mapView.getMyPosition()}")
                     if (start == null || end == null){
                         if (start == null) (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.red)
                         if (end == null) (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.red)
@@ -275,11 +274,14 @@ class RouteFragment: CustomFragment() {
     }
 
     override fun onDestroy() {
-        if ((baseActivity.getDraftStart() != null || baseActivity.getDraftEnd() != null) && !baseActivity.getSaveDraftRoute()){
+        if ((baseActivity.getDraftStart() != null || baseActivity.getDraftEnd() != null) && !baseActivity.getSaveDraftRoute() && baseActivity.getSaveRoute()){
             if (baseActivity.getDraftStart() == null) baseActivity.setDraftStart( baseActivity.mapView.getStartPosition())
             if (baseActivity.getDraftEnd() == null) baseActivity.setDraftEnd(baseActivity.mapView.getFinishPosition())
 
             baseActivity.mapView.drawPath(baseActivity.getDraftStart()!!, baseActivity.getDraftEnd()!!)
+        }
+        else{
+            if (!baseActivity.getSaveRoute()) baseActivity.mapView.removePath()
         }
         super.onDestroy()
     }
