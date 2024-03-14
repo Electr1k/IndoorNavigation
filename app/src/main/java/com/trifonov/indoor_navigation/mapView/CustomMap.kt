@@ -211,6 +211,18 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         }
     }
 
+    internal fun moveStartMarker(id: Int) {
+        startNode = id
+        for (marker in markerList) {
+            if (marker.dotId == id) {
+                startMarker.visibility = View.VISIBLE
+                mapView.moveMarker(startMarker, marker.x, marker.y)
+                break
+            }
+        }
+        if(finishNode != 0) updatePath()
+    }
+
     private fun moveFinishMarker() {
         for (marker in markerList) {
             if (marker.dotId == finishNode) {

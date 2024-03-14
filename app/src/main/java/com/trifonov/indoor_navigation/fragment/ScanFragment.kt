@@ -51,7 +51,8 @@ class ScanFragment: Fragment() {
         if (resultCode == 3) {
             val link = data!!.getStringExtra("link")
 
-           (requireActivity() as MainActivity).mapView.setMyPosition(link?.let { Integer.parseInt(it) }!!)
+           //(requireActivity() as MainActivity).mapView.setMyPosition(link?.let { Integer.parseInt(it) }!!)
+           (requireActivity() as MainActivity).mapView.moveStartMarker(link?.let { Integer.parseInt(it) }!!)
             Toast.makeText(requireContext(), "Местоположение определено", Toast.LENGTH_SHORT).show();
         }
         findNavController().popBackStack()
