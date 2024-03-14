@@ -38,8 +38,7 @@ fun loadFromString(zoomLevelCount: Int, json: String, applicationContext: Contex
         }
         dotList.add(dot)
     }
-    levelArray.sort()
-
+    levelArray.reverse()
     return  MapData(
         tileStreamProvider = getTileStream,
         levelArray = levelArray as ArrayList<String>,

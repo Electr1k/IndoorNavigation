@@ -109,7 +109,6 @@ class RouteFragment: CustomFragment() {
         dot.setName(myPositionName)
         dot.setId(baseActivity.mapView.getMyPosition())
         resultList.add(0, dot)
-        println("My position $dot ${dot.getId()}")
         adapterResultDot = AudienceRouteAdapter(resultList) { dot ->
             val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(fragment.windowToken, 0)
@@ -199,7 +198,6 @@ class RouteFragment: CustomFragment() {
 //                        /** Ищем оригинальное название "Моего местоположение, чтобы подставить название аудитории*/
 //                        if (start.getId() == myPosition) start = getDotById(dotList, myPosition);
 //                        if (end.getId() == myPosition) end = getDotById(dotList, myPosition);
-                        println("tut")
                         pointA.setText(start.getName())
                         pointB.setText(end.getName())
                         baseActivity.setDraftStart(baseActivity.mapView.getStartPosition())

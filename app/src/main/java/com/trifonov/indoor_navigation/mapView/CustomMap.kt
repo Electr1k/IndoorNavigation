@@ -91,7 +91,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     }
 
     private fun setLevelNumber(level: String) {
-        numberPicker.value = level.toInt()
+        numberPicker.value = mapData.levelArray.size + 1 - level.toInt()
         levelNumber = level.toInt()
     }
 

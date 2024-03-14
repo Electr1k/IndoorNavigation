@@ -122,7 +122,7 @@ class SelectedPointFragment: CustomFragment() {
             navigateToRoute = true
             baseActivity.mapView.drawPath(selectedPoint.getId(), baseActivity.mapView.getFinishPosition())
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            findNavController().navigate(R.id.action_audience_to_route)
+            findNavController().navigate(R.id.action_audience_to_route, bundle)
         }
         mBottomSheetBehavior.addBottomSheetCallback(
             object : BottomSheetCallback() {
@@ -331,8 +331,6 @@ class SelectedPointFragment: CustomFragment() {
      * Переопределяем метод разрушения view, удаляем маркер
      */
     override fun onDestroy() {
-//        mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        println("start destroy")
         if ((!navigateToRoute || !baseActivity.getSaveDraftRoute()) && !(navigateToRoute && !baseActivity.getSaveDraftRoute())) {
             // Возвращаем старый маршрут
             if (baseActivity.getDraftStart() == null) baseActivity.setDraftStart(baseActivity.mapView.getStartPosition())
