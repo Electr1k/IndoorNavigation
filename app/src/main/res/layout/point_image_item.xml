@@ -8,5 +8,6 @@
         android:id="@+id/image_item"
         android:layout_width="match_parent"
         android:scaleType="centerCrop"
+        android:background="@color/grey70"
         android:layout_height="300dp" />
 </RelativeLayout>

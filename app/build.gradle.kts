@@ -73,4 +73,7 @@ dependencies {
 
     // Shimmer effect
     implementation("com.facebook.shimmer:shimmer:0.5.0")
+
+    // Coil for load image from url
+    implementation("io.coil-kt:coil:2.6.0")
 }

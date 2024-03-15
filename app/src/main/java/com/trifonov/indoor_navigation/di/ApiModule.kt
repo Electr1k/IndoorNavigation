@@ -4,6 +4,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.trifonov.indoor_navigation.data.ServerApi
+import com.trifonov.indoor_navigation.mapView.MapConstants.baseUrl
 import okhttp3.CipherSuite.Companion.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
 import okhttp3.CipherSuite.Companion.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
 import okhttp3.CipherSuite.Companion.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
@@ -48,7 +49,7 @@ object ApiModule {
             .build()
 
         return Retrofit.Builder()
-            .baseUrl("http://redmine.rdcenter.ru:1777/")
+            .baseUrl(baseUrl)
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

@@ -24,6 +24,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.ImagePagerAdapter
+import com.trifonov.indoor_navigation.common.LocationData
 import com.trifonov.indoor_navigation.mapView.Dot
 import java.lang.Float.max
 import kotlin.math.abs
@@ -178,18 +179,7 @@ class SelectedPointFragment: CustomFragment() {
         /**
          * Исходный список
          */
-        val imageList = mutableListOf(
-            R.drawable.pager_1,
-            R.drawable.pager_2,
-            R.drawable.pager_3,
-            R.drawable.pager_4,
-            R.drawable.pager_5,
-            R.drawable.pager_6,
-            R.drawable.pager_7,
-            R.drawable.pager_8,
-            R.drawable.pager_9,
-            R.drawable.pager_10,
-        )
+        val imageList = selectedPoint.getPhotos()
 
         countImages.text = imageList.size.toString()
 
@@ -199,8 +189,8 @@ class SelectedPointFragment: CustomFragment() {
 
         // Создаем индикаторы
         createLinearIndicator(imageList.size - 2)
-
-        val viewPagerAdapter = ImagePagerAdapter(requireContext(), imageList)
+        val ld = LocationData(requireContext())
+        val viewPagerAdapter = ImagePagerAdapter(requireContext(), ld.getLocationById(ld.getCurrentLocation())!!.dataUrl, imageList)
         viewPager.adapter = viewPagerAdapter
 
         viewPager.currentItem = 1 // Устанавливаем указатель на 0 элемент "исходного" списка
