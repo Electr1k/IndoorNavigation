@@ -120,14 +120,15 @@ class LocationFragment: CustomFragment() {
                 locationData.setLocations(locations)
                 currentLocation = if (currentLocationId != -1) locationData.getLocationById(currentLocationId) else null
                 selectedLocation = currentLocation
-                locationRV.adapter = LocationAdapter(locations, {selectedLocation = it}, currentLocation)
+                locationRV.adapter = LocationAdapter(locations, {selectedLocation = it}, currentLocation, baseActivity)
 
             } catch (e: Exception) {
                 locations = locationData.getAllLocations()
                 locationRV.adapter = LocationAdapter(
                     locations,
                     { selectedLocation = it },
-                    currentLocation
+                    currentLocation,
+                    baseActivity
                 )
             } finally {
                 loadingContainer.removeAllViews()

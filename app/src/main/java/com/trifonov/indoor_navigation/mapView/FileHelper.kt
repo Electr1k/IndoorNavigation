@@ -254,5 +254,11 @@ class FileHelper(
             }
             return false
         }
+
+        internal fun deleteLocation(locationName: String){
+            if (checkStorageLocation(locationName)){
+                File("$dataPath$locationName").deleteRecursively()
+            }
+        }
     }
 }

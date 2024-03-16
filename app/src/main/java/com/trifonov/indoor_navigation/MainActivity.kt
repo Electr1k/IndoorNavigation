@@ -255,6 +255,7 @@ class MainActivity : AppCompatActivity() {
                 val jsonFile = File("${MapConstants.unzipPath}/${location.dataUrl}/map.json")
                 val date = Date(jsonFile.lastModified())
                 println("Date install $date")
+                println("Date update ${location.updateTime}")
                 if (date < location.updateTime){
                     println("Reinstall location ${location.dataUrl}")
                     jsonFile.parentFile?.deleteRecursively()
