@@ -15,7 +15,6 @@ import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.cardview.widget.CardView
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.SCROLL_STATE_SETTLING
@@ -179,7 +178,7 @@ class SelectedPointFragment: CustomFragment() {
         /**
          * Исходный список
          */
-        val imageList = selectedPoint.getPhotos()
+        val imageList = selectedPoint.getPhotos().toMutableList()
 
         countImages.text = imageList.size.toString()
 
@@ -332,4 +331,5 @@ class SelectedPointFragment: CustomFragment() {
         val marker = requireActivity().findViewById<RelativeLayout>(R.id.marker)
         (marker?.parent as ViewGroup?)?.removeView(marker)
     }
+
 }

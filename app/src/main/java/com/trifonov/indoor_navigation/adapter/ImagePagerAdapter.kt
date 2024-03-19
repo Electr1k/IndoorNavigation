@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.viewpager.widget.PagerAdapter
+import coil.ImageLoader
 import coil.load
+import coil.request.CachePolicy
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.mapView.MapConstants
 import com.trifonov.indoor_navigation.mapView.MapConstants.baseUrl
@@ -26,10 +28,21 @@ class ImagePagerAdapter(
         val imageView = view.findViewById<ImageView>(R.id.image_item)
         val imagePosition = position % images.size
         println("${baseUrl}location/$location/photos${images[imagePosition]}")
-        imageView.load("${baseUrl}location/$location/photos${images[imagePosition]}"){
-            crossfade(true)
-            error(R.drawable.bad_connection_icon)
+        val imgLoader = ImageLoader.Builder(context)
+            .diskCachePolicy(CachePolicy.ENABLED)
+            .networkCachePolicy(CachePolicy.ENABLED)
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .build()
+
+        imageView.load("${baseUrl}location/$location/photos${images[imagePosition]}", imgLoader){
+            error(R.drawable.bad_connection_icon) // Замените R.drawable.placeholder на свой ресурс запасного изображения
+//            listener(onError = { request, throwable ->
+//                // Логика обработки ошибки загрузки
+//                // Попытка перезагрузки изображения
+//                imgLoader.enqueue(request)
+//            })
         }
+
         container.addView(view)
         return view
     }

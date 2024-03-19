@@ -3,6 +3,7 @@ package com.trifonov.indoor_navigation
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.Dialog
 import android.app.DownloadManager
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -20,7 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -199,35 +200,12 @@ class MainActivity : AppCompatActivity() {
             dialog.window?.setBackgroundDrawable(getDrawable(R.drawable.dialog_rounded_background))
             dialog.setCanceledOnTouchOutside(false)
             val alertDialogView = dialog.window!!.decorView
-            val confirmView = layoutInflater.inflate(R.layout.confirm_download, null)
+            val confirmView = layoutInflater.inflate(R.layout.confirm_view, null)
             val viewGroup = alertDialogView as ViewGroup
             val isDownload = checkStorageLocation(location.dataUrl)
             confirmView.findViewById<TextView>(R.id.confirmText).text = if (isDownload) "Вы находитесь в ${location.name}, хотите переключиться на карту локации?" else "Карта локации ${location.name} не установлена на Ваше устройство, выполнить её загрузку?"
             confirmView.findViewById<Button>(R.id.positiveBtn).setOnClickListener{
-                isLocationFound = true
-                val downloadView = layoutInflater.inflate(R.layout.download_view, null)
-                if (!isDownload){
-                    viewGroup.removeView(confirmView)
-                    viewGroup.addView(downloadView)
-                }
-                Thread {
-                    isDialogEnable = false
-                    val fh = FileHelper(this, location, downloadView, dialog)
-                    val json = fh.getJsonMap(location)
-                    if (json != "empty location") {
-                        mapData = loadFromString(
-                            zoomLevelCount = (File("${dataPath}${location.dataUrl}/tiles1").listFiles()?.size ?: 0) - 1,
-                            json = File("${dataPath}${location.dataUrl}/map.json").readText(),
-                            applicationContext = applicationContext,
-                            getTileStream = getTitleStreamProvider(location.dataUrl, levelNumber)
-                        )
-                        runOnUiThread {
-                            mapView.setMap(mapData, needDestroy = true)
-                            dialog.cancel()
-                            locationData.setCurrentLocation(location.id)
-                        }
-                    }
-                }.start()
+                startDownload(location, dialog, viewGroup, confirmView, isDownload)
             }
             confirmView.findViewById<Button>(R.id.negativeBtn).setOnClickListener {
                 dialog.cancel()
@@ -237,6 +215,46 @@ class MainActivity : AppCompatActivity() {
             dialog.show()
             isDialogEnable = true
         }
+    }
+
+    private fun startDownload(
+        location: Location,
+        dialog: AlertDialog,
+        viewGroup: ViewGroup,
+        confirmView: View? = null,
+        isDownload: Boolean = false,
+        hasCancel: Boolean = true
+    ){
+        isLocationFound = true
+        val downloadView = layoutInflater.inflate(R.layout.download_view, null)
+        if (!isDownload){
+            viewGroup.removeView(confirmView)
+            if (!hasCancel){
+                val cancelBTN = downloadView.findViewById<Button>(R.id.cancel_button)
+                cancelBTN.visibility = View.INVISIBLE
+                cancelBTN.isClickable = false
+            }
+            viewGroup.addView(downloadView)
+        }
+        Thread {
+            isDialogEnable = false
+            val fh = FileHelper(this, location, downloadView, dialog)
+            val json = fh.getJsonMap(location)
+            if (json != "empty location") {
+                mapData = loadFromString(
+                    zoomLevelCount = (File("${dataPath}${location.dataUrl}/tiles1").listFiles()?.size ?: 0) - 1,
+                    json = File("${dataPath}${location.dataUrl}/map.json").readText(),
+                    applicationContext = applicationContext,
+                    getTileStream = getTitleStreamProvider(location.dataUrl, levelNumber)
+                )
+                runOnUiThread {
+                    mapView.setMap(mapData, needDestroy = true)
+                    dialog.cancel()
+                    val ld = LocationData(this)
+                    ld.setCurrentLocation(location.id)
+                }
+            }
+        }.start()
     }
 
     private suspend fun checkUpdateLocations(){
@@ -252,26 +270,43 @@ class MainActivity : AppCompatActivity() {
         val currentLocation = ld.getCurrentLocation()
         for (location in locations.locations ){
             if (checkStorageLocation(location.dataUrl)){
-                val jsonFile = File("${MapConstants.unzipPath}/${location.dataUrl}/map.json")
-                val date = Date(jsonFile.lastModified())
+                val directory = File("${MapConstants.unzipPath}/${location.dataUrl}")
+                val date = Date(directory.lastModified())
                 println("Date install $date")
                 println("Date update ${location.updateTime}")
                 if (date < location.updateTime){
                     println("Reinstall location ${location.dataUrl}")
-                    jsonFile.parentFile?.deleteRecursively()
-                    if (silentInstall(location) && currentLocation == location.id){
+                    if (currentLocation == location.id){
                         runOnUiThread {
-                            Toast.makeText(this@MainActivity, "Текущая локация была обновлена", Toast.LENGTH_SHORT).show()
-                            mapView.setMap(
-                                loadFromString(
-                                    zoomLevelCount = (File("${dataPath}${location.dataUrl}/tiles1").listFiles()?.size ?: 0) -1,
-                                    json = File("${dataPath}${location.dataUrl}/map.json").readText(),
-                                    applicationContext = applicationContext,
-                                    getTileStream = getTitleStreamProvider(location.dataUrl, levelNumber)
-                                ),
-                                 true
+                            val builder = AlertDialog.Builder(this)
+                            val dialog = builder
+                                .create()
+                            dialog.window?.setBackgroundDrawable(
+                                AppCompatResources.getDrawable(
+                                    this,
+                                    R.drawable.dialog_rounded_background
+                                )
                             )
+                            dialog.setCanceledOnTouchOutside(false)
+                            val alertDialogView = dialog.window!!.decorView
+                            val confirmView = layoutInflater.inflate(R.layout.confirm_view, null)
+                            val viewGroup = alertDialogView as ViewGroup
+                            confirmView.findViewById<TextView>(R.id.confirmText).text =
+                                "Найдено обновление для текущей локации. Обновить сейчас?"
+                            confirmView.findViewById<Button>(R.id.positiveBtn).setOnClickListener {
+                                directory.deleteRecursively()
+                                startDownload(location, dialog, viewGroup, confirmView, hasCancel = false)
+                            }
+                            confirmView.findViewById<Button>(R.id.negativeBtn).setOnClickListener {
+                                dialog.cancel()
+                            }
+                            viewGroup.addView(confirmView)
+                            dialog.show()
                         }
+                    }
+                    else{
+                        directory.deleteRecursively()
+                        silentInstall(location)
                     }
                 }
             }

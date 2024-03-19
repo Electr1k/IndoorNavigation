@@ -1,16 +1,20 @@
 package com.trifonov.indoor_navigation.fragment
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
+import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.cardview.widget.CardView
 import androidx.core.view.doOnLayout
 import androidx.lifecycle.lifecycleScope
@@ -120,7 +124,12 @@ class LocationFragment: CustomFragment() {
                 locationData.setLocations(locations)
                 currentLocation = if (currentLocationId != -1) locationData.getLocationById(currentLocationId) else null
                 selectedLocation = currentLocation
-                locationRV.adapter = LocationAdapter(locations, {selectedLocation = it}, currentLocation, baseActivity)
+                locationRV.adapter = LocationAdapter(locations, {selectedLocation = it}, currentLocation, baseActivity,
+                    {
+                        acceptDeleteLocation(it)
+
+                    }
+                )
 
             } catch (e: Exception) {
                 locations = locationData.getAllLocations()
@@ -128,7 +137,10 @@ class LocationFragment: CustomFragment() {
                     locations,
                     { selectedLocation = it },
                     currentLocation,
-                    baseActivity
+                    baseActivity,
+                    {
+                        acceptDeleteLocation(it)
+                    }
                 )
             } finally {
                 loadingContainer.removeAllViews()
@@ -145,5 +157,29 @@ class LocationFragment: CustomFragment() {
         val slideUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
         mBottomSheet.startAnimation(slideUpAnimation)
         super.onStart()
+    }
+
+    fun acceptDeleteLocation(location: Location){
+        val builder = AlertDialog.Builder(requireActivity())
+        val dialog = builder
+            .create()
+        dialog.window?.setBackgroundDrawable(getDrawable(requireActivity(), R.drawable.dialog_rounded_background))
+//        dialog.setCanceledOnTouchOutside(false)
+        val alertDialogView = dialog.window!!.decorView
+        val confirmView = layoutInflater.inflate(R.layout.confirm_view, null)
+        val viewGroup = alertDialogView as ViewGroup
+        confirmView.findViewById<TextView>(R.id.confirmText).text = "Вы действительно хотите удалить ${location.name}"
+        confirmView.findViewById<Button>(R.id.positiveBtn).setOnClickListener{
+            FileHelper.deleteLocation(location.dataUrl)
+            Toast.makeText(activity, "Локация успешно удалена", Toast.LENGTH_SHORT).show()
+            locationRV.adapter!!.notifyDataSetChanged()
+            dialog.cancel()
+        }
+        confirmView.findViewById<Button>(R.id.negativeBtn).setOnClickListener {
+
+            dialog.cancel()
+        }
+        viewGroup.addView(confirmView)
+        dialog.show()
     }
 }

@@ -9,6 +9,7 @@ import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.trifonov.indoor_navigation.MainActivity
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.common.LocationData
 import com.trifonov.indoor_navigation.data.dto.Location
@@ -19,7 +20,8 @@ class LocationAdapter(
     private val locationList: List<Location>,
     val click: (Location) -> Unit,
     private val currentLocation: Location?,
-    private val context: Context
+    private val activity: MainActivity,
+    private val onDelete: (Location) -> Unit
 ): RecyclerView.Adapter<LocationAdapter.LocationViewHolder>() {
     private var selectedLocation: Location? = currentLocation
 
@@ -39,10 +41,12 @@ class LocationAdapter(
         holder.address.text = locationList[position].address
         holder.deleteIcon.visibility = if (checkStorageLocation(locationList[position].dataUrl)) View.VISIBLE else View.GONE
         holder.deleteIcon.setOnClickListener {
-            val ld = LocationData(context)
-            if (ld.getCurrentLocation() != locationList[position].id) deleteLocation(locationList[position].dataUrl)
+            val ld = LocationData(activity)
+            if (ld.getCurrentLocation() != locationList[position].id){
+                onDelete(locationList[position])
+            }
             else{
-                Toast.makeText(context, "Вы не можете удалть текущую локацию", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Вы не можете удалть текущую локацию", Toast.LENGTH_SHORT).show()
             }
             notifyDataSetChanged()
         }

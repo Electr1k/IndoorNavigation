@@ -69,7 +69,7 @@ class FileHelper(
         val request = DownloadManager.Request(url)
             .setTitle("${location.dataUrl}.zip")
             .setDescription("Downloading")
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
             .setDestinationInExternalFilesDir(
                 activity,
                 "locations/${location.dataUrl}",
