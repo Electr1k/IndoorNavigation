@@ -65,7 +65,7 @@ class FileHelper(
         dataPathTmp += "${location.dataUrl}/"
         unzipPathTmp += "${location.dataUrl}/"
         startThreadConnection()
-        val url = Uri.parse(convertUrl(location.dataUrl))
+        val url = Uri.parse(convertUrl(location.id))
         println(url)
         val request = DownloadManager.Request(url)
             .setTitle("${location.dataUrl}.zip")
@@ -187,7 +187,7 @@ class FileHelper(
      * @Param [id] идентификатор документа на google Drive
      * @See [FileHelper.fileDownload]
      * */
-    private fun convertUrl(id: String): String {
+    private fun convertUrl(id: Int): String {
         return "${baseUrl}locations/${id}/tiles"
     }
 
