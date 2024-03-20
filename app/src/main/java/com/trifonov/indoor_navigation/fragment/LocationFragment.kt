@@ -168,7 +168,7 @@ class LocationFragment: CustomFragment() {
         val alertDialogView = dialog.window!!.decorView
         val confirmView = layoutInflater.inflate(R.layout.confirm_view, null)
         val viewGroup = alertDialogView as ViewGroup
-        confirmView.findViewById<TextView>(R.id.confirmText).text = "Вы действительно хотите удалить ${location.name}"
+        confirmView.findViewById<TextView>(R.id.confirmText).text = "Вы действительно хотите удалить ${location.name}?"
         confirmView.findViewById<Button>(R.id.positiveBtn).setOnClickListener{
             FileHelper.deleteLocation(location.dataUrl)
             Toast.makeText(activity, "Локация успешно удалена", Toast.LENGTH_SHORT).show()

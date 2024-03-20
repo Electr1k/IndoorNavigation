@@ -46,7 +46,7 @@ class LocationAdapter(
                 onDelete(locationList[position])
             }
             else{
-                Toast.makeText(activity, "Вы не можете удалть текущую локацию", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Вы не можете удалить текущую локацию", Toast.LENGTH_SHORT).show()
             }
             notifyDataSetChanged()
         }

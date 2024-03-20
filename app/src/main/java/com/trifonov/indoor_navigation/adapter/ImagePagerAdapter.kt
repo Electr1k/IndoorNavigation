@@ -10,14 +10,17 @@ import androidx.viewpager.widget.PagerAdapter
 import coil.ImageLoader
 import coil.load
 import coil.request.CachePolicy
+import com.facebook.shimmer.Shimmer
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.trifonov.indoor_navigation.R
+import com.trifonov.indoor_navigation.data.dto.Location
 import com.trifonov.indoor_navigation.mapView.MapConstants
 import com.trifonov.indoor_navigation.mapView.MapConstants.baseUrl
 import java.util.Objects
 
 class ImagePagerAdapter(
     val context: Context,
-    private val location: String,
+    private val location: Location,
     private val images: List<String>
 ) : PagerAdapter() {
 
@@ -26,16 +29,24 @@ class ImagePagerAdapter(
         val inflater = LayoutInflater.from(context)
         val view = inflater.inflate(R.layout.point_image_item, container, false)
         val imageView = view.findViewById<ImageView>(R.id.image_item)
+        val shimmer = view.findViewById<ShimmerFrameLayout>(R.id.shimmer_image)
         val imagePosition = position % images.size
-        println("${baseUrl}location/$location/photos${images[imagePosition]}")
         val imgLoader = ImageLoader.Builder(context)
-            .diskCachePolicy(CachePolicy.ENABLED)
+            .diskCachePolicy(CachePolicy.DISABLED)
             .networkCachePolicy(CachePolicy.ENABLED)
-            .memoryCachePolicy(CachePolicy.ENABLED)
+            .memoryCachePolicy(CachePolicy.DISABLED)
             .build()
-
-        imageView.load("${baseUrl}location/$location/photos${images[imagePosition]}", imgLoader){
+        shimmer.startShimmer()
+        imageView.load("${baseUrl}locations/${location.id}/photos${images[imagePosition]}", imgLoader){
             error(R.drawable.bad_connection_icon) // Замените R.drawable.placeholder на свой ресурс запасного изображения
+            listener(onSuccess = { _, _ ->
+                shimmer.stopShimmer()
+                shimmer.hideShimmer()
+                },
+            onError = { _, _ ->
+                shimmer.stopShimmer()
+                shimmer.hideShimmer()
+            })
 //            listener(onError = { request, throwable ->
 //                // Логика обработки ошибки загрузки
 //                // Попытка перезагрузки изображения

@@ -23,6 +23,7 @@ import com.google.gson.Gson
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.data.dto.Location
 import com.trifonov.indoor_navigation.data.dto.Locations
+import com.trifonov.indoor_navigation.mapView.MapConstants.baseUrl
 import com.trifonov.indoor_navigation.mapView.MapConstants.dataPath
 import com.trifonov.indoor_navigation.mapView.MapConstants.unzipPath
 import net.lingala.zip4j.ZipFile
@@ -187,7 +188,7 @@ class FileHelper(
      * @See [FileHelper.fileDownload]
      * */
     private fun convertUrl(id: String): String {
-        return "http://redmine.rdcenter.ru:1777/location/$id"
+        return "${baseUrl}locations/${id}/tiles"
     }
 
     /**

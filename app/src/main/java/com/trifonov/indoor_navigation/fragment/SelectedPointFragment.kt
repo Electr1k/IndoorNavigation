@@ -189,7 +189,7 @@ class SelectedPointFragment: CustomFragment() {
         // Создаем индикаторы
         createLinearIndicator(imageList.size - 2)
         val ld = LocationData(requireContext())
-        val viewPagerAdapter = ImagePagerAdapter(requireContext(), ld.getLocationById(ld.getCurrentLocation())!!.dataUrl, imageList)
+        val viewPagerAdapter = ImagePagerAdapter(requireContext(), ld.getLocationById(ld.getCurrentLocation())!!, imageList)
         viewPager.adapter = viewPagerAdapter
 
         viewPager.currentItem = 1 // Устанавливаем указатель на 0 элемент "исходного" списка
@@ -197,7 +197,7 @@ class SelectedPointFragment: CustomFragment() {
         // Создаем отдельный поток,в котором будет изменять индикаторы и двигать пейджер
         Thread{
             var stopOnException = false
-            while(true && !stopOnException){
+            while(!stopOnException){
                 progress = 0f
                 while (progress != 100f){
                     Thread.sleep(40) // 40* 100 = 4000 ms
