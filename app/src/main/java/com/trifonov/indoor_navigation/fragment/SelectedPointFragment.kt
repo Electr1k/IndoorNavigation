@@ -21,6 +21,7 @@ import androidx.viewpager.widget.ViewPager.SCROLL_STATE_SETTLING
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.trifonov.indoor_navigation.MainActivity
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.ImagePagerAdapter
 import com.trifonov.indoor_navigation.common.LocationData
@@ -189,7 +190,7 @@ class SelectedPointFragment: CustomFragment() {
         // Создаем индикаторы
         createLinearIndicator(imageList.size - 2)
         val ld = LocationData(requireContext())
-        val viewPagerAdapter = ImagePagerAdapter(requireContext(), ld.getLocationById(ld.getCurrentLocation())!!, imageList)
+        val viewPagerAdapter = ImagePagerAdapter(requireActivity() as MainActivity, ld.getLocationById(ld.getCurrentLocation())!!, imageList)
         viewPager.adapter = viewPagerAdapter
 
         viewPager.currentItem = 1 // Устанавливаем указатель на 0 элемент "исходного" списка

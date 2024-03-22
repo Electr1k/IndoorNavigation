@@ -3,7 +3,6 @@ package com.trifonov.indoor_navigation
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.app.Dialog
 import android.app.DownloadManager
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -28,6 +27,8 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import coil.ImageLoader
+import coil.request.CachePolicy
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.trifonov.indoor_navigation.common.LocationData
 import com.trifonov.indoor_navigation.common.getTitleStreamProvider
@@ -83,6 +84,8 @@ class MainActivity : AppCompatActivity() {
     private var saveDraftRoute = false
     private var saveRoute = false
 
+    lateinit var imageLoader: ImageLoader
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -90,6 +93,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(mBinding.root)
         mapView = findViewById(R.id.mapView)
         val navView: BottomNavigationView = mBinding.bottomNavigationView
+        imageLoader = ImageLoader.Builder(this)
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .diskCachePolicy(CachePolicy.DISABLED)
+            .build()
         CoroutineScope(Dispatchers.IO).launch {
             this@MainActivity.checkUpdateLocations()
         }
@@ -183,10 +190,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        imageLoader.shutdown()
+        System.gc() // Запросить сборку мусора
         try {
             bluetoothAdapter?.bluetoothLeScanner?.stopScan(scanCallback)
         } catch (se: SecurityException) { }
+        super.onDestroy()
     }
 
     /**
