@@ -1,6 +1,5 @@
 package com.trifonov.indoor_navigation.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,9 @@ import com.trifonov.indoor_navigation.mapView.MapConstants.baseUrl
 class ImagePagerAdapter(
     val activity: MainActivity,
     private val location: Location,
-    private val images: List<String>
+    private val images: List<String>,
+    private val stopProgress: () -> Unit,
+    private val resumeProgress: () -> Unit,
 ) : PagerAdapter() {
 
 
@@ -29,19 +30,20 @@ class ImagePagerAdapter(
         shimmer.startShimmer()
         imageView.load("${baseUrl}locations/${location.id}/photos${images[imagePosition]}", activity.imageLoader){
             error(R.drawable.bad_connection_icon) // Замените R.drawable.placeholder на свой ресурс запасного изображения
-            listener(onSuccess = { _, _ ->
+            listener(
+                onSuccess = { _, _ ->
                 shimmer.stopShimmer()
                 shimmer.hideShimmer()
+                resumeProgress()
                 },
             onError = { _, _ ->
                 shimmer.stopShimmer()
                 shimmer.hideShimmer()
-            })
-//            listener(onError = { request, throwable ->
-//                // Логика обработки ошибки загрузки
-//                // Попытка перезагрузки изображения
-//                imgLoader.enqueue(request)
-//            })
+                resumeProgress()
+            },
+                onStart = {
+                    stopProgress()
+                })
         }
 
         container.addView(view)

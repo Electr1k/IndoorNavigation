@@ -190,27 +190,27 @@ class SelectedPointFragment: CustomFragment() {
         // Создаем индикаторы
         createLinearIndicator(imageList.size - 2)
         val ld = LocationData(requireContext())
-        val viewPagerAdapter = ImagePagerAdapter(requireActivity() as MainActivity, ld.getLocationById(ld.getCurrentLocation())!!, imageList)
-        viewPager.adapter = viewPagerAdapter
 
         viewPager.currentItem = 1 // Устанавливаем указатель на 0 элемент "исходного" списка
 
         // Создаем отдельный поток,в котором будет изменять индикаторы и двигать пейджер
-        Thread{
+        var runProgress =true
+        val progressThread = Thread{
             var stopOnException = false
             while(!stopOnException){
                 progress = 0f
                 while (progress != 100f){
-                    Thread.sleep(40) // 40* 100 = 4000 ms
-                    progress += 1f // 100 iteration
-                    try {
-                        requireActivity().runOnUiThread {
-                            updateLinearIndicator(getIndexByPosition(viewPager.currentItem))
+                    if (runProgress) {
+                        Thread.sleep(40) // 40* 100 = 4000 ms
+                        progress += 1f // 100 iteration
+                        try {
+                            requireActivity().runOnUiThread {
+                                updateLinearIndicator(getIndexByPosition(viewPager.currentItem))
+                            }
+                        } catch (e: Exception) {
+                            stopOnException = true
+                            break
                         }
-                    }
-                    catch (e: Exception){
-                        stopOnException = true
-                        break
                     }
                 }
                 try {
@@ -223,7 +223,13 @@ class SelectedPointFragment: CustomFragment() {
                     break
                 }
             }
-        }.start()
+        }
+        progressThread.start()
+
+        val viewPagerAdapter = ImagePagerAdapter(requireActivity() as MainActivity, ld.getLocationById(ld.getCurrentLocation())!!, imageList, { runProgress = false }, { runProgress = true })
+        viewPager.adapter = viewPagerAdapter
+
+        viewPager.currentItem = 1 // Устанавливаем указатель на 0 элемент "исходного" списка
 
         // Чтобы не обрывать анимацию перелистывания у пользователя,
         // когда подменяем первый или последний элемент
