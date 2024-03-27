@@ -405,7 +405,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
             override val visible: Boolean = true
             override var path: FloatArray = path
             override var paint: Paint? = strokePaint
-            override val width: Float = calculatePathWidth()
+            override val width: Float = 26f//calculatePathWidth()
         }
 
         pathView.updatePaths(listOf(drawablePath))
