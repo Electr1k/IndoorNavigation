@@ -8,6 +8,7 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -347,6 +348,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
                 if (mapMarker.name.isNotEmpty()) setMarkerScale(refData.scale, mapMarker)
             }
             newScale = refData.scale
+            createDrawablePath(lastPath)
         }
     }
 
@@ -400,20 +402,20 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         return path
     }
 
+    private var isPathSet = false
     private fun createDrawablePath(path: FloatArray) {
         val drawablePath = object : PathView.DrawablePath {
             override val visible: Boolean = true
             override var path: FloatArray = path
             override var paint: Paint? = strokePaint
-            override val width: Float = 26f//calculatePathWidth()
+            override val width: Float = calculatePathWidth()
         }
 
         pathView.updatePaths(listOf(drawablePath))
-        try {
-            mapView.removeView(pathView)
-        } catch (_: Exception) {
+        if (!isPathSet) {
+            isPathSet = true
+            mapView.addPathView(pathView)
         }
-        mapView.addPathView(pathView)
     }
 
     private fun calculateAngel(x1: Int, y1: Int, x2: Int, y2: Int): Float {
