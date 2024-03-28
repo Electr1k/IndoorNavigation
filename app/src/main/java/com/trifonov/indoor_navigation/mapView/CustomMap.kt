@@ -114,7 +114,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         addFinishMarker()
         addStartMarker()
         addCenterScreenMarker()
-        updatePath()
+        updatePath(true)
         for (marker in markerList) {
             addMarker(marker)
         }
@@ -390,7 +390,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         mapMarker.scaleY = tmp
     }
 
-    private fun updatePath(): FloatArray {
+    private fun updatePath(addPath: Boolean = false): FloatArray {
         if (finishNode == startNode) return FloatArray(0)
 
         moveStartMarker()
@@ -398,12 +398,12 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         var path = calculatePath(startNode, finishNode)
         if(path.size < 2) path = calculatePath(startNode, finishNode)
         lastPath = path
-        createDrawablePath(path)
+        createDrawablePath(path, addPath)
         return path
     }
 
     private var isPathSet = false
-    private fun createDrawablePath(path: FloatArray) {
+    private fun createDrawablePath(path: FloatArray, addPath: Boolean = false) {
         val drawablePath = object : PathView.DrawablePath {
             override val visible: Boolean = true
             override var path: FloatArray = path
@@ -412,6 +412,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         }
 
         pathView.updatePaths(listOf(drawablePath))
+        if (addPath) isPathSet = false
         if (!isPathSet) {
             isPathSet = true
             mapView.addPathView(pathView)
