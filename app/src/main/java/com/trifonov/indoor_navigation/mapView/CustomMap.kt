@@ -484,7 +484,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         var temp = minPathWidth + (maxPathWidth - minPathWidth) * newScale / maxScale
         if (newScale == minScale) temp = minPathWidth
         else if (newScale == maxScale) temp = maxPathWidth
-        return temp
+        return temp// * 1.5f
     }
 
     fun drawPath(startPosition: Int, finishPosition: Int) {

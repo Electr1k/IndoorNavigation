@@ -48,7 +48,7 @@ fun loadFromString(zoomLevelCount: Int, json: String, applicationContext: Contex
         setMaxScale = 4f,
         markerList = parseFromDot(dotList as ArrayList<Dot>, applicationContext),
         dotList = dotList,
-        minPathWidth = 2f,
+        minPathWidth = 10f,
         maxPathWidth = 50f,
         minScale = 0f,
         maxScale = 2f,
