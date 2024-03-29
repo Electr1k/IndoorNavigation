@@ -6,5 +6,5 @@ interface CustomViewListener {
 
     fun onLevelChanged(newValue: String)
 
-    fun onTap(view: View, x: Int, y: Int)
+    fun onTap(view: View, id: Int)
 }

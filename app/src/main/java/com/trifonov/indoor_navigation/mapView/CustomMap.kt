@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
+import android.os.Bundle
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,6 +20,7 @@ import android.widget.NumberPicker
 import android.widget.NumberPicker.OnValueChangeListener
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
 import com.trifonov.indoor_navigation.R
 import ovh.plrapps.mapview.MapView
 import ovh.plrapps.mapview.MapViewConfiguration
@@ -36,7 +38,7 @@ import ovh.plrapps.mapview.paths.removePathView
 import kotlin.math.atan
 
 class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
-    FrameLayout(context, attrs), MarkerTapListener,
+    FrameLayout(context, attrs),
     OnValueChangeListener, OnClickListener {
 
     private val numberPicker: NumberPicker
@@ -122,7 +124,13 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     }
     private fun addMarker(marker: MapMarker){
         marker.apply {
-            if (marker.name.isNotEmpty()) setImageDrawable(BitmapDrawable(resources, drawText("$name ")))
+            if (marker.name.isNotEmpty()) {
+                marker.dotId
+                setImageDrawable(BitmapDrawable(resources, drawText("$name ")))
+                setOnClickListener {
+                    listener?.onTap(it, marker.dotId)
+                }
+            }
         }
         marker.rotation = 0f
         if (levelNumber == marker.level && marker.name.isNotEmpty()) mapView.addMarker(marker, marker.x, marker.y)
@@ -270,7 +278,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         plusButton.setOnClickListener(this)
         minusButton.setOnClickListener(this)
         positionButton.setOnClickListener(this)
-        mapView.setMarkerTapListener(this)
+//        mapView.setMarkerTapListener(this)
     }
 
     private fun configureLevelPicker() {
@@ -289,9 +297,9 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         p.displayedValues = levels
     }
 
-    override fun onMarkerTap(view: View, x: Int, y: Int) {
-        listener?.onTap(view, x, y)
-    }
+//    override fun onMarkerTap(view: View, x: Int, y: Int) {
+//        listener?.onTap(view, x, y)
+//    }
 
     override fun onValueChange(picker: NumberPicker?, oldVal: Int, newVal: Int) {
         levelNumber = mapData.levelArray[picker?.value!! - 1].toInt()

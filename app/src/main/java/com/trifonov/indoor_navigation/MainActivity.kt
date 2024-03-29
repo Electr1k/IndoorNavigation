@@ -106,24 +106,23 @@ class MainActivity : AppCompatActivity() {
             if (destination.id != R.id.head) findViewById<CardView>(R.id.cardNav).visibility = View.INVISIBLE
             else findViewById<CardView>(R.id.cardNav).visibility = View.VISIBLE
         }
+
         mapView.setListener(object: CustomViewListener{
             override fun onLevelChanged(newValue: String) {
                 levelNumber = newValue
                 configureMap()
             }
 
-            override fun onTap(view: View, x: Int, y: Int) {
-                if (view is MapMarker) {
-                    val dot = mapData.dotList.find { view.dotId == it.getId() }
-                    if (dot?.getName() != "") {
-                        val bundle = Bundle()
-                        bundle.putInt("id", dot?.getId() ?: -1)
-                        saveDraftRoute = mNavController.currentDestination!!.id == R.id.route
-                        while (mNavController.currentDestination!!.id != R.id.head){
-                            mNavController.popBackStack()
-                        }
-                        mNavController.navigate(R.id.action_head_to_audience, bundle)
+            override fun onTap(view: View, id: Int) {
+                val dot = mapData.dotList.find { id == it.getId() }
+                if (dot?.getName() != "") {
+                    val bundle = Bundle()
+                    bundle.putInt("id", dot?.getId() ?: -1)
+                    saveDraftRoute = mNavController.currentDestination!!.id == R.id.route
+                    while (mNavController.currentDestination!!.id != R.id.head){
+                        mNavController.popBackStack()
                     }
+                    mNavController.navigate(R.id.action_head_to_audience, bundle)
                 }
             }
         })
