@@ -243,6 +243,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     }
 
     internal fun removePath(needFullDrop: Boolean = false): Int {
+        isPathSet = false
         mapView.removePathView(pathView)
         mapView.removeView(pathView)
         val parent = mapView.parent as ViewGroup
