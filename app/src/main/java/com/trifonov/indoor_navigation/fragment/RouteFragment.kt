@@ -279,7 +279,7 @@ class RouteFragment: CustomFragment() {
             baseActivity.mapView.drawPath(baseActivity.getDraftStart()!!, baseActivity.getDraftEnd()!!)
         }
         else{
-            if (!baseActivity.getSaveRoute()) baseActivity.mapView.removePath()
+            if (!baseActivity.getSaveRoute()) baseActivity.mapView.removePath(needResetPath = true)
         }
         super.onDestroy()
     }
