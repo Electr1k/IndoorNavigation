@@ -10,5 +10,5 @@ data class Location(
     val dataUrl: String,
     val updateTime: Date,
     val isVisible: Boolean,
-    val hashSum: Int
+    val hashSum: String
 )

@@ -29,6 +29,7 @@ import com.trifonov.indoor_navigation.mapView.MapConstants.unzipPath
 import net.lingala.zip4j.ZipFile
 import java.io.File
 import java.lang.Float.max
+import java.security.MessageDigest
 import kotlin.math.roundToInt
 
 
@@ -125,6 +126,8 @@ class FileHelper(
                     downloadView?.findViewById<TextView>(R.id.partLoading)?.text = activity.resources.getString(R.string.unzip)
                 }
                 checkConnectionFlag = false
+                // TODO : заюзать проверку, когда хэш изменится на сервере
+                //  calculateSHA256("$dataPathTmp${location.dataUrl}.zip") == location.hashSum
                 if (unzip(location.dataUrl) == true){
                     val locationsFile = File("$dataPath/locations.json")
                     val gson = Gson()
@@ -233,6 +236,14 @@ class FileHelper(
             println(e.message)
             false
         }
+    }
+
+
+    fun calculateSHA256(filePath: String): String {
+        val bytes = File(filePath).readBytes()
+        val md = MessageDigest.getInstance("SHA-256")
+        val digest = md.digest(bytes)
+        return digest.joinToString("") { "%02x".format(it) }
     }
 
 
