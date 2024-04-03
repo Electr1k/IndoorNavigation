@@ -26,11 +26,13 @@ import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.ImagePagerAdapter
 import com.trifonov.indoor_navigation.common.LocationData
 import com.trifonov.indoor_navigation.mapView.Dot
+import com.trifonov.indoor_navigation.mapView.RouteService
 import java.lang.Float.max
 import kotlin.math.abs
 
 
 class SelectedPointFragment: CustomFragment() {
+    private lateinit var routeService: RouteService
     private var currentState: Int = BottomSheetBehavior.STATE_COLLAPSED
     private var peekHeight = 500
     private lateinit var viewPager: ViewPager
@@ -46,7 +48,6 @@ class SelectedPointFragment: CustomFragment() {
     private var progress = 0f
     private lateinit var selectedPoint: Dot
     private lateinit var markerView: AppCompatImageView
-    private var navigateToRoute = false
 
     @Nullable
     @MainThread
@@ -62,6 +63,8 @@ class SelectedPointFragment: CustomFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        routeService = RouteService.getInstance(baseActivity.mapView)
+
         val id = arguments?.getInt("id", -1)
         selectedPoint = baseActivity.mapData.dotList.find { id == it.getId() }!!
         collapseContent = view.findViewById(R.id.collapse_content)
@@ -107,21 +110,18 @@ class SelectedPointFragment: CustomFragment() {
         title.text = "${selectedPoint.getType()} ${selectedPoint.getName()}"
         description.text = selectedPoint.getDescription()
         view.findViewById<CardView>(R.id.route_to).setOnClickListener {
-            if (baseActivity.getDraftEnd() == null) baseActivity.setDraftEnd(baseActivity.mapView.getFinishPosition())
-            if (baseActivity.getDraftStart() == null) baseActivity.setDraftStart(baseActivity.mapView.getStartPosition())
             val bundle = Bundle()
             bundle.putBoolean("isFromPoint", true)
-            navigateToRoute = true
-            baseActivity.mapView.drawPath(if (baseActivity.getSaveDraftRoute()) baseActivity.mapView.getStartPosition() else baseActivity.mapView.getMyPosition(), selectedPoint.getId())
+
+            routeService.buildTempRoute(baseActivity.mapView.getMyPosition(), selectedPoint.getId())
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             findNavController().navigate(R.id.action_audience_to_route, bundle)
         }
         view.findViewById<CardView>(R.id.route_from).setOnClickListener {
-            if (baseActivity.getDraftStart() == null) baseActivity.setDraftStart(baseActivity.mapView.getStartPosition())
             val bundle = Bundle()
             bundle.putBoolean("isFromPoint", true)
-            navigateToRoute = true
-            baseActivity.mapView.drawPath(selectedPoint.getId(), baseActivity.mapView.getFinishPosition())
+
+            routeService.buildTempRoute(selectedPoint.getId(), routeService.endDot ?: baseActivity.mapView.getMyPosition())
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             findNavController().navigate(R.id.action_audience_to_route, bundle)
         }
@@ -327,13 +327,6 @@ class SelectedPointFragment: CustomFragment() {
      * Переопределяем метод разрушения view, удаляем маркер
      */
     override fun onDestroy() {
-        if ((!navigateToRoute || !baseActivity.getSaveDraftRoute()) && !(navigateToRoute && !baseActivity.getSaveDraftRoute())) {
-            // Возвращаем старый маршрут
-            if (baseActivity.getDraftStart() == null) baseActivity.setDraftStart(baseActivity.mapView.getStartPosition())
-            if (baseActivity.getDraftEnd() == null) baseActivity.setDraftEnd(baseActivity.mapView.getFinishPosition())
-            baseActivity.mapView.drawPath(baseActivity.getDraftStart()!!, baseActivity.getDraftEnd()!!)
-        }
-        baseActivity.setSaveDraftRoute(false)
         super.onDestroy()
         val marker = requireActivity().findViewById<RelativeLayout>(R.id.marker)
         (marker?.parent as ViewGroup?)?.removeView(marker)

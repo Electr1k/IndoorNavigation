@@ -79,10 +79,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mNavController: NavController
 
-    private var draftStart: Int? = null
-    private var draftEnd: Int? = null
-    private var saveDraftRoute = false
-    private var saveRoute = false
 
     lateinit var imageLoader: ImageLoader
 
@@ -118,7 +114,6 @@ class MainActivity : AppCompatActivity() {
                 if (dot?.getName() != "") {
                     val bundle = Bundle()
                     bundle.putInt("id", dot?.getId() ?: -1)
-                    saveDraftRoute = mNavController.currentDestination!!.id == R.id.route
                     while (mNavController.currentDestination!!.id != R.id.head){
                         mNavController.popBackStack()
                     }
@@ -379,39 +374,6 @@ class MainActivity : AppCompatActivity() {
             getTitleStreamProvider(locationData.getLocationById(locationData.getCurrentLocation())!!.dataUrl, levelNumber)
         }
         mapView.setMap(mapData = mapData, true, levelNumber = levelNumber)
-    }
-
-
-    fun getDraftStart(): Int? {
-        return draftStart
-    }
-
-    fun setDraftStart(start: Int?) {
-        draftStart = start
-    }
-
-    fun getDraftEnd(): Int? {
-        return draftEnd
-    }
-
-    fun setDraftEnd(end: Int?) {
-        draftEnd = end
-    }
-
-    fun getSaveDraftRoute(): Boolean {
-        return saveDraftRoute
-    }
-
-    fun setSaveDraftRoute(save: Boolean) {
-        saveDraftRoute = save
-    }
-
-    fun getSaveRoute(): Boolean {
-        return saveRoute
-    }
-
-    fun setSaveRoute(save: Boolean) {
-        saveRoute = save
     }
 
 }

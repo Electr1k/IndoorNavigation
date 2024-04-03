@@ -25,9 +25,12 @@ import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.AudienceRouteAdapter
 import com.trifonov.indoor_navigation.adapter.AudienceTypeAdapter
 import com.trifonov.indoor_navigation.mapView.Dot
+import com.trifonov.indoor_navigation.mapView.RouteService
 import kotlin.math.abs
 
 class RouteFragment: CustomFragment() {
+    private lateinit var routeService: RouteService
+
     private lateinit var typesRV: RecyclerView
     private lateinit var audienceRV: RecyclerView
     private lateinit var swapImage: ImageView
@@ -63,6 +66,7 @@ class RouteFragment: CustomFragment() {
     @SuppressLint("KotlinNullnessAnnotation")
     override fun onViewCreated(@NonNull view: View, @Nullable savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        routeService = RouteService.getInstance(baseActivity.mapView)
         fragment = view
         typesRV = view.findViewById(R.id.audience_types)
         audienceRV = view.findViewById(R.id.result_search)
@@ -145,7 +149,7 @@ class RouteFragment: CustomFragment() {
      */
     private fun initBottomSheet(view: View){
         mBottomSheetBehavior.skipCollapsed = false
-        if (baseActivity.getSaveRoute() || arguments?.getBoolean("isFromPoint", false) == true) {
+        if (arguments?.getBoolean("isFromPoint", false) == true) {
             val dotStart = getDotById(baseActivity.mapData.dotList, baseActivity.mapView.getStartPosition())
             val endDot = getDotById(baseActivity.mapData.dotList, baseActivity.mapView.getFinishPosition())
             pointA.setText(dotStart?.getName() ?: "")
@@ -174,12 +178,8 @@ class RouteFragment: CustomFragment() {
         view.findViewById<CardView>(R.id.build_route).setOnClickListener {
             try{
                 if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    baseActivity.setSaveRoute(true)
-                    baseActivity.setDraftStart(null)
-                    baseActivity.setDraftEnd(null)
-
-                    baseActivity.mapView.drawPath(baseActivity.mapView.getStartPosition(), baseActivity.mapView.getFinishPosition())
-
+                    routeService.saveTempRouteAsMain()
+                    routeService.buildMainRoute()
                     mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 }
                 else{
@@ -200,10 +200,10 @@ class RouteFragment: CustomFragment() {
 //                        if (end.getId() == myPosition) end = getDotById(dotList, myPosition);
                         pointA.setText(start.getName())
                         pointB.setText(end.getName())
-                        baseActivity.setDraftStart(baseActivity.mapView.getStartPosition())
-                        baseActivity.setDraftEnd(baseActivity.mapView.getFinishPosition())
 
-                        baseActivity.mapView.drawPath(start.getId(), end.getId())
+
+                        routeService.buildTempRoute(start.getId(), end.getId())
+
                         baseActivity.mapView.moveCameraToDot(start)
                         (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
                         (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
@@ -272,14 +272,12 @@ class RouteFragment: CustomFragment() {
     }
 
     override fun onDestroy() {
-        if ((baseActivity.getDraftStart() != null || baseActivity.getDraftEnd() != null) && !baseActivity.getSaveDraftRoute() && baseActivity.getSaveRoute()){
-            if (baseActivity.getDraftStart() == null) baseActivity.setDraftStart( baseActivity.mapView.getStartPosition())
-            if (baseActivity.getDraftEnd() == null) baseActivity.setDraftEnd(baseActivity.mapView.getFinishPosition())
-
-            baseActivity.mapView.drawPath(baseActivity.getDraftStart()!!, baseActivity.getDraftEnd()!!)
-        }
-        else{
-            if (!baseActivity.getSaveRoute()) baseActivity.mapView.removePath(needResetPath = true)
+        if (!routeService.currentRouteIsMain){
+            if (null !in listOf(routeService.startDot, routeService.endDot)) routeService.buildMainRoute()
+            else{
+                baseActivity.mapView.removePath(true)
+            }
+            routeService.deleteTempDots()
         }
         super.onDestroy()
     }
