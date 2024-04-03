@@ -373,7 +373,7 @@ class MainActivity : AppCompatActivity() {
             val locationData = LocationData(this)
             getTitleStreamProvider(locationData.getLocationById(locationData.getCurrentLocation())!!.dataUrl, levelNumber)
         }
-        mapView.setMap(mapData = mapData, true, levelNumber = levelNumber)
+        mapView.setMap(mapData = mapData, true, levelNumber = levelNumber, addPath = true)
     }
 
 }

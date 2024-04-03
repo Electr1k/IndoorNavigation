@@ -22,7 +22,6 @@ class HeadFragment: Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        println("Head")
         val view = inflater.inflate(R.layout.head_fragment, container, false)
         return view
     }
@@ -32,51 +31,55 @@ class HeadFragment: Fragment() {
         isEnable = true
         val locationData = LocationData(requireContext())
         var currentLocationId = locationData.getCurrentLocation()
-//        if (currentLocationId == -1){
-//            currentLocationId = 0
-//            locationData.setCurrentLocation(currentLocationId)
-//        }
+
         val btn = view.findViewById<TextView>(R.id.current_location)
         btn.text = if (currentLocationId != -1)locationData.getLocationById(currentLocationId)!!.name else "Демо локация"
         val cardView =  view.findViewById<CardView>(R.id.card_location)
         cardView.setOnClickListener {
-            val scaleUpX = ObjectAnimator.ofFloat(cardView, "scaleX", 1.1f)
-            val scaleUpY = ObjectAnimator.ofFloat(cardView, "scaleY", 1.1f)
-            scaleUpX.duration = 150
-            scaleUpY.duration = 150
-
-            // Анимация уменьшения масштаба при отпускании
-            val scaleDownX = ObjectAnimator.ofFloat(cardView, "scaleX", 1f)
-            val scaleDownY = ObjectAnimator.ofFloat(cardView, "scaleY", 1f)
-            scaleDownX.duration = 150
-            scaleDownY.duration = 150
-
-            // Создаем композицию анимаций
-            val scaleUp = AnimatorSet().apply {
-                play(scaleUpX).with(scaleUpY)
+            pulsarAnimation(cardView, view){
+                Navigation.findNavController(view).navigate(R.id.location)
+                isEnable = false
             }
-
-            val scaleDown = AnimatorSet().apply {
-                play(scaleDownX).with(scaleDownY)
-            }
-
-            // Запускаем анимации при нажатии и отпускании
-            scaleUp.start()
-            scaleUp.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    super.onAnimationEnd(animation)
-                    scaleDown.start()
-                }
-            })
-            scaleDown.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    super.onAnimationEnd(animation)
-                    if (isEnable) {
-                        Navigation.findNavController(view).navigate(R.id.location)
-                        isEnable = false
-                    }
-                }
-            })
         }
+
+    }
+
+    private fun pulsarAnimation(cardView: CardView, view: View, onClick: () -> Unit){
+        val scaleUpX = ObjectAnimator.ofFloat(cardView, "scaleX", 1.1f)
+        val scaleUpY = ObjectAnimator.ofFloat(cardView, "scaleY", 1.1f)
+        scaleUpX.duration = 150
+        scaleUpY.duration = 150
+
+        // Анимация уменьшения масштаба при отпускании
+        val scaleDownX = ObjectAnimator.ofFloat(cardView, "scaleX", 1f)
+        val scaleDownY = ObjectAnimator.ofFloat(cardView, "scaleY", 1f)
+        scaleDownX.duration = 150
+        scaleDownY.duration = 150
+
+        // Создаем композицию анимаций
+        val scaleUp = AnimatorSet().apply {
+            play(scaleUpX).with(scaleUpY)
+        }
+
+        val scaleDown = AnimatorSet().apply {
+            play(scaleDownX).with(scaleDownY)
+        }
+
+        // Запускаем анимации при нажатии и отпускании
+        scaleUp.start()
+        scaleUp.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                scaleDown.start()
+            }
+        })
+        scaleDown.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                if (isEnable) {
+                    onClick()
+                }
+            }
+        })
     }
 }
