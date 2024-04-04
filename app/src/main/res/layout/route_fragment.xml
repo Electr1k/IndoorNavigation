@@ -191,6 +191,7 @@
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/result_NestedScroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout

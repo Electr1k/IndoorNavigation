@@ -17,6 +17,7 @@ import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat.getColor
+import androidx.core.widget.NestedScrollView
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -34,6 +35,7 @@ class RouteFragment: CustomFragment() {
     private lateinit var typesRV: RecyclerView
     private lateinit var audienceRV: RecyclerView
     private lateinit var swapImage: ImageView
+    private lateinit var resultNestedScroll: NestedScrollView
     private lateinit var pointA: EditText
     private lateinit var pointB: EditText
     private lateinit var btnContainer: LinearLayout
@@ -78,6 +80,7 @@ class RouteFragment: CustomFragment() {
         textRouteBuild = view.findViewById(R.id.textBuild)
         clearPointA = view.findViewById(R.id.clear_point_a)
         clearPointB = view.findViewById(R.id.clear_point_b)
+        resultNestedScroll = view.findViewById(R.id.result_NestedScroll)
         initBottomSheet(view)
     }
 
@@ -137,6 +140,20 @@ class RouteFragment: CustomFragment() {
         }
         pointB.setOnFocusChangeListener { _, focus -> if (focus){ openBottomSheet(); adapterResultDot.updateList(resultList)} }
         pointA.setOnFocusChangeListener { _, focus -> if (focus){ openBottomSheet(); adapterResultDot.updateList(resultList)} }
+        pointA.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                adapterResultDot.updateList(resultList.filter { pointA.text.toString().trim().lowercase() in it.getName().trim().lowercase() })
+            } else {
+                if (!pointB.hasFocus()){ adapterResultDot.updateList(resultList) }
+            }
+        }
+        pointB.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
+            if (hasFocus) {
+                adapterResultDot.updateList(resultList.filter { pointB.text.toString().trim().lowercase() in it.getName().trim().lowercase() })
+            } else {
+                if (!pointA.hasFocus()){ adapterResultDot.updateList(resultList) }
+            }
+        }
     }
 
     private fun getDotById(list: List<Dot>, id: Int): Dot?{
@@ -149,9 +166,9 @@ class RouteFragment: CustomFragment() {
      */
     private fun initBottomSheet(view: View){
         mBottomSheetBehavior.skipCollapsed = false
-        if (arguments?.getBoolean("isFromPoint", false) == true) {
-            val dotStart = getDotById(baseActivity.mapData.dotList, baseActivity.mapView.getStartPosition())
-            val endDot = getDotById(baseActivity.mapData.dotList, baseActivity.mapView.getFinishPosition())
+        if (arguments?.getBoolean("isFromPoint", false) == true || routeService.startDot != null && routeService.endDot != null) {
+            val dotStart = getDotById(baseActivity.mapData.dotList, if (routeService.startDot != null && routeService.currentRouteIsMain) routeService.startDot!! else baseActivity.mapView.getStartPosition())
+            val endDot = getDotById(baseActivity.mapData.dotList, if (routeService.endDot != null && routeService.currentRouteIsMain) routeService.endDot!! else baseActivity.mapView.getFinishPosition())
             pointA.setText(dotStart?.getName() ?: "")
             if (dotStart?.getId() == baseActivity.mapView.getMyPosition()){
                 pointA.setText(myPositionName)
@@ -180,10 +197,10 @@ class RouteFragment: CustomFragment() {
                 if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
                     routeService.saveTempRouteAsMain()
                     routeService.buildMainRoute()
+                    baseActivity.mapView.moveCameraToDot(resultList.find { routeService.startDot == it.getId() }!!)
                     mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 }
                 else{
-                    println(resultList.find { it.getId() == baseActivity.mapView.getMyPosition() })
                     var start = if (pointA.text.toString().equals(myPositionName, ignoreCase = true)) resultList.find { it.getId() == baseActivity.mapView.getMyPosition() }
                      else resultList.find { it.getName().equals(pointA.text.toString(), ignoreCase = true) }
                     var end =
@@ -200,7 +217,8 @@ class RouteFragment: CustomFragment() {
 //                        if (end.getId() == myPosition) end = getDotById(dotList, myPosition);
                         pointA.setText(start.getName())
                         pointB.setText(end.getName())
-
+                        pointA.setSelection(start.getName().length)
+                        pointB.setSelection(end.getName().length)
 
                         routeService.buildTempRoute(start.getId(), end.getId())
 
@@ -241,8 +259,16 @@ class RouteFragment: CustomFragment() {
             }
         })
         typesRV.setHasFixedSize(true)
+        val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        resultNestedScroll.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+            inputMethodManager.hideSoftInputFromWindow(fragment.windowToken, 0)
+        }
+
         audienceRV.setHasFixedSize(true)
         swapImage.setOnClickListener{
+            if (!routeService.currentRouteIsMain && mBottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED){
+                routeService.buildTempRoute(routeService.endDotTemp!!, routeService.startDotTemp!!)
+            }
             pointA.text = pointB.text.also { pointB.text = pointA.text } // Swap
             if (pointA.isFocused) pointA.setSelection(pointA.text.toString().length)
             if (pointB.isFocused) pointB.setSelection(pointB.text.toString().length)
