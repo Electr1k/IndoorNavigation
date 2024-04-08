@@ -52,6 +52,11 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     private val centerMarker = AppCompatImageView(context).apply {
         setImageResource(R.drawable.position_marker)
     }
+    private val openAudience = AppCompatImageView(context).apply {
+        setImageResource(R.drawable.marker)
+    }
+    private var idOpenAudience: Int? = null
+
     private val strokePaint = Paint().apply {
         color = ContextCompat.getColor(context, R.color.brand)
         strokeCap = Paint.Cap.ROUND
@@ -65,7 +70,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     private var levelNumber: Int = 1
     private var startNode = 0
     private var finishNode = 0
-    private var myPosition = 0
+    private var myPosition = 33
 
     private lateinit var mapData: MapData
     private var minPathWidth = 0f
@@ -111,6 +116,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         addFinishMarker()
         addStartMarker()
         addCenterScreenMarker()
+        addOpenAudienceMarker()
         updatePath(addPath)
         for (marker in markerList) {
             addMarker(marker)
@@ -263,6 +269,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         val index = removePath()
         for(marker in markerList) {if (marker.name.isNotEmpty()) mapView.removeMarker(marker)}
         mapView.removeMarker(centerMarker)
+        mapView.removeMarker(openAudience)
         parent.removeView(mapView)
         mapView = MapView(context)
         parent.addView(mapView, index)
@@ -356,6 +363,31 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         mapView.addMarker(centerMarker, 0.0, 0.0, -0.5f, -0.5f)
     }
 
+    private fun addOpenAudienceMarker(){
+        openAudience.visibility = View.INVISIBLE
+        mapView.addMarker(openAudience, 0.0, 0.0, -0.5f, -0.5f)
+    }
+
+    /***
+     * Добавить маркер на крату при открытии аудитории
+     */
+    internal fun setOpenAudienceMarker(dot: Dot){
+        openAudience.visibility = View.VISIBLE
+        mapView.moveMarker(openAudience, dot.getX().toDouble(), dot.getY().toDouble())
+        idOpenAudience = dot.getId()
+    }
+
+    /***
+     * Добавить убрать маркер с карты при открытии закрытии
+     */
+    internal fun removeOpenAudienceMarker(dot: Dot){
+        if (idOpenAudience == dot.getId()){
+            openAudience.visibility = View.INVISIBLE
+            idOpenAudience = null
+        }
+
+    }
+
     private fun addFinishMarker() {
         finishMarker.visibility = View.INVISIBLE
         mapView.addMarker(finishMarker, 0.0, 0.0, -0.5f, -0.5f, tag = "finish")
@@ -371,6 +403,8 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         startMarker.scaleY = scale + 1f
         finishMarker.scaleX = scale + 1f
         finishMarker.scaleY = scale + 1f
+        openAudience.scaleX = scale + 1f
+        openAudience.scaleY = scale + 1f
     }
 
     private fun setPositionMarkerRotation(angle: Float) {

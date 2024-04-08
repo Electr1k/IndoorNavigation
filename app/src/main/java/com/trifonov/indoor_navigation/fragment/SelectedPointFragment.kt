@@ -8,12 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.cardview.widget.CardView
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
@@ -33,6 +31,7 @@ import kotlin.math.abs
 
 class SelectedPointFragment: CustomFragment() {
     private lateinit var routeService: RouteService
+    private var id: Int = -1
     private var currentState: Int = BottomSheetBehavior.STATE_COLLAPSED
     private var peekHeight = 500
     private lateinit var viewPager: ViewPager
@@ -47,7 +46,6 @@ class SelectedPointFragment: CustomFragment() {
     private var heightNavigationMenu: Int = 0
     private var progress = 0f
     private lateinit var selectedPoint: Dot
-    private lateinit var markerView: AppCompatImageView
 
     @Nullable
     @MainThread
@@ -65,7 +63,7 @@ class SelectedPointFragment: CustomFragment() {
         super.onViewCreated(view, savedInstanceState)
         routeService = RouteService.getInstance(baseActivity.mapView)
 
-        val id = arguments?.getInt("id", -1)
+        id = arguments?.getInt("id", -1)!!
         selectedPoint = baseActivity.mapData.dotList.find { id == it.getId() }!!
         collapseContent = view.findViewById(R.id.collapse_content)
         countImages = view.findViewById(R.id.countImages)
@@ -76,9 +74,6 @@ class SelectedPointFragment: CustomFragment() {
         routeMenu = view.findViewById(R.id.routeMenu)
         title = view.findViewById(R.id.title)
         description = view.findViewById(R.id.description)
-        markerView = AppCompatImageView(requireActivity()).apply {
-            setImageResource(R.drawable.marker)
-        }
         initBottomSheet(view)
 
         initPager()
@@ -86,6 +81,8 @@ class SelectedPointFragment: CustomFragment() {
 
     override fun onStart() {
         super.onStart()
+        baseActivity.mapView.setOpenAudienceMarker(selectedPoint)
+
         mBottomSheet.visibility = View.VISIBLE
         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         val slideUpAnimation = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
@@ -328,8 +325,7 @@ class SelectedPointFragment: CustomFragment() {
      */
     override fun onDestroy() {
         super.onDestroy()
-        val marker = requireActivity().findViewById<RelativeLayout>(R.id.marker)
-        (marker?.parent as ViewGroup?)?.removeView(marker)
+        baseActivity.mapView.removeOpenAudienceMarker(selectedPoint)
     }
 
 }

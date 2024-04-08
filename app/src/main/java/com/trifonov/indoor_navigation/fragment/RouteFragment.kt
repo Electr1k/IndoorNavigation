@@ -122,8 +122,8 @@ class RouteFragment: CustomFragment() {
             if (pointA.isFocused){
                 (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
                 pointA.setText(dot.getName())
-                pointA.setSelection(dot.getName().length)
                 pointB.requestFocus()
+                pointB.setSelection(pointB.text.toString().length)
             }
             else{
                 if (pointB.isFocused) {
@@ -143,6 +143,7 @@ class RouteFragment: CustomFragment() {
         pointA.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 adapterResultDot.updateList(resultList.filter { pointA.text.toString().trim().lowercase() in it.getName().trim().lowercase() })
+                mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             } else {
                 if (!pointB.hasFocus()){ adapterResultDot.updateList(resultList) }
             }
@@ -150,6 +151,7 @@ class RouteFragment: CustomFragment() {
         pointB.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 adapterResultDot.updateList(resultList.filter { pointB.text.toString().trim().lowercase() in it.getName().trim().lowercase() })
+                mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             } else {
                 if (!pointA.hasFocus()){ adapterResultDot.updateList(resultList) }
             }
@@ -158,6 +160,16 @@ class RouteFragment: CustomFragment() {
 
     private fun getDotById(list: List<Dot>, id: Int): Dot?{
         return list.find { id == it.getId() }
+    }
+
+    private fun findDotByName(startName: String, endName: String): List<Dot?>{
+        val start = if (startName.equals(myPositionName, ignoreCase = true)) resultList.find { it.getId() == baseActivity.mapView.getMyPosition() }
+        else resultList.find { it.getName().equals(startName, ignoreCase = true) }
+        val end =
+            if (endName.equals(myPositionName, ignoreCase = true)) resultList.find { it.getId() == baseActivity.mapView.getMyPosition() }
+            else resultList.find { it.getName()
+                .equals(endName, ignoreCase = true) }
+        return listOf(start, end)
     }
 
     /**
@@ -194,6 +206,16 @@ class RouteFragment: CustomFragment() {
 
         view.findViewById<CardView>(R.id.build_route).setOnClickListener {
             try{
+
+                val result = findDotByName(pointA.text.toString(), pointB.text.toString())
+                val start = result[0]
+                val end = result[1]
+                if (start == null || end == null){
+                    if (start == null) (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.red)
+                    if (end == null) (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.red)
+                    return@setOnClickListener
+                }
+
                 if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
                     routeService.saveTempRouteAsMain()
                     routeService.buildMainRoute()
@@ -201,17 +223,6 @@ class RouteFragment: CustomFragment() {
                     mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 }
                 else{
-                    var start = if (pointA.text.toString().equals(myPositionName, ignoreCase = true)) resultList.find { it.getId() == baseActivity.mapView.getMyPosition() }
-                     else resultList.find { it.getName().equals(pointA.text.toString(), ignoreCase = true) }
-                    var end =
-                        if (pointB.text.toString().equals(myPositionName, ignoreCase = true)) resultList.find { it.getId() == baseActivity.mapView.getMyPosition() }
-                        else resultList.find { it.getName()
-                            .equals(pointB.text.toString(), ignoreCase = true) }
-                    if (start == null || end == null){
-                        if (start == null) (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.red)
-                        if (end == null) (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.red)
-                    }
-                    else{
 //                        /** Ищем оригинальное название "Моего местоположение, чтобы подставить название аудитории*/
 //                        if (start.getId() == myPosition) start = getDotById(dotList, myPosition);
 //                        if (end.getId() == myPosition) end = getDotById(dotList, myPosition);
@@ -226,7 +237,6 @@ class RouteFragment: CustomFragment() {
                         (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
                         (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
                         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                    }
                 }
             }
             catch(e: Exception){
@@ -270,8 +280,15 @@ class RouteFragment: CustomFragment() {
                 routeService.buildTempRoute(routeService.endDotTemp!!, routeService.startDotTemp!!)
             }
             pointA.text = pointB.text.also { pointB.text = pointA.text } // Swap
-            if (pointA.isFocused) pointA.setSelection(pointA.text.toString().length)
-            if (pointB.isFocused) pointB.setSelection(pointB.text.toString().length)
+            if (pointA.isFocused){
+                pointA.setSelection(pointA.text.toString().length)
+                adapterResultDot.updateList(resultList.filter { pointA.text.toString().trim().lowercase() in it.getName().trim().lowercase() })
+            }
+            if (pointB.isFocused){
+                pointB.setSelection(pointB.text.toString().length)
+                adapterResultDot.updateList(resultList.filter { pointB.text.toString().trim().lowercase() in it.getName().trim().lowercase() })
+            }
+
         }
         val typeList = listOf(
             "Туалет",
