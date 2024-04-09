@@ -46,6 +46,7 @@ class SelectedPointFragment: CustomFragment() {
     private var heightNavigationMenu: Int = 0
     private var progress = 0f
     private lateinit var selectedPoint: Dot
+    private var canPopBack = true
 
     @Nullable
     @MainThread
@@ -106,22 +107,22 @@ class SelectedPointFragment: CustomFragment() {
         val density = requireContext().resources.displayMetrics.density
         title.text = "${selectedPoint.getType()} ${selectedPoint.getName()}"
         description.text = selectedPoint.getDescription()
+        val bundle = Bundle()
         view.findViewById<CardView>(R.id.route_to).setOnClickListener {
-            val bundle = Bundle()
-            bundle.putBoolean("isFromPoint", true)
-
-            routeService.buildTempRoute(baseActivity.mapView.getMyPosition(), selectedPoint.getId())
+            canPopBack = false
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            findNavController().navigate(R.id.action_audience_to_route, bundle)
+            bundle.putBoolean("isFromPoint", true)
+            baseActivity.mapView.removeOpenAudienceMarker(selectedPoint)
+            routeService.buildTempRoute(baseActivity.mapView.getMyPosition(), selectedPoint.getId())
         }
         view.findViewById<CardView>(R.id.route_from).setOnClickListener {
-            val bundle = Bundle()
-            bundle.putBoolean("isFromPoint", true)
-
-            routeService.buildTempRoute(selectedPoint.getId(), routeService.endDot ?: baseActivity.mapView.getMyPosition())
+            canPopBack = false
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            findNavController().navigate(R.id.action_audience_to_route, bundle)
+            bundle.putBoolean("isFromPoint", true)
+            baseActivity.mapView.removeOpenAudienceMarker(selectedPoint)
+            routeService.buildTempRoute(selectedPoint.getId(), routeService.endDot ?: baseActivity.mapView.getMyPosition())
         }
+        mBottomSheetBehavior.removeBottomSheetCallback(baseBottomSheetCallback)
         mBottomSheetBehavior.addBottomSheetCallback(
             object : BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -132,7 +133,15 @@ class SelectedPointFragment: CustomFragment() {
                     else{
                         cardView.radius = 20f * density
                     }
-                    println("Current offset: $currentState $newState")
+
+                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                        if (canPopBack){
+                            requireActivity().supportFragmentManager.popBackStack()
+                        }
+                        else{
+                            findNavController().navigate(R.id.action_audience_to_route, bundle)
+                        }
+                    }
                 }
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
                     view.findViewById<LinearLayout>(R.id.linearLayout).translationY = max(-1 * 260 * density * (1 - slideOffset), -1 * 260 * density)
@@ -324,8 +333,9 @@ class SelectedPointFragment: CustomFragment() {
      * Переопределяем метод разрушения view, удаляем маркер
      */
     override fun onDestroy() {
-        super.onDestroy()
+        println("destroy")
         baseActivity.mapView.removeOpenAudienceMarker(selectedPoint)
+        super.onDestroy()
     }
 
 }

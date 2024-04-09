@@ -237,7 +237,7 @@
         android:gravity="center"
         android:background="@color/white">
         <androidx.cardview.widget.CardView
-            android:id="@+id/build_route"
+            android:id="@+id/buildRoute"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

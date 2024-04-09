@@ -55,7 +55,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     private val openAudience = AppCompatImageView(context).apply {
         setImageResource(R.drawable.marker)
     }
-    private var idOpenAudience: Int? = null
+    private var dotOpenAudience: Dot? = null
 
     private val strokePaint = Paint().apply {
         color = ContextCompat.getColor(context, R.color.brand)
@@ -122,6 +122,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
             addMarker(marker)
         }
         setChangeListeners()
+        changeVisibilityAudienceMarker()
     }
     private fun addMarker(marker: MapMarker){
         marker.apply {
@@ -365,7 +366,8 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
 
     private fun addOpenAudienceMarker(){
         openAudience.visibility = View.INVISIBLE
-        mapView.addMarker(openAudience, 0.0, 0.0, -0.5f, -0.5f)
+        mapView.addMarker(openAudience,
+            (dotOpenAudience?.getX()  ?: 0.0).toDouble(), (dotOpenAudience?.getY()  ?: 0.0).toDouble(), -0.5f, -0.5f)
     }
 
     /***
@@ -374,18 +376,30 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     internal fun setOpenAudienceMarker(dot: Dot){
         openAudience.visibility = View.VISIBLE
         mapView.moveMarker(openAudience, dot.getX().toDouble(), dot.getY().toDouble())
-        idOpenAudience = dot.getId()
+        dotOpenAudience = dot
     }
 
     /***
      * Добавить убрать маркер с карты при открытии закрытии
      */
     internal fun removeOpenAudienceMarker(dot: Dot){
-        if (idOpenAudience == dot.getId()){
+        if (dotOpenAudience?.getId() == dot.getId()){
             openAudience.visibility = View.INVISIBLE
-            idOpenAudience = null
+            dotOpenAudience = null
         }
 
+    }
+
+    /***
+     * Метод для изменения
+     */
+    private fun changeVisibilityAudienceMarker(){
+        if (dotOpenAudience?.getLevel() == levelNumber){
+            openAudience.visibility = View.VISIBLE
+        }
+        else{
+            openAudience.visibility = View.INVISIBLE
+        }
     }
 
     private fun addFinishMarker() {

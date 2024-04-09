@@ -30,7 +30,7 @@ class RouteService private constructor(private val map: CustomMap){
         private set(value) { field = value }
 
     /** Отображается ли сейчас основной маршрут*/
-    var currentRouteIsMain = true
+    var currentRouteIsMain = false
         get() = field
         private set(value) { field = value }
 

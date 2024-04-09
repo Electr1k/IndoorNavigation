@@ -25,12 +25,16 @@ import com.google.android.material.card.MaterialCardView
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.AudienceRouteAdapter
 import com.trifonov.indoor_navigation.adapter.AudienceTypeAdapter
+import com.trifonov.indoor_navigation.databinding.RouteFragmentBinding
 import com.trifonov.indoor_navigation.mapView.Dot
 import com.trifonov.indoor_navigation.mapView.RouteService
 import kotlin.math.abs
 
 class RouteFragment: CustomFragment() {
     private lateinit var routeService: RouteService
+
+    private var _binding: RouteFragmentBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var typesRV: RecyclerView
     private lateinit var audienceRV: RecyclerView
@@ -43,6 +47,7 @@ class RouteFragment: CustomFragment() {
     private lateinit var resultSearchLinearLayout: LinearLayout
     private lateinit var clearPointA: ImageView
     private lateinit var clearPointB: ImageView
+    private lateinit var buildRouteBtn: CardView
     private lateinit var fragment: View
     private var peekHeight = 0
     private var btnHeight = 0
@@ -59,9 +64,9 @@ class RouteFragment: CustomFragment() {
         @NonNull inflater: LayoutInflater,
         @Nullable container: ViewGroup?,
         @Nullable savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.route_fragment, container, false)
-        return view
+    ): View {
+        _binding = RouteFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     @MainThread
@@ -70,22 +75,18 @@ class RouteFragment: CustomFragment() {
         super.onViewCreated(view, savedInstanceState)
         routeService = RouteService.getInstance(baseActivity.mapView)
         fragment = view
-        typesRV = view.findViewById(R.id.audience_types)
-        audienceRV = view.findViewById(R.id.result_search)
-        resultSearchLinearLayout = view.findViewById(R.id.result_search_LL)
-        swapImage = view.findViewById(R.id.swap_image)
-        pointA = view.findViewById(R.id.route_from)
-        pointB = view.findViewById(R.id.route_to)
-        btnContainer = view.findViewById(R.id.btnContainer)
-        textRouteBuild = view.findViewById(R.id.textBuild)
-        clearPointA = view.findViewById(R.id.clear_point_a)
-        clearPointB = view.findViewById(R.id.clear_point_b)
-        resultNestedScroll = view.findViewById(R.id.result_NestedScroll)
-        initBottomSheet(view)
-    }
-
-    override fun onStart() {
-        super.onStart()
+        typesRV = binding.audienceTypes
+        audienceRV = binding.resultSearch
+        resultSearchLinearLayout = binding.resultSearchLL
+        swapImage = binding.swapImage
+        pointA = binding.routeFrom
+        pointB = binding.routeTo
+        btnContainer = binding.btnContainer
+        textRouteBuild = binding.textBuild
+        clearPointA = binding.clearPointA
+        clearPointB = binding.clearPointB
+        resultNestedScroll = binding.resultNestedScroll
+        buildRouteBtn = binding.buildRoute
         mBottomSheet.visibility = View.VISIBLE
         if (arguments?.getBoolean("isFromPoint") == true){
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -102,6 +103,11 @@ class RouteFragment: CustomFragment() {
         mBottomSheet.startAnimation(slideUpAnimation)
         btnContainer.translationY = 0f
         btnContainer.startAnimation(slideUpAnimation)
+        initBottomSheet(view)
+    }
+
+    override fun onStart() {
+        super.onStart()
         val viewCollapsed = fragment.findViewById<LinearLayout>(R.id.view_collapsed)
         viewCollapsed.post {
             btnHeight = btnContainer.height
@@ -204,7 +210,7 @@ class RouteFragment: CustomFragment() {
             adapterResultDot.updateList(resultList.filter { pointB.text.toString().trim().lowercase() in it.getName().trim().lowercase() })
         }
 
-        view.findViewById<CardView>(R.id.build_route).setOnClickListener {
+        buildRouteBtn.setOnClickListener {
             try{
 
                 val result = findDotByName(pointA.text.toString(), pointB.text.toString())
@@ -226,17 +232,17 @@ class RouteFragment: CustomFragment() {
 //                        /** Ищем оригинальное название "Моего местоположение, чтобы подставить название аудитории*/
 //                        if (start.getId() == myPosition) start = getDotById(dotList, myPosition);
 //                        if (end.getId() == myPosition) end = getDotById(dotList, myPosition);
-                        pointA.setText(start.getName())
-                        pointB.setText(end.getName())
-                        pointA.setSelection(start.getName().length)
-                        pointB.setSelection(end.getName().length)
+                    pointA.setText(start.getName())
+                    pointB.setText(end.getName())
+                    pointA.setSelection(start.getName().length)
+                    pointB.setSelection(end.getName().length)
 
-                        routeService.buildTempRoute(start.getId(), end.getId())
+                    routeService.buildTempRoute(start.getId(), end.getId())
 
-                        baseActivity.mapView.moveCameraToDot(start)
-                        (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
-                        (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
-                        mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                    baseActivity.mapView.moveCameraToDot(start)
+                    mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                    (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
+                    (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
                 }
             }
             catch(e: Exception){
@@ -276,8 +282,11 @@ class RouteFragment: CustomFragment() {
 
         audienceRV.setHasFixedSize(true)
         swapImage.setOnClickListener{
-            if (!routeService.currentRouteIsMain && mBottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED){
-                routeService.buildTempRoute(routeService.endDotTemp!!, routeService.startDotTemp!!)
+            if (mBottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED){
+                if(routeService.currentRouteIsMain){
+                    routeService.buildTempRoute(routeService.endDot!!, routeService.startDot!!)
+                }
+                else routeService.buildTempRoute(routeService.endDotTemp!!, routeService.startDotTemp!!)
             }
             pointA.text = pointB.text.also { pointB.text = pointA.text } // Swap
             if (pointA.isFocused){
@@ -323,6 +332,7 @@ class RouteFragment: CustomFragment() {
             routeService.deleteTempDots()
         }
         super.onDestroy()
+        _binding = null
     }
 
 
