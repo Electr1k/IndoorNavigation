@@ -118,10 +118,7 @@ class RouteFragment: CustomFragment() {
             resultSearchLinearLayout.addView(view)
         }
         resultList = baseActivity.mapData.dotList.filter { (it.getType() in filterList || filterList.isEmpty()) && it.getName().isNotEmpty()  } as MutableList<Dot>
-        val dot = baseActivity.mapView.getMyPosition().copy()
-        dot.setName(myPositionName)
-        dot.setId(baseActivity.mapView.getMyPosition().getId())
-        resultList.add(0, dot)
+        resultList.add(0, baseActivity.mapView.getMyPosition())
         adapterResultDot = AudienceRouteAdapter(resultList) { dot ->
             val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(fragment.windowToken, 0)
@@ -218,14 +215,18 @@ class RouteFragment: CustomFragment() {
                 val result = findDotByName(pointA.text.toString(), pointB.text.toString())
                 val start = result[0]
                 val end = result[1]
-                if (start == null || end == null){
-                    if (start == null) (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.red)
-                    if (end == null) (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.red)
+                if (start == null || end == null || start.getId() == end.getId() && start.getName() == end.getName()){
+                    if (start == null || start.getId() == end?.getId()) (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.red)
+                    if (end == null || start?.getId() == end.getId()) (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.red)
                     return@setOnClickListener
                 }
 
                 if (currentState == BottomSheetBehavior.STATE_COLLAPSED) {
-
+                    if (start.getId() == end.getId()){
+                        baseActivity.mapView.moveCameraToDot(start)
+                        mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                        return@setOnClickListener
+                    }
                     if (routeService.currentRouteIsMain) {
                         if (routeService.startDotTemp == null || routeService.endDotTemp == null){
                             // Если окно свернули без предпоказа маршрута и нажали пройти
@@ -242,7 +243,7 @@ class RouteFragment: CustomFragment() {
                         routeService.buildMainRoute()
                     }
                     baseActivity.openRouteBar()
-                    baseActivity.mapView.moveCameraToDot(resultList.find { routeService.startDot == it.getId() }!!)
+                    baseActivity.mapView.moveCameraToDot(start)
                     mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 }
                 else{
@@ -254,9 +255,11 @@ class RouteFragment: CustomFragment() {
                     pointA.setSelection(start.getName().length)
                     pointB.setSelection(end.getName().length)
 
-                    routeService.buildTempRoute(start.getId(), end.getId())
+                    if (start.getId() != end.getId()) {
+                        routeService.buildTempRoute(start.getId(), end.getId())
+                        baseActivity.mapView.moveCameraToDot(start)
+                    }
 
-                    baseActivity.mapView.moveCameraToDot(start)
                     mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                     (pointA.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
                     (pointB.parent as MaterialCardView).strokeColor = getColor(requireContext(), R.color.light_gray)
@@ -299,11 +302,17 @@ class RouteFragment: CustomFragment() {
 
         audienceRV.setHasFixedSize(true)
         swapImage.setOnClickListener{
+            val result = findDotByName(pointA.text.toString(), pointB.text.toString())
+            val start = result[0]
+            val end = result[1]
+
             if (mBottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED){
-                if(routeService.currentRouteIsMain){
-                    routeService.buildTempRoute(routeService.endDot!!, routeService.startDot!!)
+                if (start?.getId() != end?.getId()){
+                    if(routeService.currentRouteIsMain){
+                        routeService.buildTempRoute(routeService.endDot!!, routeService.startDot!!)
+                    }
+                    else routeService.buildTempRoute(routeService.endDotTemp!!, routeService.startDotTemp!!)
                 }
-                else routeService.buildTempRoute(routeService.endDotTemp!!, routeService.startDotTemp!!)
             }
             pointA.text = pointB.text.also { pointB.text = pointA.text } // Swap
             if (pointA.isFocused){
@@ -332,17 +341,18 @@ class RouteFragment: CustomFragment() {
                 filterList.add(type)
                 view.setCardBackgroundColor(resources.getColor(R.color.lighting_blue))
             }
-            resultList = baseActivity.mapData.dotList.filter { (it.getType() in filterList || filterList.isEmpty()) && it.getName().isNotEmpty()  } as MutableList<Dot>
-            val dot = getDotById(baseActivity.mapData.dotList, baseActivity.mapView.getMyPosition().getId())!!.copy()
-            dot.setName(myPositionName)
-            resultList.add(0, dot)
+            resultList = baseActivity.mapData.dotList.filter { (it.getType() in filterList || filterList.isEmpty()) && it.getName().isNotEmpty() } as MutableList<Dot>
+            resultList.add(0, baseActivity.mapView.getMyPosition())
             adapterResultDot.updateList( resultList )
         }
     }
 
     override fun onDestroy() {
         if (!routeService.currentRouteIsMain){
-            if (null !in listOf(routeService.startDot, routeService.endDot)) routeService.buildMainRoute()
+            if (null !in listOf(routeService.startDot, routeService.endDot)){
+                routeService.buildMainRoute()
+                baseActivity.openRouteBar()
+            }
             else{
                 routeService.removePath()
             }

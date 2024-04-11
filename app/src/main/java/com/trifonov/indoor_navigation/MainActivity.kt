@@ -107,6 +107,7 @@ class MainActivity : AppCompatActivity() {
             else{
                 val routeService = RouteService.getInstance(mapView)
                 findViewById<CardView>(R.id.routeBar).visibility = if (routeService.pathIsDraw && routeService.currentRouteIsMain) View.VISIBLE else View.GONE
+                println("Is main ${routeService.currentRouteIsMain}")
                 findViewById<CardView>(R.id.cardNav).visibility = View.VISIBLE
             }
         }

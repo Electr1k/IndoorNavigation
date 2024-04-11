@@ -119,12 +119,9 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         addFinishMarker()
         addStartMarker()
         if (myPosition == null){
-//            val startPosition = dotList.find { it.getId() == 33}!!.copy().also {
-//                it.setId(33)
-//                it.setName("Моё местоположение")
-//            }
-//            dotList.add(0, startPosition)
-            setMyPosition(dotList.find { it.getId() == 33}!!)
+            myPosition = dotList.find { it.getId() == 33}!!.copy()
+            myPosition!!.setId(33)
+            myPosition!!.setName("Моё местоположение")
         }
         addMyPositionMarker()
         addCenterScreenMarker()
@@ -487,7 +484,6 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
             override var paint: Paint? = strokePaint
             override val width: Float = calculatePathWidth()
         }
-
         pathView.updatePaths(listOf(drawablePath))
         if (addPath) {
             mapView.addPathView(pathView)

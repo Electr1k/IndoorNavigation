@@ -80,7 +80,6 @@ class RouteService private constructor(private val map: CustomMap){
         // Добавлять ли маршрут заново или перестраивать существующий
         startDotTemp = start
         endDotTemp = end
-        println("Path IsDraw: $pathIsDraw")
         map.drawPath(start, end, !pathIsDraw)
         pathIsDraw = true
     }
