@@ -34,6 +34,10 @@ class RouteService private constructor(private val map: CustomMap){
         get() = field
         private set(value) { field = value }
 
+    /** Отображается ли сейчас маршрут*/
+    var pathIsDraw: Boolean = false
+        get() = field
+        private set(value) { field = value }
 
     /**Singleton*/
     companion object {
@@ -64,6 +68,7 @@ class RouteService private constructor(private val map: CustomMap){
         startDot = start
         endDot = end
         map.drawPath(startDot!!, endDot!!)
+        pathIsDraw = true
     }
 
     /** Показать черновик маршрута
@@ -73,16 +78,27 @@ class RouteService private constructor(private val map: CustomMap){
     fun buildTempRoute(start: Int = startDotTemp!!, end: Int = endDotTemp!!){
         currentRouteIsMain = false
         // Добавлять ли маршрут заново или перестраивать существующий
-        val addPath = (startDotTemp == null || endDotTemp == null) && startDotTemp == null && endDot == null // Был ли построен хотя бы один маршрут
         startDotTemp = start
         endDotTemp = end
-        map.drawPath(start, end, addPath)
+        println("Path IsDraw: $pathIsDraw")
+        map.drawPath(start, end, !pathIsDraw)
+        pathIsDraw = true
     }
 
     /** Очистить начала и конец черновика маршрута */
     fun deleteTempDots(){
         startDotTemp = null
         endDotTemp = null
+    }
+
+    fun removePath(){
+        startDot = null
+        endDot = null
+        startDotTemp = null
+        endDotTemp = null
+        currentRouteIsMain = false
+        pathIsDraw = false
+        map.removePath()
     }
 
 }

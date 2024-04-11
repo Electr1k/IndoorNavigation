@@ -113,14 +113,14 @@ class SelectedPointFragment: CustomFragment() {
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             bundle.putBoolean("isFromPoint", true)
             baseActivity.mapView.removeOpenAudienceMarker(selectedPoint)
-            routeService.buildTempRoute(baseActivity.mapView.getMyPosition(), selectedPoint.getId())
+            routeService.buildTempRoute(baseActivity.mapView.getMyPosition().getId(), selectedPoint.getId())
         }
         view.findViewById<CardView>(R.id.route_from).setOnClickListener {
             canPopBack = false
             mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             bundle.putBoolean("isFromPoint", true)
             baseActivity.mapView.removeOpenAudienceMarker(selectedPoint)
-            routeService.buildTempRoute(selectedPoint.getId(), routeService.endDot ?: baseActivity.mapView.getMyPosition())
+            routeService.buildTempRoute(selectedPoint.getId(), routeService.endDot ?: baseActivity.mapView.getMyPosition().getId())
         }
         mBottomSheetBehavior.removeBottomSheetCallback(baseBottomSheetCallback)
         mBottomSheetBehavior.addBottomSheetCallback(

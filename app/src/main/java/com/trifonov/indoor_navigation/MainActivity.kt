@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
@@ -45,7 +46,7 @@ import com.trifonov.indoor_navigation.mapView.MapConstants.dataPath
 import com.trifonov.indoor_navigation.mapView.CustomMap
 import com.trifonov.indoor_navigation.mapView.CustomViewListener
 import com.trifonov.indoor_navigation.mapView.MapData
-import com.trifonov.indoor_navigation.mapView.MapMarker
+import com.trifonov.indoor_navigation.mapView.RouteService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -99,8 +100,15 @@ class MainActivity : AppCompatActivity() {
         mNavController = findNavController(R.id.nav_host_fragment_activity_bottom_navigation)
         navView.setupWithNavController(mNavController)
         mNavController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id != R.id.head) findViewById<CardView>(R.id.cardNav).visibility = View.INVISIBLE
-            else findViewById<CardView>(R.id.cardNav).visibility = View.VISIBLE
+            if (destination.id != R.id.head){
+                findViewById<CardView>(R.id.cardNav).visibility = View.INVISIBLE
+                findViewById<CardView>(R.id.routeBar).visibility = View.GONE
+            }
+            else{
+                val routeService = RouteService.getInstance(mapView)
+                findViewById<CardView>(R.id.routeBar).visibility = if (routeService.pathIsDraw && routeService.currentRouteIsMain) View.VISIBLE else View.GONE
+                findViewById<CardView>(R.id.cardNav).visibility = View.VISIBLE
+            }
         }
 
         mapView.setListener(object: CustomViewListener{
@@ -376,4 +384,42 @@ class MainActivity : AppCompatActivity() {
         mapView.setMap(mapData = mapData, true, levelNumber = levelNumber, addPath = true)
     }
 
+
+    fun openRouteBar(){
+        val routeBar = findViewById<CardView>(R.id.routeBar)
+        val closeIcon = findViewById<ImageView>(R.id.close_path)
+        closeIcon.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            val dialog = builder.create()
+            dialog.window?.setBackgroundDrawable(
+                AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.dialog_rounded_background
+                )
+            )
+            dialog.setCanceledOnTouchOutside(false)
+            val alertDialogView = dialog.window!!.decorView
+            val confirmView = layoutInflater.inflate(R.layout.confirm_view, null)
+            val viewGroup = alertDialogView as ViewGroup
+            confirmView.findViewById<TextView>(R.id.confirmText).text =
+                "Вы уверены, что хотите завершить маршрут?"
+            confirmView.findViewById<Button>(R.id.positiveBtn).setOnClickListener {
+                dialog.cancel()
+                val roteService = RouteService.getInstance(mapView)
+                roteService.removePath()
+                closeRouteBar()
+            }
+            confirmView.findViewById<Button>(R.id.negativeBtn).setOnClickListener {
+                dialog.cancel()
+            }
+            viewGroup.addView(confirmView)
+            dialog.show()
+        }
+        routeBar.visibility = View.VISIBLE
+    }
+
+    fun closeRouteBar(){
+        val routeBar = findViewById<CardView>(R.id.routeBar)
+        routeBar.visibility = View.GONE
+    }
 }

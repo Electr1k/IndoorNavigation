@@ -47,6 +47,9 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         setImageResource(R.drawable.finish_marker)
     }
     private val startMarker = AppCompatImageView(context).apply {
+        setImageResource(R.drawable.start_parh_icon)
+    }
+    private val myPositionMarker = AppCompatImageView(context).apply {
         setImageResource(R.drawable.position_marker)
     }
     private val centerMarker = AppCompatImageView(context).apply {
@@ -58,7 +61,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     private var dotOpenAudience: Dot? = null
 
     private val strokePaint = Paint().apply {
-        color = ContextCompat.getColor(context, R.color.brand)
+        color = ContextCompat.getColor(context, R.color.path)
         strokeCap = Paint.Cap.ROUND
     }
 
@@ -70,7 +73,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     private var levelNumber: Int = 1
     private var startNode = 0
     private var finishNode = 0
-    private var myPosition = 33
+    private var myPosition: Dot? = null
 
     private lateinit var mapData: MapData
     private var minPathWidth = 0f
@@ -115,6 +118,15 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         mapView.addReferentialListener(refOwner)
         addFinishMarker()
         addStartMarker()
+        if (myPosition == null){
+//            val startPosition = dotList.find { it.getId() == 33}!!.copy().also {
+//                it.setId(33)
+//                it.setName("Моё местоположение")
+//            }
+//            dotList.add(0, startPosition)
+            setMyPosition(dotList.find { it.getId() == 33}!!)
+        }
+        addMyPositionMarker()
         addCenterScreenMarker()
         addOpenAudienceMarker()
         updatePath(addPath)
@@ -122,6 +134,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
             addMarker(marker)
         }
         setChangeListeners()
+        changeVisibilityMyPositionMarker()
         changeVisibilityAudienceMarker()
     }
     private fun addMarker(marker: MapMarker){
@@ -204,12 +217,13 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         return finishNode
     }
 
-    fun getMyPosition(): Int {
-        return myPosition
+    fun getMyPosition(): Dot {
+        return myPosition!!
     }
 
-    fun setMyPosition(position: Int) {
+    fun setMyPosition(position: Dot) {
         myPosition = position
+        mapView.moveMarker(myPositionMarker,position.getX().toDouble(), position.getY().toDouble())
     }
 
     private fun moveStartMarker() {
@@ -270,6 +284,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         val index = removePath()
         for(marker in markerList) {if (marker.name.isNotEmpty()) mapView.removeMarker(marker)}
         mapView.removeMarker(centerMarker)
+        mapView.removeMarker(myPositionMarker)
         mapView.removeMarker(openAudience)
         parent.removeView(mapView)
         mapView = MapView(context)
@@ -329,7 +344,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         mapView.scale = 1.3f
         newScale = 1.3f
         try {
-            mapView.moveToMarker(startMarker, true)
+            mapView.moveToMarker(myPositionMarker, true)
         } catch (_: Exception) {
         }
     }
@@ -402,6 +417,15 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         }
     }
 
+    private fun changeVisibilityMyPositionMarker(){
+        if (myPosition!!.getLevel() == levelNumber){
+            myPositionMarker.visibility = View.VISIBLE
+        }
+        else{
+            myPositionMarker.visibility = View.INVISIBLE
+        }
+    }
+
     private fun addFinishMarker() {
         finishMarker.visibility = View.INVISIBLE
         mapView.addMarker(finishMarker, 0.0, 0.0, -0.5f, -0.5f, tag = "finish")
@@ -412,6 +436,11 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         mapView.addMarker(startMarker, 0.0, 0.0, -0.5f, -0.5f, tag = "start")
     }
 
+    private fun addMyPositionMarker() {
+        myPositionMarker.visibility = View.INVISIBLE
+        mapView.addMarker(myPositionMarker, myPosition!!.getX().toDouble(), myPosition!!.getY().toDouble(), -0.5f, -0.5f, tag = "myPosition")
+    }
+
     private fun setMarkerScale(scale: Float) {
         startMarker.scaleX = scale + 1f
         startMarker.scaleY = scale + 1f
@@ -419,6 +448,8 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         finishMarker.scaleY = scale + 1f
         openAudience.scaleX = scale + 1f
         openAudience.scaleY = scale + 1f
+        myPositionMarker.scaleX = scale + 1f
+        myPositionMarker.scaleY = scale + 1f
     }
 
     private fun setPositionMarkerRotation(angle: Float) {

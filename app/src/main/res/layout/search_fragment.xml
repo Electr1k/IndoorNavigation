@@ -83,7 +83,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
-                android:background="@color/brand"/>
+                android:background="@color/dark_blue"/>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/list_item"
                 android:layout_width="match_parent"
