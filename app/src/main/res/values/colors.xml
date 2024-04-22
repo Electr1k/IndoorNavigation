@@ -20,5 +20,6 @@
     <color name="path">#0150cf</color>
     <color name="turquoise">#1C8171</color>
     <color name="track_progress">#33000000</color>
+    <color name="green">#00B400</color>
     <color name="red">#FF0000</color>
 </resources>

@@ -104,6 +104,7 @@ class RouteFragment: CustomFragment() {
         btnContainer.translationY = 0f
         btnContainer.startAnimation(slideUpAnimation)
         initBottomSheet(view)
+        pointA.requestFocus(pointA.text.length)
     }
 
     override fun onStart() {
@@ -137,21 +138,18 @@ class RouteFragment: CustomFragment() {
             }
         }
         audienceRV.adapter = adapterResultDot
-        val openBottomSheet = {
-            if (mBottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED)
-                mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        }
-        pointB.setOnFocusChangeListener { _, focus -> if (focus){ openBottomSheet(); adapterResultDot.updateList(resultList)} }
-        pointA.setOnFocusChangeListener { _, focus -> if (focus){ openBottomSheet(); adapterResultDot.updateList(resultList)} }
-        pointA.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
+
+        var isFirstCall = true // тк в created вызывается фокус и при переходе из аудитории меню открывается полностью
+        pointA.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 adapterResultDot.updateList(resultList.filter { pointA.text.toString().trim().lowercase() in it.getName().trim().lowercase() })
-                mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                if (!isFirstCall) mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                else isFirstCall = false
             } else {
                 if (!pointB.hasFocus()){ adapterResultDot.updateList(resultList) }
             }
         }
-        pointB.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
+        pointB.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 adapterResultDot.updateList(resultList.filter { pointB.text.toString().trim().lowercase() in it.getName().trim().lowercase() })
                 mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -227,6 +225,12 @@ class RouteFragment: CustomFragment() {
                         mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                         return@setOnClickListener
                     }
+                    if(routeService.endDotTemp == baseActivity.mapView.getMyPosition().getId()){
+                        routeService.removePath()
+                        baseActivity.mapView.moveCameraToDot(end)
+                        mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                        return@setOnClickListener
+                    }
                     if (routeService.currentRouteIsMain) {
                         if (routeService.startDotTemp == null || routeService.endDotTemp == null){
                             // Если окно свернули без предпоказа маршрута и нажали пройти
@@ -272,6 +276,7 @@ class RouteFragment: CustomFragment() {
         mBottomSheetBehavior.addBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback(){
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (mBottomSheetBehavior.state in listOf(5,4,3)) {
+                    println("New state $newState last $currentState")
                     currentState = newState
                 }
                 if (mBottomSheetBehavior.state == BottomSheetBehavior.STATE_COLLAPSED){

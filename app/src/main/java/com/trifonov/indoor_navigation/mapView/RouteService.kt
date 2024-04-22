@@ -97,7 +97,7 @@ class RouteService private constructor(private val map: CustomMap){
         endDotTemp = null
         currentRouteIsMain = false
         pathIsDraw = false
-        map.removePath()
+        map.removePath(true)
     }
 
 }

@@ -48,6 +48,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     }
     private val startMarker = AppCompatImageView(context).apply {
         setImageResource(R.drawable.start_parh_icon)
+        this.translationY = 3f
     }
     private val myPositionMarker = AppCompatImageView(context).apply {
         setImageResource(R.drawable.position_marker)

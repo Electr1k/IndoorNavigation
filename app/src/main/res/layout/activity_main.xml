@@ -92,10 +92,11 @@
                     </LinearLayout>
                     <com.google.android.material.progressindicator.LinearProgressIndicator
                         android:layout_width="match_parent"
-                        android:layout_height="10dp"
+                        android:layout_height="match_parent"
                         android:progress="30"
                         app:trackCornerRadius="50dp"
-                        app:indicatorColor="@color/brand"
+                        app:trackThickness="7dp"
+                        app:indicatorColor="@color/green"
                         app:trackColor="#D6D9DE"
                         />
 
