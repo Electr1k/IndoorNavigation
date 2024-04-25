@@ -54,13 +54,13 @@ class ScanFragment: Fragment() {
 
             val baseActivity = requireActivity() as MainActivity
             val point: Dot = baseActivity.mapData.dotList.find { Integer.parseInt(link) == it.getId() }!!
-            println("New pint: $point")
-            baseActivity.mapView.moveMyPosition(point)
-            if (point.getLevel() != baseActivity.levelNumber.toInt()){
-                baseActivity.levelNumber = point.getLevel().toString()
+            val myPosition = point.copy().also { it.setId(point.getId()); it.setName("Моё местоположение"); it.setLevel(point.getLevel()) }
+            baseActivity.mapView.moveMyPosition(myPosition)
+            if (myPosition.getLevel() != baseActivity.levelNumber.toInt()){
+                baseActivity.levelNumber = myPosition.getLevel().toString()
                 baseActivity.configureMap()
             }
-            baseActivity.mapView.moveCameraToDot(point)
+            baseActivity.mapView.moveCameraToDot(myPosition)
 
             Toast.makeText(requireContext(), "Местоположение определено", Toast.LENGTH_SHORT).show();
         }

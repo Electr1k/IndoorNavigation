@@ -127,10 +127,10 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         addMyPositionMarker()
         addCenterScreenMarker()
         addOpenAudienceMarker()
-        updatePath(addPath)
         for (marker in markerList) {
             addMarker(marker)
         }
+        updatePath(addPath)
         setChangeListeners()
         changeVisibilityMyPositionMarker()
         changeVisibilityAudienceMarker()
