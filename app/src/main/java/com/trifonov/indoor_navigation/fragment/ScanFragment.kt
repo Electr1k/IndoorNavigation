@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import com.trifonov.indoor_navigation.MainActivity
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.QR_Scanner
+import com.trifonov.indoor_navigation.mapView.Dot
 
 
 class ScanFragment: Fragment() {
@@ -51,8 +52,16 @@ class ScanFragment: Fragment() {
         if (resultCode == 3) {
             val link = data!!.getStringExtra("link")
 
-           //(requireActivity() as MainActivity).mapView.setMyPosition(link?.let { Integer.parseInt(it) }!!)
-           (requireActivity() as MainActivity).mapView.moveStartMarker(link?.let { Integer.parseInt(it) }!!)
+            val baseActivity = requireActivity() as MainActivity
+            val point: Dot = baseActivity.mapData.dotList.find { Integer.parseInt(link) == it.getId() }!!
+            println("New pint: $point")
+            baseActivity.mapView.moveMyPosition(point)
+            if (point.getLevel() != baseActivity.levelNumber.toInt()){
+                baseActivity.levelNumber = point.getLevel().toString()
+                baseActivity.configureMap()
+            }
+            baseActivity.mapView.moveCameraToDot(point)
+
             Toast.makeText(requireContext(), "Местоположение определено", Toast.LENGTH_SHORT).show();
         }
         findNavController().popBackStack()

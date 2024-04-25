@@ -247,6 +247,11 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         if(finishNode != 0) updatePath()
     }
 
+    internal fun moveMyPosition(dot: Dot){
+        myPosition = dot
+        mapView.moveMarker(myPositionMarker, myPosition!!.getX().toDouble(), myPosition!!.getY().toDouble())
+    }
+
     private fun moveFinishMarker() {
         for (marker in markerList) {
             if (marker.dotId == finishNode) {
