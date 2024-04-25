@@ -240,6 +240,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
             if (marker.dotId == id) {
                 startMarker.visibility = View.VISIBLE
                 mapView.moveMarker(startMarker, marker.x, marker.y)
+                moveToMe()
                 break
             }
         }
