@@ -12,7 +12,7 @@ class RouteService private constructor(private val map: CustomMap){
     /** Стартовая точка основного маршурта */
     var startDot: Int? = null
         get() = field
-        private set(value) { field = value }
+        internal set
 
     /** Конечная точка основного маршурта */
     var endDot: Int? = null
