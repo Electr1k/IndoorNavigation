@@ -458,6 +458,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
 
     private fun setPositionMarkerRotation(angle: Float) {
         startMarker.rotation = angle + positionRotation
+        myPositionMarker.rotation = angle + positionRotation
     }
 
     private fun setMarkerScale(scale: Float, mapMarker: MapMarker) {
