@@ -17,7 +17,9 @@ import androidx.navigation.fragment.findNavController
 import com.trifonov.indoor_navigation.MainActivity
 import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.QR_Scanner
+import com.trifonov.indoor_navigation.QR_Scanner.Companion.link
 import com.trifonov.indoor_navigation.mapView.Dot
+import com.trifonov.indoor_navigation.mapView.RouteService
 
 
 class ScanFragment: Fragment() {
@@ -56,6 +58,11 @@ class ScanFragment: Fragment() {
             val point: Dot = baseActivity.mapData.dotList.find { Integer.parseInt(link) == it.getId() }!!
             val myPosition = point.copy().also { it.setId(point.getId()); it.setName("Моё местоположение"); it.setLevel(point.getLevel()) }
             baseActivity.mapView.moveMyPosition(myPosition)
+            val routeService = RouteService.getInstance(mapView = baseActivity.mapView)
+            try {
+                routeService.startDot = myPosition.getId()
+                routeService.buildMainRoute()
+            }catch (_: Exception){}
             if (myPosition.getLevel() != baseActivity.levelNumber.toInt()){
                 baseActivity.levelNumber = myPosition.getLevel().toString()
                 baseActivity.configureMap()
