@@ -14,4 +14,7 @@ object MapConstants {
     internal val dataPath = "$SDPath/files/locations/"
     internal val unzipPath = "$SDPath/files/locations/"
     internal val baseUrl = "http://indoor.skbkit.ru/api/"
+
+    internal var startDistance: Float = 0f
+    internal var factDistance: Float = 0f
 }

@@ -8,6 +8,7 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -17,7 +18,9 @@ import android.widget.ImageView
 import android.widget.NumberPicker
 import android.widget.NumberPicker.OnValueChangeListener
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.trifonov.indoor_navigation.R
 import ovh.plrapps.mapview.MapView
 import ovh.plrapps.mapview.MapViewConfiguration
@@ -31,6 +34,7 @@ import ovh.plrapps.mapview.paths.PathView
 import ovh.plrapps.mapview.paths.addPathView
 import ovh.plrapps.mapview.paths.removePathView
 import kotlin.math.atan
+import kotlin.math.sqrt
 
 class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     FrameLayout(context, attrs),
@@ -41,6 +45,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     private val minusButton: ImageView
     private val positionButton: ImageView
     private var mapView: MapView
+    private var progressIndicator: LinearProgressIndicator
     private var listener: CustomViewListener? = null
 
     private val finishMarker = AppCompatImageView(context).apply {
@@ -92,6 +97,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         minusButton = findViewById(R.id.btn_zoomOut)
         positionButton = findViewById(R.id.btn_position)
         mapView = findViewById(R.id.map)
+        progressIndicator = findViewById(R.id.trip_progress)
         pathView = PathView(context)
 
         setChangeListeners()
@@ -485,6 +491,47 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         return path
     }
 
+    private fun updateProgress(path: FloatArray) {
+        val routeService = RouteService.getInstance(this)
+        if (routeService.pathIsDraw && routeService.currentRouteIsMain){
+            findViewById<CardView>(R.id.routeBar).visibility = View.VISIBLE
+            if(MapConstants.startDistance < 1f) {
+                MapConstants.startDistance = calculateDistance(path)
+                progressIndicator.progress = 0
+            }
+            else {
+                MapConstants.factDistance = MapConstants.startDistance - calculateDistance(path).toInt()
+                progressIndicator.progress = (100*MapConstants.factDistance/MapConstants.startDistance).toInt()
+            }
+        }
+        else {
+            MapConstants.startDistance
+            findViewById<CardView>(R.id.routeBar).visibility = View.GONE
+        }
+    }
+
+    private fun calculateDistance(points: FloatArray): Float {
+        var totalDistance = 0.0f
+
+        for (i in 0 until points.size - 3 step 2) {
+            val x1 = points[i]
+            val y1 = points[i + 1]
+            val x2 = points[i + 2]
+            val y2 = points[i + 3]
+
+            val distance = calculateEuclideanDistance(x1, y1, x2, y2)
+            totalDistance += distance
+        }
+
+        return totalDistance
+    }
+
+    private fun calculateEuclideanDistance(x1: Float, y1: Float, x2: Float, y2: Float): Float {
+        val deltaX = x2 - x1
+        val deltaY = y2 - y1
+        return sqrt((deltaX * deltaX + deltaY * deltaY).toDouble()).toFloat()
+    }
+
     private fun createDrawablePath(path: FloatArray, addPath: Boolean = false) {
         val drawablePath = object : PathView.DrawablePath {
             override val visible: Boolean = true
@@ -541,6 +588,8 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
             val y2 = pathList[3].toInt()
             positionRotation = calculateAngel(x1, y1, x2, y2)
             setPositionMarkerRotation(refOwner.referentialData?.angle ?: 0f)
+
+            updateProgress(pathList)
         }
         return pathList
     }

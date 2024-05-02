@@ -102,11 +102,8 @@ class MainActivity : AppCompatActivity() {
         mNavController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id != R.id.head){
                 findViewById<CardView>(R.id.cardNav).visibility = View.INVISIBLE
-                findViewById<CardView>(R.id.routeBar).visibility = View.GONE
             }
             else{
-                val routeService = RouteService.getInstance(mapView)
-                findViewById<CardView>(R.id.routeBar).visibility = if (routeService.pathIsDraw && routeService.currentRouteIsMain) View.VISIBLE else View.GONE
                 findViewById<CardView>(R.id.cardNav).visibility = View.VISIBLE
             }
         }
