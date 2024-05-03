@@ -3,6 +3,7 @@ package com.trifonov.indoor_navigation.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +26,11 @@ import com.trifonov.indoor_navigation.adapter.ImagePagerAdapter
 import com.trifonov.indoor_navigation.common.LocationData
 import com.trifonov.indoor_navigation.mapView.Dot
 import com.trifonov.indoor_navigation.mapView.RouteService
+import com.trifonov.indoor_navigation.mapView.WorkHours
 import java.lang.Float.max
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import kotlin.math.abs
 
 
@@ -42,6 +47,7 @@ class SelectedPointFragment: CustomFragment() {
     private lateinit var linearMainContent: LinearLayout
     private lateinit var routeMenu: LinearLayout
     private lateinit var title: TextView
+    private lateinit var workingHours: TextView
     private lateinit var description: TextView
     private var heightNavigationMenu: Int = 0
     private var progress = 0f
@@ -74,10 +80,64 @@ class SelectedPointFragment: CustomFragment() {
         linearMainContent = view.findViewById(R.id.main_content)
         routeMenu = view.findViewById(R.id.routeMenu)
         title = view.findViewById(R.id.title)
+        workingHours = view.findViewById(R.id.workingHours_textView)
         description = view.findViewById(R.id.description)
         initBottomSheet(view)
-
+        workingHours.text = calculateWorkingHours(selectedPoint.getWorkingHours(getWeekDay()))
         initPager()
+    }
+
+    private fun calculateWorkingHours(workingHours: ArrayList<WorkHours>?): String {
+        val tmp = ArrayList<WorkHours>()
+        tmp.add(WorkHours("09:00","14:00"))
+        tmp.add(WorkHours("14:30","18:00"))
+        if(workingHours.isNullOrEmpty()) return "Нет информации о времени работы"
+        return formatTimeToMessage(getCurrentTime(), getCurrentTimeSection(tmp))
+    }
+
+    private fun getCurrentTimeSection(workingHours: ArrayList<WorkHours>): String{
+        val hour = getCurrentTime().split(":")[0].toInt()
+        val minutes = getCurrentTime().split(":")[1].toInt()
+        var prevTime = 0
+        for ((index, workingHour) in workingHours.withIndex()) {
+            val startAt = workingHour.start.split(":")
+            val finishAt = workingHour.finish.split(":")
+            if((startAt[0].toInt() < hour) || ((startAt[0].toInt() == hour) && (startAt[1].toInt() < minutes))) {
+                if((finishAt[0].toInt() > hour) || (finishAt[0].toInt() == hour && minutes < finishAt[1].toInt())){
+                    return workingHour.finish
+                }
+            }
+            if(startAt[0].toInt() < hour && startAt[1].toInt() < minutes) prevTime = index
+        }
+
+        return "Закрыто до ${
+            try {
+                workingHours[prevTime+1].start
+            }catch (e: Exception) { "завтра" }
+        }"
+    }
+
+    private fun formatTimeToMessage(time: String, closingIn: String) : String {
+        if(closingIn.contains("Откроется") || closingIn.contains("Закрыто")) return closingIn
+        val currentMinutes = time.split(":")[0].toInt()*60+time.split(":")[1].toInt()
+        val closingMinutes = closingIn.split(":")[0].toInt()*60+closingIn.split(":")[1].toInt()
+        val diff = closingMinutes-currentMinutes
+        if(diff > 120) return "Открыто до $closingIn"
+        if(diff%60 >= 40) return "Закроется через ${(diff/60) + 1} час(а)"
+        if(diff%60 <= 20) return "Закроется через ${(diff/60)} час"
+        return "Закроется через полтора часа"
+    }
+
+    private fun getCurrentTime() : String{
+        val currentDate = Date()
+        val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+        return timeFormat.format(currentDate)
+    }
+
+    private fun getWeekDay() : String{
+        val currentDate = Date()
+        val dateFormat = SimpleDateFormat("EEEE", Locale.ENGLISH)
+        return dateFormat.format(currentDate)
     }
 
     override fun onStart() {

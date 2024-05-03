@@ -1,6 +1,9 @@
 package com.trifonov.indoor_navigation.mapView
 
+import android.util.Log
 import org.json.JSONArray
+import org.json.JSONObject
+import kotlin.collections.Map
 
 data class Dot(private var x: Float, private var y: Float) {
 
@@ -16,6 +19,7 @@ data class Dot(private var x: Float, private var y: Float) {
     private var fromId = -1
     private var nei = ArrayList<Int>()
     private var photoUrls = ArrayList<String>()
+    private var workingHours: Map<String, ArrayList<WorkHours>> = emptyMap()
 
     override fun toString(): String {
         return "$id $level $name"
@@ -144,5 +148,33 @@ data class Dot(private var x: Float, private var y: Float) {
 
     fun getPhotos() : ArrayList<String>{
         return photoUrls
+    }
+
+    fun setWorkingHours(jsonArray: JSONArray){
+        val result = mutableMapOf<String, ArrayList<WorkHours>>()
+        for (i in 0 until jsonArray.length()) {
+            val jsonObject = jsonArray.getJSONObject(i)
+            val day = jsonObject.keys().next()
+            val workingHoursArray = jsonObject.getJSONArray(day)
+            val workingHoursList = ArrayList<WorkHours>()
+
+            for (j in 0 until workingHoursArray.length()) {
+                val workingHoursObject = workingHoursArray.getJSONObject(j)
+                val start = workingHoursObject.getString("Start")
+                val finish = workingHoursObject.getString("Finish")
+                workingHoursList.add(WorkHours(start, finish))
+            }
+
+            result[day] = workingHoursList
+        }
+        workingHours = result
+    }
+
+    fun getWorkingHours(): Map<String, ArrayList<WorkHours>> {
+        return workingHours
+    }
+
+    fun getWorkingHours(day: String): ArrayList<WorkHours>? {
+        return workingHours[day]
     }
 }

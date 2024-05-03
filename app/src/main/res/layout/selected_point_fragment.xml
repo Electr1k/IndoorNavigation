@@ -137,6 +137,7 @@
                         android:layout_marginVertical="10dp"
                         android:layout_marginHorizontal="16dp"/>
                     <TextView
+                        android:id="@+id/workingHours_textView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="До закрытия 1 час"

@@ -33,6 +33,9 @@ fun loadFromString(zoomLevelCount: Int, json: String, applicationContext: Contex
         dot.setPhotos(jsonDot.getJSONArray("photoUrls"))
         dot.setId(jsonDot.getInt("id"))
         dot.setConnected(jsonDot.getJSONArray("connected"))
+        try {
+            dot.setWorkingHours(jsonDot.getJSONArray("Working"))
+        }catch (_: Exception){}
         if (!levelArray.contains(dot.getLevel().toString())) {
             levelArray.add(dot.getLevel().toString())
         }
