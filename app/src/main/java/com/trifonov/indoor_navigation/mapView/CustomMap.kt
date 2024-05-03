@@ -495,11 +495,11 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         val routeService = RouteService.getInstance(this)
         if (routeService.pathIsDraw && routeService.currentRouteIsMain){
             findViewById<CardView>(R.id.routeBar).visibility = View.VISIBLE
-            if(MapConstants.startDistance < 1f) {
-                MapConstants.startDistance = calculateDistance(path)
+            val distance = calculateDistance(path)
+            if((MapConstants.startDistance < 1f) || (MapConstants.startDistance < distance)) {
+                MapConstants.startDistance = distance
                 progressIndicator.progress = 0
-            }
-            else {
+            } else {
                 MapConstants.factDistance = MapConstants.startDistance - calculateDistance(path).toInt()
                 progressIndicator.progress = (100*MapConstants.factDistance/MapConstants.startDistance).toInt()
             }
