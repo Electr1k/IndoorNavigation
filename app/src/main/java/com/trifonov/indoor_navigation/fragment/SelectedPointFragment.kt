@@ -207,8 +207,8 @@ class SelectedPointFragment: CustomFragment() {
                     }
                 }
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    Log.d("MyLog", "${max(-1 * 260 * density * (1 - slideOffset), -1 * 260 * density)}")
-                    view.findViewById<LinearLayout>(R.id.linearLayout).translationY = max(-1 * 260 * density * (1 - slideOffset), -1 * 260 * density)
+                    val value = if (selectedPoint.getPhotos().size == 0) -1 * 40 * density * (1 - slideOffset) else -1 * 260 * density * (1 - slideOffset)
+                    view.findViewById<LinearLayout>(R.id.linearLayout).translationY = value
                     if (slideOffset <= 0){
                         routeMenu.translationY = heightNavigationMenu * abs(slideOffset)
                     }
@@ -250,10 +250,11 @@ class SelectedPointFragment: CustomFragment() {
          * Исходный список
          */
         val imageList = selectedPoint.getPhotos().toMutableList()
-        if (imageList.size == 1) {
+        if (imageList.size == 0) {
             val layoutParams: ViewGroup.LayoutParams = viewPager.layoutParams
             layoutParams.height = 0
             viewPager.setLayoutParams(layoutParams)
+            view?.findViewById<LinearLayout>(R.id.linearLayout)?.translationY = -1 * 40 * requireContext().resources.displayMetrics.density
             return
         }
         countImages.text = imageList.size.toString()
