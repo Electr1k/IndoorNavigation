@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var mapView: CustomMap
     lateinit var mapData: MapData
-    var levelNumber = "1"
+    var levelNumber = "2"
     var streamFromAssets = false
 
     private val permissions = arrayOf(

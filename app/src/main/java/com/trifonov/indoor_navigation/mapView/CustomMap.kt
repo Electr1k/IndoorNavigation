@@ -108,7 +108,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         levelNumber = level.toInt()
     }
 
-    internal fun setMap(mapData: MapData, needDestroy: Boolean = false, levelNumber: String = "1", addPath: Boolean = false) {
+    internal fun setMap(mapData: MapData, needDestroy: Boolean = false, levelNumber: String = "2", addPath: Boolean = false) {
         if (needDestroy) destroyMapView()
         val config = MapViewConfiguration(
             levelCount = mapData.zoomLevelCount,
@@ -126,8 +126,10 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         addFinishMarker()
         addStartMarker()
         if (myPosition == null){
-            myPosition = dotList.find { it.getId() == 33}!!.copy()
-            myPosition!!.setId(33)
+            val dotId = 33
+            myPosition = dotList.find { it.getId() == dotId}!!.copy()
+            myPosition!!.setId(dotId)
+            myPosition!!.setLevel(2)
             myPosition!!.setName("Моё местоположение")
         }
         addMyPositionMarker()

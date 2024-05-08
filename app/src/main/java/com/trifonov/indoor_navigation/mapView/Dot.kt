@@ -160,8 +160,8 @@ data class Dot(private var x: Float, private var y: Float) {
 
             for (j in 0 until workingHoursArray.length()) {
                 val workingHoursObject = workingHoursArray.getJSONObject(j)
-                val start = workingHoursObject.getString("Start")
-                val finish = workingHoursObject.getString("Finish")
+                val start = workingHoursObject.getString("start")
+                val finish = workingHoursObject.getString("finish")
                 workingHoursList.add(WorkHours(start, finish))
             }
 

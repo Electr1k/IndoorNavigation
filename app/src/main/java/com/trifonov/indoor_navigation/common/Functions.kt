@@ -34,7 +34,7 @@ fun loadFromString(zoomLevelCount: Int, json: String, applicationContext: Contex
         dot.setId(jsonDot.getInt("id"))
         dot.setConnected(jsonDot.getJSONArray("connected"))
         try {
-            dot.setWorkingHours(jsonDot.getJSONArray("Working"))
+            dot.setWorkingHours(jsonDot.getJSONArray("working"))
         }catch (_: Exception){}
         if (!levelArray.contains(dot.getLevel().toString())) {
             levelArray.add(dot.getLevel().toString())

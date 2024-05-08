@@ -14,6 +14,7 @@ import androidx.annotation.MainThread
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.SCROLL_STATE_SETTLING
@@ -49,6 +50,7 @@ class SelectedPointFragment: CustomFragment() {
     private lateinit var title: TextView
     private lateinit var workingHours: TextView
     private lateinit var description: TextView
+    private lateinit var dialogHeader: ConstraintLayout
     private var heightNavigationMenu: Int = 0
     private var progress = 0f
     private lateinit var selectedPoint: Dot
@@ -82,17 +84,18 @@ class SelectedPointFragment: CustomFragment() {
         title = view.findViewById(R.id.title)
         workingHours = view.findViewById(R.id.workingHours_textView)
         description = view.findViewById(R.id.description)
+        dialogHeader = view.findViewById(R.id.dialogHeader)
         initBottomSheet(view)
         workingHours.text = calculateWorkingHours(selectedPoint.getWorkingHours(getWeekDay()))
         initPager()
     }
 
     private fun calculateWorkingHours(workingHours: ArrayList<WorkHours>?): String {
-        val tmp = ArrayList<WorkHours>()
+/*        val tmp = ArrayList<WorkHours>()
         tmp.add(WorkHours("09:00","14:00"))
-        tmp.add(WorkHours("14:30","18:00"))
+        tmp.add(WorkHours("14:30","18:00"))*/
         if(workingHours.isNullOrEmpty()) return "Нет информации о времени работы"
-        return formatTimeToMessage(getCurrentTime(), getCurrentTimeSection(tmp))
+        return formatTimeToMessage(getCurrentTime(), getCurrentTimeSection(workingHours))
     }
 
     private fun getCurrentTimeSection(workingHours: ArrayList<WorkHours>): String{
@@ -137,7 +140,7 @@ class SelectedPointFragment: CustomFragment() {
     private fun getWeekDay() : String{
         val currentDate = Date()
         val dateFormat = SimpleDateFormat("EEEE", Locale.ENGLISH)
-        return dateFormat.format(currentDate)
+        return dateFormat.format(currentDate).toLowerCase()
     }
 
     override fun onStart() {
@@ -204,6 +207,7 @@ class SelectedPointFragment: CustomFragment() {
                     }
                 }
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                    Log.d("MyLog", "${max(-1 * 260 * density * (1 - slideOffset), -1 * 260 * density)}")
                     view.findViewById<LinearLayout>(R.id.linearLayout).translationY = max(-1 * 260 * density * (1 - slideOffset), -1 * 260 * density)
                     if (slideOffset <= 0){
                         routeMenu.translationY = heightNavigationMenu * abs(slideOffset)
@@ -246,7 +250,12 @@ class SelectedPointFragment: CustomFragment() {
          * Исходный список
          */
         val imageList = selectedPoint.getPhotos().toMutableList()
-
+        if (imageList.size == 1) {
+            val layoutParams: ViewGroup.LayoutParams = viewPager.layoutParams
+            layoutParams.height = 0
+            viewPager.setLayoutParams(layoutParams)
+            return
+        }
         countImages.text = imageList.size.toString()
 
         // Копируем первый и последний элемент в хвост и голову соответственно
