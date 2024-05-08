@@ -131,10 +131,13 @@
                             app:layout_constraintTop_toTopOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                     <TextView
+                        android:id="@+id/little_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="В этой аудитории вы можете поработать за компьюетрами."
                         android:textSize="18sp"
+                        android:maxLines="2"
+                        android:minLines="2"
                         android:layout_marginVertical="10dp"
                         android:layout_marginHorizontal="16dp"/>
                     <TextView

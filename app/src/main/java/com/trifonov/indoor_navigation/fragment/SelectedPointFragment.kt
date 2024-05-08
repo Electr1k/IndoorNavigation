@@ -49,6 +49,7 @@ class SelectedPointFragment: CustomFragment() {
     private lateinit var routeMenu: LinearLayout
     private lateinit var title: TextView
     private lateinit var workingHours: TextView
+    private lateinit var little_description: TextView
     private lateinit var description: TextView
     private lateinit var dialogHeader: ConstraintLayout
     private var heightNavigationMenu: Int = 0
@@ -83,6 +84,7 @@ class SelectedPointFragment: CustomFragment() {
         routeMenu = view.findViewById(R.id.routeMenu)
         title = view.findViewById(R.id.title)
         workingHours = view.findViewById(R.id.workingHours_textView)
+        little_description = view.findViewById(R.id.little_description)
         description = view.findViewById(R.id.description)
         dialogHeader = view.findViewById(R.id.dialogHeader)
         initBottomSheet(view)
@@ -170,6 +172,7 @@ class SelectedPointFragment: CustomFragment() {
         val density = requireContext().resources.displayMetrics.density
         title.text = "${selectedPoint.getType()} ${selectedPoint.getName()}"
         description.text = selectedPoint.getDescription()
+        little_description.text = selectedPoint.getDescription().split(".")[0]
         val bundle = Bundle()
         view.findViewById<CardView>(R.id.route_to).setOnClickListener {
             canPopBack = false
