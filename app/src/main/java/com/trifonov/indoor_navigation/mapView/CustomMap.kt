@@ -8,7 +8,6 @@ import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -108,7 +107,12 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         levelNumber = level.toInt()
     }
 
-    internal fun setMap(mapData: MapData, needDestroy: Boolean = false, levelNumber: String = "1", addPath: Boolean = false) {
+    internal fun setMap(
+        mapData: MapData,
+        needDestroy: Boolean = false,
+        levelNumber: String = "1",
+        addPath: Boolean = false
+    ) {
         if (needDestroy) destroyMapView()
         val config = MapViewConfiguration(
             levelCount = mapData.zoomLevelCount,
@@ -125,9 +129,9 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         mapView.addReferentialListener(refOwner)
         addFinishMarker()
         addStartMarker()
-        if (myPosition == null){
+        if (myPosition == null) {
             val dotId = 33
-            myPosition = dotList.find { it.getId() == dotId}!!.copy()
+            myPosition = dotList.find { it.getId() == dotId }!!.copy()
             myPosition!!.setId(dotId)
             myPosition!!.setLevel(1)
             myPosition!!.setName("Моё местоположение")
@@ -143,7 +147,8 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         changeVisibilityMyPositionMarker()
         changeVisibilityAudienceMarker()
     }
-    private fun addMarker(marker: MapMarker){
+
+    private fun addMarker(marker: MapMarker) {
         marker.apply {
             if (marker.name.isNotEmpty()) {
                 marker.dotId
@@ -154,7 +159,11 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
             }
         }
         marker.rotation = 0f
-        if (levelNumber == marker.level && marker.name.isNotEmpty()) mapView.addMarker(marker, marker.x, marker.y)
+        if (levelNumber == marker.level && marker.name.isNotEmpty()) mapView.addMarker(
+            marker,
+            marker.x,
+            marker.y
+        )
     }
 
     /**
@@ -199,10 +208,10 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     /**
      * Метод для перемещения камеры к точке
      * */
-    internal fun moveCameraToDot(dot: Dot){
+    internal fun moveCameraToDot(dot: Dot) {
         mapView.moveMarker(centerMarker, dot.getX().toDouble(), dot.getY().toDouble())
         mapView.setScaleFromCenter(1.3f)
-        mapView.moveToMarker(centerMarker,true)
+        mapView.moveToMarker(centerMarker, true)
     }
 
 
@@ -229,7 +238,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
 
     fun setMyPosition(position: Dot) {
         myPosition = position
-        mapView.moveMarker(myPositionMarker,position.getX().toDouble(), position.getY().toDouble())
+        mapView.moveMarker(myPositionMarker, position.getX().toDouble(), position.getY().toDouble())
     }
 
     private fun moveStartMarker() {
@@ -252,12 +261,16 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
                 break
             }
         }
-        if(finishNode != 0) updatePath()
+        if (finishNode != 0) updatePath()
     }
 
-    internal fun moveMyPosition(dot: Dot){
+    internal fun moveMyPosition(dot: Dot) {
         myPosition = dot
-        mapView.moveMarker(myPositionMarker, myPosition!!.getX().toDouble(), myPosition!!.getY().toDouble())
+        mapView.moveMarker(
+            myPositionMarker,
+            myPosition!!.getX().toDouble(),
+            myPosition!!.getY().toDouble()
+        )
     }
 
     private fun moveFinishMarker() {
@@ -276,7 +289,7 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         val parent = mapView.parent as ViewGroup
         startMarker.visibility = INVISIBLE
         finishMarker.visibility = INVISIBLE
-        if(needFullDrop){
+        if (needFullDrop) {
             startNode = 0
             finishNode = 0
         }
@@ -294,7 +307,9 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         parent.removeView(startMarker)
         parent.removeView(finishMarker)
         val index = removePath()
-        for(marker in markerList) {if (marker.name.isNotEmpty()) mapView.removeMarker(marker)}
+        for (marker in markerList) {
+            if (marker.name.isNotEmpty()) mapView.removeMarker(marker)
+        }
         mapView.removeMarker(centerMarker)
         mapView.removeMarker(myPositionMarker)
         mapView.removeMarker(openAudience)
@@ -391,16 +406,21 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         mapView.addMarker(centerMarker, 0.0, 0.0, -0.5f, -0.5f)
     }
 
-    private fun addOpenAudienceMarker(){
+    private fun addOpenAudienceMarker() {
         openAudience.visibility = View.INVISIBLE
-        mapView.addMarker(openAudience,
-            (dotOpenAudience?.getX()  ?: 0.0).toDouble(), (dotOpenAudience?.getY()  ?: 0.0).toDouble(), -0.5f, -0.5f)
+        mapView.addMarker(
+            openAudience,
+            (dotOpenAudience?.getX() ?: 0.0).toDouble(),
+            (dotOpenAudience?.getY() ?: 0.0).toDouble(),
+            -0.5f,
+            -0.5f
+        )
     }
 
     /***
      * Добавить маркер на крату при открытии аудитории
      */
-    internal fun setOpenAudienceMarker(dot: Dot){
+    internal fun setOpenAudienceMarker(dot: Dot) {
         openAudience.visibility = View.VISIBLE
         mapView.moveMarker(openAudience, dot.getX().toDouble(), dot.getY().toDouble())
         dotOpenAudience = dot
@@ -409,8 +429,8 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     /***
      * Добавить убрать маркер с карты при открытии закрытии
      */
-    internal fun removeOpenAudienceMarker(dot: Dot){
-        if (dotOpenAudience?.getId() == dot.getId()){
+    internal fun removeOpenAudienceMarker(dot: Dot) {
+        if (dotOpenAudience?.getId() == dot.getId()) {
             openAudience.visibility = View.INVISIBLE
             dotOpenAudience = null
         }
@@ -420,20 +440,18 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     /***
      * Метод для изменения
      */
-    private fun changeVisibilityAudienceMarker(){
-        if (dotOpenAudience?.getLevel() == levelNumber){
+    private fun changeVisibilityAudienceMarker() {
+        if (dotOpenAudience?.getLevel() == levelNumber) {
             openAudience.visibility = View.VISIBLE
-        }
-        else{
+        } else {
             openAudience.visibility = View.INVISIBLE
         }
     }
 
-    private fun changeVisibilityMyPositionMarker(){
-        if (myPosition!!.getLevel() == levelNumber){
+    private fun changeVisibilityMyPositionMarker() {
+        if (myPosition!!.getLevel() == levelNumber) {
             myPositionMarker.visibility = View.VISIBLE
-        }
-        else{
+        } else {
             myPositionMarker.visibility = View.INVISIBLE
         }
     }
@@ -450,7 +468,14 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
 
     private fun addMyPositionMarker() {
         myPositionMarker.visibility = View.INVISIBLE
-        mapView.addMarker(myPositionMarker, myPosition!!.getX().toDouble(), myPosition!!.getY().toDouble(), -0.5f, -0.5f, tag = "myPosition")
+        mapView.addMarker(
+            myPositionMarker,
+            myPosition!!.getX().toDouble(),
+            myPosition!!.getY().toDouble(),
+            -0.5f,
+            -0.5f,
+            tag = "myPosition"
+        )
     }
 
     private fun setMarkerScale(scale: Float) {
@@ -481,32 +506,44 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         mapMarker.scaleY = tmp
     }
 
+    private fun closeRouteBar(){
+        val routeBar = findViewById<CardView>(R.id.routeBar)
+        routeBar.visibility = View.GONE
+    }
+
     private fun updatePath(addPath: Boolean = false): FloatArray {
-        if (finishNode == startNode) return FloatArray(0)
+        if (finishNode == startNode) {
+            val roteService = RouteService.getInstance(this)
+            roteService.removePath()
+            closeRouteBar()
+            return FloatArray(0)
+        }
 
         moveStartMarker()
         moveFinishMarker()
-        var path = calculatePath(startNode, finishNode)
-        if(path.size < 2) path = calculatePath(startNode, finishNode)
-        lastPath = path
-        createDrawablePath(path, addPath)
+        val path = calculatePath(startNode, finishNode)
+        if(path.size > 1) {
+            lastPath = path
+            createDrawablePath(path, addPath)
+        }
         return path
     }
 
     private fun updateProgress(path: FloatArray) {
         val routeService = RouteService.getInstance(this)
-        if (routeService.pathIsDraw && routeService.currentRouteIsMain){
+        if (routeService.pathIsDraw && routeService.currentRouteIsMain) {
             findViewById<CardView>(R.id.routeBar).visibility = View.VISIBLE
             val distance = calculateDistance(path)
-            if((MapConstants.startDistance < 1f) || (MapConstants.startDistance < distance)) {
+            if ((MapConstants.startDistance < 1f) || (MapConstants.startDistance < distance)) {
                 MapConstants.startDistance = distance
                 progressIndicator.progress = 0
             } else {
-                MapConstants.factDistance = MapConstants.startDistance - calculateDistance(path).toInt()
-                progressIndicator.progress = (100*MapConstants.factDistance/MapConstants.startDistance).toInt()
+                MapConstants.factDistance =
+                    MapConstants.startDistance - calculateDistance(path).toInt()
+                progressIndicator.progress =
+                    (100 * MapConstants.factDistance / MapConstants.startDistance).toInt()
             }
-        }
-        else {
+        } else {
             MapConstants.startDistance
             findViewById<CardView>(R.id.routeBar).visibility = View.GONE
         }
@@ -558,30 +595,26 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     private fun calculatePath(start: Int, finish: Int): FloatArray {
         val navigation = Navigation(Map(mapData = mapData))
         val path = navigation.path(start, finish)
+        val graph = Graph(mapData.dotList)
+        val path2 = graph.aStar(start, finish)
         var i = 0
-        var size = 0
-        for (pathModel in path) {
-            if (pathModel.level == levelNumber) {
-                size++
-            }
-        }
-        var isFirstOnLevel = true
         val pathList = try {
-            FloatArray((size-1) * 2)
-        }catch (_ : Exception){ FloatArray(0) }
-
-        for (pathModel in path) {
-            if (pathModel.level == levelNumber) {
-                if (!isFirstOnLevel) {
-                    pathList[i] = pathModel.x
-                    pathList[i + 1] = pathModel.y
-                    i += 2
-                }else{
-                    isFirstOnLevel = false
-                }
-
-            }
+            FloatArray((path2?.size ?: 0) * 4 - 2)
+        } catch (_: Exception) {
+            FloatArray(0)
         }
+
+        for (pathModel in path2 ?: ArrayList()) {
+            if (pathModel.level != levelNumber)
+                continue
+            if (i != 0) {
+                pathList[i++] = pathModel.x
+                pathList[i++] = pathModel.y
+            }
+            pathList[i++] = pathModel.x
+            pathList[i++] = pathModel.y
+        }
+
         changeMarkerVisibility()
         if (pathList.size > 3) {
             val x1 = pathList[0].toInt()

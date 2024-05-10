@@ -20,9 +20,18 @@ data class Dot(private var x: Float, private var y: Float) {
     private var nei = ArrayList<Int>()
     private var photoUrls = ArrayList<String>()
     private var workingHours: Map<String, ArrayList<WorkHours>> = emptyMap()
+    private var parent: Dot? = null
 
     override fun toString(): String {
         return "$id $level $name"
+    }
+
+    fun getParent(): Dot? {
+        return parent
+    }
+
+    fun setParent(dot: Dot){
+        this.parent = dot
     }
 
     fun setLevel(level: Int) {
