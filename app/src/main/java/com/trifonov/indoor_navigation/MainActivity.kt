@@ -374,6 +374,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun configureMap() {
+        if(LocationData(this).getCurrentLocation() != -1) streamFromAssets = false
         mapData.tileStreamProvider = if (streamFromAssets) getTitleStreamProviderFromAssets(this, levelNumber) else {
             val locationData = LocationData(this)
             getTitleStreamProvider(locationData.getLocationById(locationData.getCurrentLocation())!!.dataUrl, levelNumber)
