@@ -58,16 +58,13 @@ class FileHelper(
     private var downloading = false
     private var checkConnectionFlag = true
 
-
     @SuppressLint("Range")
     internal fun fileDownload(location: Location): Boolean {
-        println("Download")
         var returning = false
-        dataPathTmp += "${location.dataUrl}/"
-        unzipPathTmp += "${location.dataUrl}/"
+        dataPathTmp = dataPath+"${location.dataUrl}/"
+        unzipPathTmp = unzipPath+"${location.dataUrl}/"
         startThreadConnection()
         val url = Uri.parse(convertUrl(location.id))
-        println(url)
         val request = DownloadManager.Request(url)
             .setTitle("${location.dataUrl}.zip")
             .setDescription("Downloading")
@@ -126,29 +123,37 @@ class FileHelper(
                     downloadView?.findViewById<TextView>(R.id.partLoading)?.text = activity.resources.getString(R.string.unzip)
                 }
                 checkConnectionFlag = false
-                // TODO : заюзать проверку, когда хэш изменится на сервере
-                //  calculateSHA256("$dataPathTmp${location.dataUrl}.zip") == location.hashSum
-                if (unzip(location.dataUrl) == true){
-                    val locationsFile = File("$dataPath/locations.json")
-                    val gson = Gson()
-                    if (locationsFile.exists()){
-                        val locations = gson.fromJson(locationsFile.readText(), Locations::class.java)
-                        locations.locations.add(location)
-                        locationsFile.writeText(gson.toJson(locations))
+
+                if (calculateSHA256("$dataPathTmp${location.dataUrl}.zip") == location.hashSum) {
+                    if (unzip(location.dataUrl) == true) {
+                        val locationsFile = File("$dataPath/locations.json")
+                        val gson = Gson()
+                        if (locationsFile.exists()) {
+                            val locations =
+                                gson.fromJson(locationsFile.readText(), Locations::class.java)
+                            locations.locations.add(location)
+                            locationsFile.writeText(gson.toJson(locations))
+                        } else {
+                            locationsFile.writeText(gson.toJson(Locations(mutableListOf(location))))
+                        }
+                        activity.runOnUiThread {
+                            downloadView?.findViewById<TextView>(R.id.progress)?.text = "100%"
+                            downloadView?.findViewById<LinearProgressIndicator>(R.id.progressBar)?.progress =
+                                100
+                            activity.findViewById<TextView>(R.id.current_location).text =
+                                location.name
+                            Toast.makeText(activity, "Установка успешна", Toast.LENGTH_SHORT).show()
+                        }
+                        returning = true
                     }
-                    else{
-                        locationsFile.writeText(gson.toJson(Locations(mutableListOf(location))))
-                    }
-                    println("LocationsFile")
-                    println(locationsFile.readText())
+                }
+                else{
                     activity.runOnUiThread {
-                        downloadView?.findViewById<TextView>(R.id.progress)?.text = "100%"
-                        downloadView?.findViewById<LinearProgressIndicator>(R.id.progressBar)?.progress = 100
-                        activity.findViewById<TextView>(R.id.current_location).text = location.name
-                        Toast.makeText(activity, "Установка успешна", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, "Перезагрука локации", Toast.LENGTH_SHORT).show()
                     }
-                    returning = true
-                    println("download is Success")
+                    cursor.close()
+                    File(dataPathTmp).deleteRecursively()
+                    returning = fileDownload(location)
                 }
             }
             cursor.close()

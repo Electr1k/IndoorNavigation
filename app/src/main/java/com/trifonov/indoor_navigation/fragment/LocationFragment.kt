@@ -97,10 +97,7 @@ class LocationFragment: CustomFragment() {
                         }
                     }.start()
                 } else {
-                    baseActivity.initialAlertDialog(
-                        selectedLocation!!,
-                        locationData
-                    )
+                    baseActivity.initialAlertDialog(selectedLocation!!)
                     mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
                 }
             }
@@ -112,9 +109,7 @@ class LocationFragment: CustomFragment() {
                     null
                 )
                 item.findViewById<ShimmerFrameLayout>(R.id.shimmer).startShimmer()
-                loadingContainer.addView(
-                    item
-                )
+                loadingContainer.addView(item)
             }
             var locations: List<Location>? = null
             try {

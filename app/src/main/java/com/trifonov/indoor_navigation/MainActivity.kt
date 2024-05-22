@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
         Log.d("MyBluetoothScanner", macAddress)
         val locationData = LocationData(this)
         //TODO: Заменить костыль на сравнение с маками локации
-        if("C5:BB:B0:62:5B:F9" == macAddress) initialAlertDialog(locationData.getLocationById(0)!!, locationData)
+        if("C5:BB:B0:62:5B:F9" == macAddress) initialAlertDialog(locationData.getLocationById(0)!!)
     }
 
     private fun hasPermissions(): Boolean {
@@ -200,7 +200,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * Инициализирует и запускает Alert Dialog с загрузкой локации
      * */
-    internal fun initialAlertDialog(location: Location, locationData: LocationData){
+    internal fun initialAlertDialog(location: Location){
         if(!isDialogEnable){
             val builder = AlertDialog.Builder(this)
             val dialog = builder
@@ -276,14 +276,11 @@ class MainActivity : AppCompatActivity() {
         }
         val ld = LocationData(this@MainActivity)
         val currentLocation = ld.getCurrentLocation()
-        for (location in locations.locations ){
+        for (location in locations.locations){
             if (checkStorageLocation(location.dataUrl)){
                 val directory = File("${MapConstants.unzipPath}/${location.dataUrl}")
                 val date = Date(directory.lastModified())
-                println("Date install $date")
-                println("Date update ${location.updateTime}")
                 if (date < location.updateTime){
-                    println("Reinstall location ${location.dataUrl}")
                     if (currentLocation == location.id){
                         runOnUiThread {
                             val builder = AlertDialog.Builder(this)
@@ -340,7 +337,6 @@ class MainActivity : AppCompatActivity() {
         val downloadId = downloadManager.enqueue(request)
 
         val query = DownloadManager.Query().setFilterById(downloadId)
-        println("start download")
         var downloading = true;
         while (downloading) {
             val cursor = downloadManager.query(query)
@@ -348,12 +344,10 @@ class MainActivity : AppCompatActivity() {
             try {
                 if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
                     val unzipFlag = try {
-                        println("Unzip")
                         val zipFile = ZipFile("${dataPath+location.dataUrl}/${location.dataUrl}.zip")
                         zipFile.extractAll(dataPath+location.dataUrl)
                         File("${dataPath+location.dataUrl}/${location.dataUrl}.zip").delete()
                         downloading = false
-                        println("success")
                         true
                     } catch (e: Exception) {
                         false
