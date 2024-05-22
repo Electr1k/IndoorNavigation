@@ -21,6 +21,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
@@ -249,17 +250,22 @@ class MainActivity : AppCompatActivity() {
             val fh = FileHelper(this, location, downloadView, dialog)
             val json = fh.getJsonMap(location)
             if (json != "empty location") {
-                mapData = loadFromString(
-                    zoomLevelCount = (File("${dataPath}${location.dataUrl}/tiles1").listFiles()?.size ?: 0) - 1,
-                    json = File("${dataPath}${location.dataUrl}/map.json").readText(),
-                    applicationContext = applicationContext,
-                    getTileStream = getTitleStreamProvider(location.dataUrl, levelNumber)
-                )
                 runOnUiThread {
+                    mapData = loadFromString(
+                        zoomLevelCount = (File("${dataPath}${location.dataUrl}/tiles1").listFiles()?.size ?: 0) - 1,
+                        json = File("${dataPath}${location.dataUrl}/map.json").readText(),
+                        applicationContext = applicationContext,
+                        getTileStream = getTitleStreamProvider(location.dataUrl, levelNumber, this)
+                    )
                     mapView.setMap(mapData, needDestroy = true)
                     dialog.cancel()
                     val ld = LocationData(this)
                     ld.setCurrentLocation(location.id)
+                }
+            }
+            else {
+                runOnUiThread {
+                    Toast.makeText(this, "Не удалось отобразить карту", Toast.LENGTH_SHORT).show()
                 }
             }
         }.start()
@@ -371,7 +377,7 @@ class MainActivity : AppCompatActivity() {
         if(LocationData(this).getCurrentLocation() != -1) streamFromAssets = false
         mapData.tileStreamProvider = if (streamFromAssets) getTitleStreamProviderFromAssets(this, levelNumber) else {
             val locationData = LocationData(this)
-            getTitleStreamProvider(locationData.getLocationById(locationData.getCurrentLocation())!!.dataUrl, levelNumber)
+            getTitleStreamProvider(locationData.getLocationById(locationData.getCurrentLocation())!!.dataUrl, levelNumber, this)
         }
         mapView.setMap(mapData = mapData, true, levelNumber = levelNumber, addPath = true)
     }

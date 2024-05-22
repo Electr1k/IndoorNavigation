@@ -35,7 +35,7 @@ class SplashScreen : Fragment() {
                     zoomLevelCount = (File("${dataPath}${locName}/tiles1").listFiles()?.size ?: 0) - 1,
                     json = File("${dataPath}${locName}/map.json").readText(),
                     applicationContext = requireContext(),
-                    getTileStream = getTitleStreamProvider(locName, baseActivity.levelNumber)
+                    getTileStream = getTitleStreamProvider(locName, baseActivity.levelNumber, requireContext())
                 )
                 baseActivity.mapView.setMap(baseActivity.mapData)
             }

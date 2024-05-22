@@ -2,6 +2,7 @@ package com.trifonov.indoor_navigation.common
 
 import android.app.Activity
 import android.content.Context
+import android.widget.Toast
 import com.trifonov.indoor_navigation.mapView.MapConstants.unzipPath
 import com.trifonov.indoor_navigation.mapView.Dot
 import com.trifonov.indoor_navigation.mapView.MapData
@@ -74,8 +75,11 @@ fun parseFromDot(list: ArrayList<Dot>, applicationContext: Context): ArrayList<M
 }
 
 
-fun getTitleStreamProvider(locationName:String, levelNumber: String):TileStreamProvider{
+fun getTitleStreamProvider(locationName:String, levelNumber: String, context: Context):TileStreamProvider{
     return TileStreamProvider{ row, col, zoomLvl ->
+        if (!File("${unzipPath}/$locationName/tiles${levelNumber}").exists() || !File("${unzipPath}/$locationName/tiles${levelNumber}").exists()){
+            Toast.makeText(context, "Ошибка при работе с картой", Toast.LENGTH_SHORT).show()
+        }
         try {
             FileInputStream(
                 File(

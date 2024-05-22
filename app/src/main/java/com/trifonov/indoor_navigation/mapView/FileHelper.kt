@@ -123,7 +123,8 @@ class FileHelper(
                     downloadView?.findViewById<TextView>(R.id.partLoading)?.text = activity.resources.getString(R.string.unzip)
                 }
                 checkConnectionFlag = false
-
+                println("Hash file ${calculateSHA256("$dataPathTmp${location.dataUrl}.zip")}")
+                println("Required hash ${location.hashSum}")
                 if (calculateSHA256("$dataPathTmp${location.dataUrl}.zip") == location.hashSum) {
                     if (unzip(location.dataUrl) == true) {
                         val locationsFile = File("$dataPath/locations.json")
@@ -213,7 +214,6 @@ class FileHelper(
                 "empty location"
             }
         } else {
-            // TODO: ИЗМЕНИТЬ ССЫЛКУ В ЗАВИСИМОСТИ ОТ ЛОКАЦИИ КОГДА КАРТЫ БУДУТ ГОТОВЫ
             return if (fileDownload(location)) File("$dataPath${location.dataUrl}/map.json").readText()
             else "empty location"
         }
