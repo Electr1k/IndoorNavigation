@@ -32,7 +32,7 @@ class SplashScreen : Fragment() {
             val locName = locationData.getLocationById(currentLocationId)?.dataUrl
             if (currentLocationId != -1 && locName != null && checkStorageLocation(locName)) {
                 baseActivity.mapData = loadFromString(
-                    zoomLevelCount = (File("${dataPath}${locName}/tiles1").listFiles()?.size ?: 0) - 1,
+                    zoomLevelCount = (File("${dataPath}${locName}/tiles1").listFiles()?.size ?: 2) - 1,
                     json = File("${dataPath}${locName}/map.json").readText(),
                     applicationContext = requireContext(),
                     getTileStream = getTitleStreamProvider(locName, baseActivity.levelNumber, requireContext())

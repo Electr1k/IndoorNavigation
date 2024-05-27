@@ -252,15 +252,15 @@ class MainActivity : AppCompatActivity() {
             if (json != "empty location") {
                 runOnUiThread {
                     mapData = loadFromString(
-                        zoomLevelCount = (File("${dataPath}${location.dataUrl}/tiles1").listFiles()?.size ?: 0) - 1,
+                        zoomLevelCount = (File("${dataPath}${location.dataUrl}/tiles1").listFiles()?.size ?: 2) - 1,
                         json = File("${dataPath}${location.dataUrl}/map.json").readText(),
                         applicationContext = applicationContext,
                         getTileStream = getTitleStreamProvider(location.dataUrl, levelNumber, this)
                     )
                     mapView.setMap(mapData, needDestroy = true)
-                    dialog.cancel()
                     val ld = LocationData(this)
                     ld.setCurrentLocation(location.id)
+                    dialog.cancel()
                 }
             }
             else {

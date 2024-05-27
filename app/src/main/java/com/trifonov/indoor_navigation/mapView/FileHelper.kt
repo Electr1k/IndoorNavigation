@@ -127,25 +127,30 @@ class FileHelper(
                 println("Required hash ${location.hashSum}")
                 if (calculateSHA256("$dataPathTmp${location.dataUrl}.zip") == location.hashSum) {
                     if (unzip(location.dataUrl) == true) {
-                        val locationsFile = File("$dataPath/locations.json")
-                        val gson = Gson()
-                        if (locationsFile.exists()) {
-                            val locations =
-                                gson.fromJson(locationsFile.readText(), Locations::class.java)
-                            locations.locations.add(location)
-                            locationsFile.writeText(gson.toJson(locations))
-                        } else {
-                            locationsFile.writeText(gson.toJson(Locations(mutableListOf(location))))
+                        // Если нет map.json возвращаем false
+                        if (!File("$unzipPathTmp/map.json").exists()) returning = true
+                        else {
+                            val locationsFile = File("$dataPath/locations.json")
+                            val gson = Gson()
+                            if (locationsFile.exists()) {
+                                val locations =
+                                    gson.fromJson(locationsFile.readText(), Locations::class.java)
+                                locations.locations.add(location)
+                                locationsFile.writeText(gson.toJson(locations))
+                            } else {
+                                locationsFile.writeText(gson.toJson(Locations(mutableListOf(location))))
+                            }
+                            activity.runOnUiThread {
+                                downloadView?.findViewById<TextView>(R.id.progress)?.text = "100%"
+                                downloadView?.findViewById<LinearProgressIndicator>(R.id.progressBar)?.progress =
+                                    100
+                                activity.findViewById<TextView>(R.id.current_location).text =
+                                    location.name
+                                Toast.makeText(activity, "Установка успешна", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                            returning = true
                         }
-                        activity.runOnUiThread {
-                            downloadView?.findViewById<TextView>(R.id.progress)?.text = "100%"
-                            downloadView?.findViewById<LinearProgressIndicator>(R.id.progressBar)?.progress =
-                                100
-                            activity.findViewById<TextView>(R.id.current_location).text =
-                                location.name
-                            Toast.makeText(activity, "Установка успешна", Toast.LENGTH_SHORT).show()
-                        }
-                        returning = true
                     }
                 }
                 else{

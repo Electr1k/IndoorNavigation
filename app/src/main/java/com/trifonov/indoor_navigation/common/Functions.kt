@@ -76,10 +76,13 @@ fun parseFromDot(list: ArrayList<Dot>, applicationContext: Context): ArrayList<M
 
 
 fun getTitleStreamProvider(locationName:String, levelNumber: String, context: Context):TileStreamProvider{
-    return TileStreamProvider{ row, col, zoomLvl ->
-        if (!File("${unzipPath}/$locationName/tiles${levelNumber}").exists() || !File("${unzipPath}/$locationName/tiles${levelNumber}").exists()){
-            Toast.makeText(context, "Ошибка при работе с картой", Toast.LENGTH_SHORT).show()
+    if (!File("${unzipPath}$locationName/tiles${levelNumber}").exists()){
+        Toast.makeText(context, "Ошибка при работе с картой", Toast.LENGTH_SHORT).show()
+        return TileStreamProvider{ _, _, _ ->
+            context.assets.open("tiles1/blank.png")
         }
+    }
+    return TileStreamProvider{ row, col, zoomLvl ->
         try {
             FileInputStream(
                 File(

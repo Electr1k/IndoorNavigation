@@ -86,7 +86,7 @@ class LocationFragment: CustomFragment() {
                     Thread {
                         requireActivity().runOnUiThread {
                             baseActivity.mapData = loadFromString(
-                                zoomLevelCount = (File("${MapConstants.dataPath}${selectedLocation!!.dataUrl}/tiles1").listFiles()?.size ?: 0) - 1,
+                                zoomLevelCount = (File("${MapConstants.dataPath}${selectedLocation!!.dataUrl}/tiles1").listFiles()?.size ?: 2) - 1,
                                 json = File("${MapConstants.dataPath}${selectedLocation!!.dataUrl}/map.json").readText(),
                                 applicationContext = requireContext(),
                                 getTileStream = getTitleStreamProvider(selectedLocation!!.dataUrl, baseActivity.levelNumber, requireContext())

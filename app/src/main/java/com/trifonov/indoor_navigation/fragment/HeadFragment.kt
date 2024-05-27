@@ -33,7 +33,7 @@ class HeadFragment: Fragment() {
         var currentLocationId = locationData.getCurrentLocation()
 
         val btn = view.findViewById<TextView>(R.id.current_location)
-        btn.text = if (currentLocationId != -1)locationData.getLocationById(currentLocationId)!!.name else "Демо локация"
+        btn.text = if (currentLocationId != -1) locationData.getLocationById(currentLocationId)!!.name else "Демо локация"
         val cardView =  view.findViewById<CardView>(R.id.card_location)
         cardView.setOnClickListener {
             pulsarAnimation(cardView, view){
