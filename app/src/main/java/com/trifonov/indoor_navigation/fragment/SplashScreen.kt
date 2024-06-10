@@ -13,6 +13,7 @@ import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.common.LocationData
 import com.trifonov.indoor_navigation.common.getTitleStreamProvider
 import com.trifonov.indoor_navigation.common.getTitleStreamProviderFromAssets
+import com.trifonov.indoor_navigation.common.isTileClear
 import com.trifonov.indoor_navigation.common.loadFromString
 import com.trifonov.indoor_navigation.mapView.FileHelper.Companion.checkStorageLocation
 import com.trifonov.indoor_navigation.mapView.MapConstants.dataPath
@@ -37,7 +38,7 @@ class SplashScreen : Fragment() {
                     applicationContext = requireContext(),
                     getTileStream = getTitleStreamProvider(locName, baseActivity.levelNumber, requireContext())
                 )
-                baseActivity.mapView.setMap(baseActivity.mapData)
+                if(!isTileClear) baseActivity.mapView.setMap(baseActivity.mapData)
             }
             else {
                 // Если нет текущей локации, то ставим дефолтную карту

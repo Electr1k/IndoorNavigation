@@ -25,6 +25,7 @@ import com.trifonov.indoor_navigation.R
 import com.trifonov.indoor_navigation.adapter.LocationAdapter
 import com.trifonov.indoor_navigation.common.LocationData
 import com.trifonov.indoor_navigation.common.getTitleStreamProvider
+import com.trifonov.indoor_navigation.common.isTileClear
 import com.trifonov.indoor_navigation.common.loadFromString
 import com.trifonov.indoor_navigation.data.dto.Location
 import com.trifonov.indoor_navigation.di.ApiModule
@@ -91,9 +92,11 @@ class LocationFragment: CustomFragment() {
                                 applicationContext = requireContext(),
                                 getTileStream = getTitleStreamProvider(selectedLocation!!.dataUrl, baseActivity.levelNumber, requireContext())
                             )
-                            baseActivity.mapView.setMap(baseActivity.mapData, needDestroy = true)
-                            locationData.setCurrentLocation(selectedLocation!!.id)
-                            mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                            if(!isTileClear) {
+                                baseActivity.mapView.setMap(baseActivity.mapData, needDestroy = true)
+                                locationData.setCurrentLocation(selectedLocation!!.id)
+                                mBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                            }
                         }
                     }.start()
                 } else {

@@ -74,14 +74,17 @@ fun parseFromDot(list: ArrayList<Dot>, applicationContext: Context): ArrayList<M
     return mapMarkerList;
 }
 
+var isTileClear = false
 
 fun getTitleStreamProvider(locationName:String, levelNumber: String, context: Context):TileStreamProvider{
     if (!File("${unzipPath}$locationName/tiles${levelNumber}").exists()){
         Toast.makeText(context, "Ошибка при работе с картой", Toast.LENGTH_SHORT).show()
+        isTileClear = true
         return TileStreamProvider{ _, _, _ ->
             context.assets.open("tiles1/blank.png")
         }
     }
+    isTileClear = false
     return TileStreamProvider{ row, col, zoomLvl ->
         try {
             FileInputStream(

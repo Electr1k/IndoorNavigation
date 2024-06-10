@@ -305,7 +305,7 @@ class SelectedPointFragment: CustomFragment() {
         }
         progressThread.start()
 
-        val viewPagerAdapter = ImagePagerAdapter(requireActivity() as MainActivity, ld.getLocationById(ld.getCurrentLocation())!!, imageList, { runProgress = false }, { runProgress = true })
+        val viewPagerAdapter = ImagePagerAdapter(requireActivity() as MainActivity, ld.getLocationById(ld.getCurrentLocation()) , imageList, { runProgress = false }, { runProgress = true })
         viewPager.adapter = viewPagerAdapter
 
         viewPager.currentItem = 1 // Устанавливаем указатель на 0 элемент "исходного" списка

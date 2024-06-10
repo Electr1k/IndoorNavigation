@@ -14,7 +14,7 @@ import com.trifonov.indoor_navigation.mapView.MapConstants.baseUrl
 
 class ImagePagerAdapter(
     val activity: MainActivity,
-    private val location: Location,
+    private val location: Location?,
     private val images: List<String>,
     private val stopProgress: () -> Unit,
     private val resumeProgress: () -> Unit,
@@ -28,7 +28,7 @@ class ImagePagerAdapter(
         val shimmer = view.findViewById<ShimmerFrameLayout>(R.id.shimmer_image)
         val imagePosition = position % images.size
         shimmer.startShimmer()
-        imageView.load("${baseUrl}locations/${location.id}/photos${images[imagePosition]}", activity.imageLoader){
+        imageView.load("${baseUrl}locations/${location?.id}/photos${images[imagePosition]}", activity.imageLoader){
             error(R.drawable.bad_connection_icon) // Замените R.drawable.placeholder на свой ресурс запасного изображения
             listener(
                 onSuccess = { _, _ ->

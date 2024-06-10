@@ -35,6 +35,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.trifonov.indoor_navigation.common.LocationData
 import com.trifonov.indoor_navigation.common.getTitleStreamProvider
 import com.trifonov.indoor_navigation.common.getTitleStreamProviderFromAssets
+import com.trifonov.indoor_navigation.common.isTileClear
 import com.trifonov.indoor_navigation.common.loadFromString
 import com.trifonov.indoor_navigation.data.dto.Location
 import com.trifonov.indoor_navigation.data.dto.Locations
@@ -257,7 +258,7 @@ class MainActivity : AppCompatActivity() {
                         applicationContext = applicationContext,
                         getTileStream = getTitleStreamProvider(location.dataUrl, levelNumber, this)
                     )
-                    mapView.setMap(mapData, needDestroy = true)
+                    if(!isTileClear) mapView.setMap(mapData, needDestroy = true)
                     val ld = LocationData(this)
                     ld.setCurrentLocation(location.id)
                     dialog.cancel()
