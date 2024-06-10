@@ -57,6 +57,7 @@ class FileHelper(
     private var unzipPathTmp = unzipPath
     private var downloading = false
     private var checkConnectionFlag = true
+    private var reloadCounter = 0
 
     @SuppressLint("Range")
     internal fun fileDownload(location: Location): Boolean {
@@ -154,6 +155,11 @@ class FileHelper(
                     }
                 }
                 else{
+                    if(reloadCounter == 2) {
+                        dialog?.cancel()
+                        return false
+                    }
+                    reloadCounter++
                     activity.runOnUiThread {
                         Toast.makeText(activity, "Перезагрука локации", Toast.LENGTH_SHORT).show()
                     }
