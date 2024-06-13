@@ -16,6 +16,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.NumberPicker
 import android.widget.NumberPicker.OnValueChangeListener
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -32,6 +33,9 @@ import ovh.plrapps.mapview.api.removeMarker
 import ovh.plrapps.mapview.paths.PathView
 import ovh.plrapps.mapview.paths.addPathView
 import ovh.plrapps.mapview.paths.removePathView
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import kotlin.math.atan
 import kotlin.math.sqrt
 
@@ -44,6 +48,9 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
     private val minusButton: ImageView
     private val positionButton: ImageView
     private var mapView: MapView
+    private var pathTime: TextView
+    private var pathEnd: TextView
+    private var distanceTv: TextView
     private var progressIndicator: LinearProgressIndicator
     private var listener: CustomViewListener? = null
 
@@ -97,6 +104,9 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         positionButton = findViewById(R.id.btn_position)
         mapView = findViewById(R.id.map)
         progressIndicator = findViewById(R.id.trip_progress)
+        distanceTv = findViewById(R.id.distance)
+        pathTime = findViewById(R.id.pathTime)
+        pathEnd = findViewById(R.id.timeEnd)
         pathView = PathView(context)
 
         setChangeListeners()
@@ -534,6 +544,9 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
         if (routeService.pathIsDraw && routeService.currentRouteIsMain) {
             findViewById<CardView>(R.id.routeBar).visibility = View.VISIBLE
             val distance = calculateDistance(path)
+            distanceTv.text = "${(distance*0.03).toInt()} м"
+            pathTime.text = "${(distance*0.03/4).toInt()} мин"
+            pathEnd.text = getTimeToEnd((distance*0.03/4).toInt())
             if ((MapConstants.startDistance < 1f) || (MapConstants.startDistance < distance)) {
                 MapConstants.startDistance = distance
                 progressIndicator.progress = 0
@@ -547,6 +560,14 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
             MapConstants.startDistance
             findViewById<CardView>(R.id.routeBar).visibility = View.GONE
         }
+    }
+
+    private fun getTimeToEnd(minuntes: Int): String {
+        val currentTimeMillis = System.currentTimeMillis()
+        val newTimeMillis = currentTimeMillis + minuntes * 60 * 1000
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = newTimeMillis
+        return SimpleDateFormat("HH:mm", Locale.getDefault()).format(calendar.time)
     }
 
     private fun calculateDistance(points: FloatArray): Float {
