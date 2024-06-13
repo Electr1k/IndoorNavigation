@@ -545,8 +545,8 @@ class CustomMap(private val context: Context, attrs: AttributeSet? = null) :
             findViewById<CardView>(R.id.routeBar).visibility = View.VISIBLE
             val distance = calculateDistance(path)
             distanceTv.text = "${(distance*0.03).toInt()} м"
-            pathTime.text = "${(distance*0.03/4).toInt()} мин"
-            pathEnd.text = getTimeToEnd((distance*0.03/4).toInt())
+            pathTime.text = if((distance*0.03/240) > 1) "${(distance*0.03/240).toInt()} мин" else "${(distance*0.03/4).toInt()} сек"
+            pathEnd.text = getTimeToEnd((distance*0.03/240).toInt())
             if ((MapConstants.startDistance < 1f) || (MapConstants.startDistance < distance)) {
                 MapConstants.startDistance = distance
                 progressIndicator.progress = 0
