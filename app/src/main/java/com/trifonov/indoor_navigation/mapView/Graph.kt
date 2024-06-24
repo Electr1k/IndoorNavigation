@@ -23,7 +23,7 @@ class Graph(private val dots: ArrayList<Dot>) {
 
     init {
         for (dot in dots) {
-            nodeArray.add(Node(dot.getId(), dot.getX(), dot.getY(), connected = dot.getConnected()))
+            nodeArray.add(Node(dot.getId(), dot.getX(), dot.getY(), level = dot.getLevel(), connected = dot.getConnected()))
         }
     }
 
